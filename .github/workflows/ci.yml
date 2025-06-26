@@ -19,7 +19,6 @@ jobs:
 
       - name: Run Laravel setup & tests inside container
         run: |
-          docker compose exec -T app cp .env.example .env
           docker compose exec -T app composer install --no-progress --prefer-dist
           docker compose exec -T app php artisan key:generate
           docker compose exec -T app php artisan migrate --force
