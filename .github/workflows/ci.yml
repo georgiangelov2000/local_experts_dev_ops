@@ -1,31 +1,27 @@
-name: CI
+name: Laravel Docker CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  setup:
+  docker-laravel:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.2
-          extensions: mbstring, bcmath, pdo, pdo_mysql, zip
+      - name: Set up Docker
+        run: docker compose -f docker-compose.yml up -d --build
 
-      - name: Install Composer dependencies
+      - name: Run Laravel setup & tests inside container
+        run: |
+          docker compose exec -T app cp .env.example .env
+          docker compose exec -T app composer install --no-progress --prefer-dist
+          docker compose exec -T app php artisan key:generate
+          docker compose exec -T app php artisan migrate --force
+          docker compose exec -T app php artisan test
         working-directory: ./src
-        run: composer install --no-progress --prefer-dist
-
-      - name: Copy .env
-        working-directory: ./src
-        run: cp .env.example .env
