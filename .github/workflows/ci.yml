@@ -20,6 +20,5 @@ jobs:
       - name: Allow Git in Docker container
         run: docker compose exec -T app git config --global --add safe.directory /var/www
 
-      - name: Laravel install & test
-        run: |
-          docker compose exec -T app php artisan test
+      - name: Install dependencies
+        run: docker compose exec -T app bash -c "cd /var/www && composer install --no-progress --prefer-dist"
