@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: app
-    working_dir: /var/www/src
+    working_dir: /var/www
     volumes:
       - ./src:/var/www
     networks:
@@ -13,7 +13,7 @@ services:
   artisan:
     image: php:8.2-cli
     container_name: artisan
-    working_dir: /var/www/src
+    working_dir: /var/www
     volumes:
       - ./src:/var/www
     entrypoint: ["php", "artisan"]
