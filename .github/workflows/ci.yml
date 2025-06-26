@@ -18,9 +18,11 @@ jobs:
         run: docker compose -f docker-compose.yml up -d --build
 
       - name: Run Laravel setup & tests inside container
+        working-directory: ./src
         run: |
+          docker compose exec -T app git config --global --add safe.directory /var/www/src
+          docker compose exec -T app cp .env.example .env
           docker compose exec -T app composer install --no-progress --prefer-dist
           docker compose exec -T app php artisan key:generate
           docker compose exec -T app php artisan migrate --force
           docker compose exec -T app php artisan test
-        working-directory: ./src
