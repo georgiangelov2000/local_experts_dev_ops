@@ -6,7 +6,7 @@ services:
     container_name: app
     working_dir: /var/www/src
     volumes:
-      - .:/var/www
+      - ./src:/var/www
     networks:
       - localexperts
     
@@ -15,7 +15,7 @@ services:
     container_name: artisan
     working_dir: /var/www/src
     volumes:
-      - .:/var/www
+      - ./src:/var/www
     entrypoint: ["php", "artisan"]
 
   nginx:
@@ -24,7 +24,7 @@ services:
     ports:
       - "127.0.0.1:8000:80"
     volumes:
-      - .:/var/www
+      - ./src:/var/www
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
     depends_on:
       - app
