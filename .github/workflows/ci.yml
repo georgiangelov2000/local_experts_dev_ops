@@ -23,5 +23,3 @@ jobs:
       - name: List files in /var/www inside app container
         run: docker compose exec -T app ls -la /var/www
 
-      - name: Install dependencies
-        run: docker compose exec -T app bash -c "cd /var/www && composer install --no-progress --prefer-dist"

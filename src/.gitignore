@@ -20,7 +20,7 @@
 /storage/pail
 /vendor
 /storage/
-# /bootstrap/
+/bootstrap/
 composer.lock
 Homestead.json
 Homestead.yaml
