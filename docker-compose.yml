@@ -1,0 +1,46 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    working_dir: /var/www/src
+    volumes:
+      - .:/var/www
+    networks:
+      - localexperts
+    
+  artisan:
+    image: php:8.2-cli
+    container_name: artisan
+    working_dir: /var/www/src
+    volumes:
+      - .:/var/www
+    entrypoint: ["php", "artisan"]
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "127.0.0.1:8000:80"
+    volumes:
+      - .:/var/www
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - app
+    networks:
+      - localexperts
+
+  swagger:
+    image: swaggerapi/swagger-ui
+    container_name: swagger
+    environment:
+      SWAGGER_JSON: /docs/openapi.json
+    volumes:
+      - ./docs:/docs
+    ports:
+      - "8081:8080"
+
+networks:
+  localexperts:
+    driver: bridge

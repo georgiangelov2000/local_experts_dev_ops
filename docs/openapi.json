@@ -1,0 +1,28 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "My Service Platform API",
+    "version": "1.0.0",
+    "description": "API documentation for managing services, providers, and reviews."
+  },
+  "paths": {
+    "/api/services": {
+      "get": {
+        "summary": "List all services",
+        "responses": {
+          "200": {
+            "description": "A list of services",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
