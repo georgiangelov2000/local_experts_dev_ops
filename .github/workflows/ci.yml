@@ -23,7 +23,9 @@ jobs:
           extensions: mbstring, bcmath, pdo, pdo_mysql, zip
 
       - name: Install Composer dependencies
+        working-directory: ./src
         run: composer install --no-progress --prefer-dist
 
       - name: Copy .env
+        working-directory: ./src
         run: cp .env.example .env
