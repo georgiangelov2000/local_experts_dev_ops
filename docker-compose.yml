@@ -41,6 +41,18 @@ services:
     ports:
       - "8081:8080"
 
+  react:
+    image: node:20
+    container_name: react
+    working_dir: /usr/src/app
+    volumes:
+      - ./src/react-frontend:/usr/src/app
+    ports:
+      - "5173:5173"
+    command: ["npm", "run", "dev"]
+    networks:
+      - localexperts
+
 networks:
   localexperts:
     driver: bridge

@@ -1,27 +1,43 @@
+# Logs
 *.log
+
+# OS files
 .DS_Store
+Thumbs.db
+
+# Environment files
 .env
 .env.backup
 .env.production
+
+# PHP / Laravel tooling
 .phpactor.json
 .phpunit.result.cache
+/.phpunit.cache
+composer.lock
+Homestead.json
+Homestead.yaml
+
+# IDE / Editor configs
 /.fleet
 /.idea
 /.nova
-/.phpunit.cache
 /.vscode
 /.zed
-/auth.json
-/node_modules
+
+# Node / React
+node_modules/
+/react-frontend/package-lock.json
+
+# Laravel build / cache / vendor
+/vendor
 /public/build
 /public/hot
 /public/storage
 /storage/*.key
 /storage/pail
-/vendor
 /storage/
 /bootstrap/
-composer.lock
-Homestead.json
-Homestead.yaml
-Thumbs.db
+
+# React build (if you generate dist or build folder)
+react-frontend/dist/

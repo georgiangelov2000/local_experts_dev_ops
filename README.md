@@ -175,6 +175,14 @@ server {
 }
 ```
 
+10. ⚛️ Create React Frontend with Vite and Inertia.js
+mkdir react-frontend
+cd react-frontend
+docker run --rm -v $(pwd):/usr/src/app -w /usr/src/app node:20 npm create vite@latest . -- --template react
+docker run --rm -v $(pwd):/usr/src/app -w /usr/src/app node:20 npm install
+docker compose run --rm react npm install @inertiajs/inertia @inertiajs/inertia-react
+
+
 ---
 
 ## 🤝 License
@@ -185,3 +193,5 @@ MIT
 
 This `README.md` serves as a complete reference for local setup and development.  
 Want a `.env.example`, shell script setup, or GitHub badge? Let me know — happy to help!
+
+
