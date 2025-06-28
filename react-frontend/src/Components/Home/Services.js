@@ -12,11 +12,14 @@ export default function Service() {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('grid'); // or 'list'
   const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState ([]);
+
   const [filters, setFilters] = useState({
     city: '',
     category: '',
     term: ''
   });
+
   const fetchProviders = (filters = {}, pageNum = 1) => {
     setLoading(true);
     // Example: Adjust API call to include filters + pagination
@@ -32,6 +35,7 @@ export default function Service() {
         setCategories(response.data.categories);
         setCities(response.data.cities);
         setProviders(response.data.service_providers);
+        setPagination(response.data.pagination)
         // If filters applied, switch view mode to list
         if (filters.category || filters.city || filters.term) {
           setViewMode('list');
@@ -51,13 +55,15 @@ export default function Service() {
     fetchProviders({}, page);
   }, [page]);
 
+  const handlePageChange = (pageNum) => {
+    setPage(pageNum);
+    fetchProviders({}, pageNum);
+  };
+
   const handleSearch = (filters) => {
     setPage(1);
     fetchProviders(filters, 1);
   };
-
-  const handleNextPage = () => setPage((p) => p + 1);
-  const handlePrevPage = () => setPage((p) => Math.max(1, p - 1));
 
   if (loading) {
     return <div className="p-6 text-center">Loading service providers...</div>;
@@ -73,9 +79,7 @@ export default function Service() {
         setFilters={setFilters}
       />
 
-      <Categories 
-        categories = {categories}
-      />
+      <Categories  categories = {categories} />
 
       {viewMode === 'grid' ? (
         <>
@@ -88,24 +92,9 @@ export default function Service() {
         </>
       ) : (
         <>
-          <List providers={providers} />
+          <List providers={providers}  pagination={pagination} onPageChange={handlePageChange} />
         </>
       )}
-
-      {/* <div className="flex justify-center space-x-4 mt-4">
-        <button
-          onClick={handlePrevPage}
-          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-        >
-          Previous
-        </button>
-        <button
-          onClick={handleNextPage}
-          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-        >
-          Next
-        </button>
-      </div> */}
     </div>
   );
 }

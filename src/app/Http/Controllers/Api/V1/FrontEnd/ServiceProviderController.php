@@ -33,14 +33,30 @@ class ServiceProviderController extends Controller
             });
         }
 
-        $serviceProviders = $query->limit(20)->get();
+        // Default values
+        $perPage = $request->get('per_page', 20);
+        $page = max(1, (int) $request->get('page', 1)); 
+        $offset = ($page - 1) * $perPage;
+
+        // Count total before limit/offset
+        $total = $query->count();
+
+        // Fetch data
+        $serviceProviders = $query->limit($perPage)->offset($offset)->get();
+
         $categories = Category::select('id', 'name')->get();
         $cities = City::select('id','name')->get();
         
         return response()->json([
             'categories' => $categories,
-            'service_providers' => $serviceProviders,
             'cities' => $cities,
+            'service_providers' => $serviceProviders,
+            "pagination" => [
+                'current_page' => $page,
+                'per_page' => $perPage,
+                'total' => $total,
+                'last_page' => ceil($total / $perPage),                
+            ]
         ], 200);
     }
 
