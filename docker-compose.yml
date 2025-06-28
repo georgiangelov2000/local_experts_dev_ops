@@ -42,14 +42,14 @@ services:
       - "8081:8080"
 
   react:
-    image: node:20
+    image: node:20-alpine
     container_name: react
-    working_dir: /usr/src/app
+    working_dir: /app
     volumes:
-      - ./src/react-frontend:/usr/src/app
+      - ./react-frontend:/app
     ports:
       - "5173:5173"
-    command: ["npm", "run", "dev"]
+    command: sh -c "npm install && npm start"
     networks:
       - localexperts
 
