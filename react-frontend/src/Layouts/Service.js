@@ -2,20 +2,42 @@ import { useEffect, useState } from 'react';
 import apiService from '../Services/apiService';
 import ServiceProviderCard from '../Components/ServiceProviderCard';
 import SearchBar from '../Components/SearchBar';
+import List from '../Components/List'
+import { Link } from 'react-router-dom';
 
 export default function Service() {
   const [categories, setCategories] = useState([]);
   const [cities, setCities] = useState([]);
   const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(true);
-
-
-  useEffect(() => {
-    apiService.getAds()
+  const [viewMode, setViewMode] = useState('grid'); // or 'list'
+  const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState({
+    city: '',
+    category: '',
+    term: ''
+  });
+  const fetchProviders = (filters = {}, pageNum = 1) => {
+    setLoading(true);
+    // Example: Adjust API call to include filters + pagination
+    apiService.getAds({
+      params: {
+        category_id: filters.category,
+        city_id: filters.city,
+        term: filters.term,
+        page: pageNum
+      }
+    })
       .then((response) => {
         setCategories(response.data.categories);
         setCities(response.data.cities);
         setProviders(response.data.service_providers);
+        // If filters applied, switch view mode to list
+        if (filters.category || filters.city || filters.term) {
+          setViewMode('list');
+        } else {
+          setViewMode('grid');
+        }
       })
       .catch((err) => {
         console.error('Error loading data:', err);
@@ -23,52 +45,63 @@ export default function Service() {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  };
+
+  useEffect(() => {
+    fetchProviders({}, page);
+  }, [page]);
+
+  const handleSearch = (filters) => {
+    setPage(1);
+    fetchProviders(filters, 1);
+  };
+
+  const handleNextPage = () => setPage((p) => p + 1);
+  const handlePrevPage = () => setPage((p) => Math.max(1, p - 1));
 
   if (loading) {
     return <div className="p-6 text-center">Loading service providers...</div>;
   }
 
   return (
-    <>
     <div className="p-6 bg-white rounded-t-lg">
-      <SearchBar categories={categories} cities={cities} />
-      <h1 className="text-2xl font-bold mb-4">Categories</h1>
-      <div className="flex flex-wrap gap-2 mb-6">
-        {categories.map((cat, index) => (
-          <span
-            key={index}
-            className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
-          >
-            {/* Replace this placeholder with your actual icon */}
-            <svg
-              className="w-4 h-4 mr-1 text-blue-700"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-1h2v1zm0-2H9V7h2v4z" />
-            </svg>
-            {cat.name}
-          </span>
-        ))}
-      </div>
+      <SearchBar 
+        categories={categories} 
+        cities={cities} 
+        onSearch={handleSearch} 
+        filters={filters}
+        setFilters={setFilters}
+      />
 
+      {viewMode === 'grid' ? (
+        <>
+          <h2 className="text-xl font-semibold mb-4">Providers</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
+            {providers.map((provider) => (
+              <ServiceProviderCard key={provider.id} provider={provider} />
+            ))}
+          </div>
+        </>
+      ) : (
+        <>
+          <List providers={providers} />
+        </>
+      )}
 
-      <h2 className="text-xl font-semibold mb-4">Providers</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
-        {providers.map((provider) => (
-          <ServiceProviderCard key={provider.id} provider={provider} />
-        ))}
-      </div>
-
-      <div className="text-center">
+      <div className="flex justify-center space-x-4 mt-4">
         <button
-          className="inline-block bg-blue-700 text-white text-sm font-medium px-5 py-2 rounded hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          onClick={handlePrevPage}
+          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
         >
-          View More
+          Previous
+        </button>
+        <button
+          onClick={handleNextPage}
+          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+        >
+          Next
         </button>
       </div>
     </div>
-    </>
   );
 }

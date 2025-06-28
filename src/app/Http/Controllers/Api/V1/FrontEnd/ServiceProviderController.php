@@ -25,6 +25,14 @@ class ServiceProviderController extends Controller
             $query->where('service_category_id', $request->service_category_id);
         }
 
+        if ($request->has('term')) {
+            $term = $request->term;
+            $query->where(function ($q) use ($term) {
+                $q->where('business_name', 'LIKE', "%{$term}%")
+                  ->orWhere('description', 'LIKE', "%{$term}%");
+            });
+        }
+
         $serviceProviders = $query->limit(20)->get();
         $categories = Category::select('id', 'name')->get();
         $cities = City::select('id','name')->get();

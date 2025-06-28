@@ -9,7 +9,7 @@ const apiClient = axios.create({
 
 // Example API calls
 const apiService = {
-  getAds: () => apiClient.get('/services'),
+  getAds: (config = {}) => apiClient.get('/services', config),
   getAdById: (id) => apiClient.get(`/services/${id}`),
   // Add more endpoints here
 };
