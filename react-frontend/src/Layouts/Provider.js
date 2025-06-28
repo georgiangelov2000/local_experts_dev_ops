@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { FiPhone, FiMapPin, FiStar } from 'react-icons/fi';
 import apiService from '../Services/apiService';
-import RelatedProviders from '../Components/RelatedProviders'; // Assuming you have this
+import RelatedProviders from '../Components/Provider/RelatedProviders'; // Assuming you have this
 
-export default function ProviderDetailsPage() {
+export default function Provider() {
   const { id } = useParams();
   const [provider, setProvider] = useState(null);
   const [related, setRelated] = useState([]);

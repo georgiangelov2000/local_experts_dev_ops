@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { FiMapPin, FiHeart, FiThumbsUp, FiThumbsDown, FiEye, FiStar } from 'react-icons/fi';
 
-export default function ListWithCards({ providers }) {
+export default function List({ providers }) {
   return (
     <div className="mt-6">
       <h2 className="text-xl font-semibold mb-4">Search Results</h2>

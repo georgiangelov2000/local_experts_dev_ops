@@ -5,7 +5,7 @@ import Login from './Layouts/Login';
 import Register from './Layouts/Register';
 import Footer from './Layouts/Footer';
 import Favourites from './Layouts/Favourites';
-import ProviderDetails from './Layouts/ProviderDetails';
+import Provider from './Layouts/Provider';
 
 export default function App() {
   return (
@@ -19,7 +19,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/favourites" element={<Favourites />} />
-            <Route path="/providers/:id" element={<ProviderDetails />} />
+            <Route path="/providers/:id" element={<Provider />} />
           </Routes>
         </div>
       </main>

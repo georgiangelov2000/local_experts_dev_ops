@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import apiService from '../Services/apiService';
-import ServiceProviderCard from '../Components/ServiceProviderCard';
-import SearchBar from '../Components/SearchBar';
-import List from '../Components/List'
-import { Link } from 'react-router-dom';
+import apiService from '../../Services/apiService';
+import ServiceProviderCard from './ServiceProviderCard';
+import SearchBar from './SearchBar';
+import List from './List'
+import Categories from './Categories';
 
 export default function Service() {
   const [categories, setCategories] = useState([]);
@@ -73,6 +73,10 @@ export default function Service() {
         setFilters={setFilters}
       />
 
+      <Categories 
+        categories = {categories}
+      />
+
       {viewMode === 'grid' ? (
         <>
           <h2 className="text-xl font-semibold mb-4">Providers</h2>
@@ -88,7 +92,7 @@ export default function Service() {
         </>
       )}
 
-      <div className="flex justify-center space-x-4 mt-4">
+      {/* <div className="flex justify-center space-x-4 mt-4">
         <button
           onClick={handlePrevPage}
           className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
@@ -101,7 +105,7 @@ export default function Service() {
         >
           Next
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }

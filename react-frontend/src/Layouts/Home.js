@@ -1,10 +1,10 @@
-import AboutPlatform from '../Components/AboutPlatform';
-import Service from './Service';
+import AboutPlatform from '../Components/Home/AboutPlatform';
+import Services from '../Components/Home/Services';
 
 export default function Home() {
     return (
         <>
-            <Service/>
+            <Services/>
             <AboutPlatform />
         </>
     )

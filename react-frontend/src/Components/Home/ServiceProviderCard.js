@@ -1,12 +1,9 @@
 import { Link } from "react-router-dom";
-import { FiHeart, FiThumbsUp, FiThumbsDown, FiMapPin, FiDollarSign, FiEye } from "react-icons/fi";
+import { FiHeart, FiThumbsUp, FiThumbsDown, FiEye } from "react-icons/fi";
 
 export default function ServiceProviderCard({ provider }) {
   return (
-    <Link
-      to={`/providers/${provider.id}`}
-      className="block"
-    >
+    <Link to={`/providers/${provider.id}`} className="block">
       <div className="relative max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700 hover:shadow-lg hover:scale-[1.02] transition-transform duration-200">
         {/* Promoted badge */}
         <div className="absolute top-[6px] left-2 bg-yellow-400 text-yellow-900 text-xs font-semibold px-2 py-0.5 rounded">
