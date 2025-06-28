@@ -10,24 +10,16 @@ export default function Register() {
           <form>
             <div className="grid gap-6 mb-6 md:grid-cols-2">
               <div>
-                <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First name</label>
-                <input type="text" id="first_name" placeholder="John"
+                <label htmlFor="business_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Business name</label>
+                <input type="text" id="business_name" placeholder="John"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   required
                 />
               </div>
   
               <div>
-                <label htmlFor="last_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last name</label>
-                <input type="text" id="last_name" placeholder="Doe"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  required
-                />
-              </div>
-  
-              <div>
-                <label htmlFor="company" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company</label>
-                <input type="text" id="company" placeholder="Flowbite"
+                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                <input type="email" id="email" placeholder="Doe@gmail.com"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   required
                 />
@@ -48,22 +40,38 @@ export default function Register() {
                   required
                 />
               </div>
-  
+
               <div>
-                <label htmlFor="visitors" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unique visitors (per month)</label>
-                <input type="number" id="visitors"
+                <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Category
+                </label>
+                <select
+                  id="category"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   required
-                />
+                >
+                  <option value="">Select category</option>
+                  <option value="plumbing">Plumbing</option>
+                  <option value="electrical">Electrical</option>
+                  <option value="cleaning">Cleaning</option>
+                </select>
               </div>
-            </div>
-  
-            <div className="mb-6">
-              <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email address</label>
-              <input type="email" id="email" placeholder="john.doe@company.com"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                required
-              />
+
+              <div>
+                <label htmlFor="serviceCategory" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Service Category
+                </label>
+                <select
+                  id="serviceCategory"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  required
+                >
+                  <option value="">Select service category</option>
+                  <option value="leak-repair">Leak Repair</option>
+                  <option value="pipe-installation">Pipe Installation</option>
+                  <option value="drain-cleaning">Drain Cleaning</option>
+                </select>
+              </div>
             </div>
   
             <div className="mb-6">

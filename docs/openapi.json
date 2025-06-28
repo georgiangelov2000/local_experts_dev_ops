@@ -6,7 +6,7 @@
     "description": "API documentation for managing services, providers, and reviews."
   },
   "paths": {
-    "/api/services": {
+    "/api/v1/services": {
       "get": {
         "summary": "List all services",
         "responses": {
@@ -17,6 +17,54 @@
                 "schema": {
                   "type": "array",
                   "items": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/services/{id}": {
+      "get": {
+        "summary": "Get a single service provider",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the service provider",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Service provider details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "service_provider": { "type": "object" },
+                    "related_providers": {
+                      "type": "array",
+                      "items": { "type": "object" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Service provider not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "string" }
+                  }
                 }
               }
             }

@@ -5,13 +5,16 @@ import SearchBar from '../Components/SearchBar';
 
 export default function Service() {
   const [categories, setCategories] = useState([]);
+  const [cities, setCities] = useState([]);
   const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     apiService.getAds()
       .then((response) => {
         setCategories(response.data.categories);
+        setCities(response.data.cities);
         setProviders(response.data.service_providers);
       })
       .catch((err) => {
@@ -28,8 +31,8 @@ export default function Service() {
 
   return (
     <>
-    <div className="p-6">
-      <SearchBar />
+    <div className="p-6 bg-white rounded-t-lg">
+      <SearchBar categories={categories} cities={cities} />
       <h1 className="text-2xl font-bold mb-4">Categories</h1>
       <div className="flex flex-wrap gap-2 mb-6">
         {categories.map((cat, index) => (

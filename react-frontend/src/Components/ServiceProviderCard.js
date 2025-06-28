@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FiHeart, FiThumbsUp, FiThumbsDown, FiMapPin } from "react-icons/fi";
+import { FiHeart, FiThumbsUp, FiThumbsDown, FiMapPin, FiDollarSign, FiEye } from "react-icons/fi";
 
 export default function ServiceProviderCard({ provider }) {
   return (
@@ -24,29 +24,38 @@ export default function ServiceProviderCard({ provider }) {
         />
 
         <div className="p-4">
-          <div>
-            {provider.service_category?.name && (
-              <span className="text-sm inline-block mb-2 bg-blue-600 text-white rounded px-2 py-0.5">
-                {provider.service_category.name}
-              </span>
-            )}
-          </div>
+          {provider.service_category?.name && (
+            <span className="text-sm inline-block mb-2 bg-blue-600 text-white rounded px-2 py-0.5">
+              {provider.service_category.name}
+            </span>
+          )}
 
           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
             {provider.business_name}
           </h3>
 
-          {provider.location && (
-            <div className="flex items-center text-sm text-gray-600 mb-2">
-              <FiMapPin className="mr-1 text-blue-500" />
-              {provider.location}
-            </div>
-          )}
-
           <p className="text-sm text-gray-700 dark:text-gray-400 mb-2">
             {provider.description}
           </p>
 
+          <div className="flex items-center text-sm text-gray-900 mb-1 font-bold">
+            Price: {provider.price ?? 10} BGN
+          </div>
+
+          <div className="flex items-center text-sm text-gray-900 mb-2 font-bold">
+            Location: {provider.location ?? "Plovdiv"}
+          </div>
+
+          {/* Reviews + Views */}
+          <div className="flex items-center text-sm text-gray-600 mb-2 space-x-4">
+            <span>
+              Reviews: {provider.reviews_count ?? 12}
+            </span>
+            <span className="flex items-center">
+              <FiEye className="mr-1" /> {provider.views ?? 100} views
+            </span>
+          </div>
+          
           <div className="flex space-x-2">
             <button
               className="text-gray-500 hover:text-red-500 cursor-pointer transition"

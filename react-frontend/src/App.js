@@ -13,13 +13,15 @@ export default function App() {
       <Header />
       
       <main className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/favourites" element={<Favourites />} />
-          <Route path="/providers/:id" element={<ProviderDetails />} />
-        </Routes>
+        <div className="w-full max-w-7xl mx-auto">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/favourites" element={<Favourites />} />
+            <Route path="/providers/:id" element={<ProviderDetails />} />
+          </Routes>
+        </div>
       </main>
       
       <Footer />
