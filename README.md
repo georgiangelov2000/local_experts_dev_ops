@@ -181,6 +181,8 @@ cd react-frontend
 docker run --rm -v $(pwd):/usr/src/app -w /usr/src/app node:20 npm create vite@latest . -- --template react
 docker run --rm -v $(pwd):/usr/src/app -w /usr/src/app node:20 npm install
 docker compose run --rm react npm install @inertiajs/inertia @inertiajs/inertia-react
+docker compose run --rm react npm install -D tailwindcss postcss autoprefixer
+docker compose run --rm react npm exec tailwindcss init -p
 
 
 ---
