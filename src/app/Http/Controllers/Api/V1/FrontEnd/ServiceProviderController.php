@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\FrontEnd;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\City;
+use App\Models\ServiceCategory;
 use App\Models\ServiceProvider;
 use Illuminate\Http\Request;
 
@@ -16,11 +17,23 @@ class ServiceProviderController extends Controller
     public function index(Request $request)
     {
         $query = ServiceProvider::with(['user', 'serviceCategory', 'media']);
+    
+        // Resolve names for applied filters
+        $categoryName = null;
+        $serviceCategoryName = null;
+        $serviceProviderCategories = collect();
 
-        if ($request->has('category_id')) {
-            $query->where('category_id', $request->category_id);
+        if ($categoryId = $request->get('category_id')) {
+            $query->where('category_id', $categoryId);
+            $categoryName = Category::find($categoryId)?->name;
+            $serviceProviderCategories = ServiceCategory::where('category_id', $categoryId)->get();
         }
 
+        if ($serviceCategoryId = $request->get('service_category_id')) {
+            $query->where('service_category_id', $serviceCategoryId);
+            $serviceCategoryName = ServiceCategory::find($serviceCategoryId)?->name;
+        }
+        
         if ($request->has('service_category_id')) {
             $query->where('service_category_id', $request->service_category_id);
         }
@@ -44,13 +57,20 @@ class ServiceProviderController extends Controller
         // Fetch data
         $serviceProviders = $query->limit($perPage)->offset($offset)->get();
 
-        $categories = Category::select('id', 'name')->get();
+        $categories = Category::select('id', 'name')
+        ->withCount('serviceProviders')  // assuming relation name is serviceProviders
+        ->get();
         $cities = City::select('id','name')->get();
         
         return response()->json([
             'categories' => $categories,
             'cities' => $cities,
             'service_providers' => $serviceProviders,
+            'service_provider_categories' => $serviceProviderCategories,
+            'filters' => [
+                'category_name' => $categoryName,
+                'service_category_name' => $serviceCategoryName,
+            ],
             "pagination" => [
                 'current_page' => $page,
                 'per_page' => $perPage,

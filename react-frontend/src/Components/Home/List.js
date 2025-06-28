@@ -1,13 +1,29 @@
 import { Link } from 'react-router-dom';
 import { FiMapPin, FiEye, FiStar, FiThumbsUp, FiThumbsDown, FiHeart } from 'react-icons/fi';
 
-export default function List({ providers, pagination, onPageChange }) {
-  console.log(pagination);
+export default function List({ providers, filters, pagination, onPageChange }) {
   const totalPages = Math.ceil(pagination.total / pagination.per_page);
-
+  console.log(filters);
   return (
     <div className="mt-6">
-      <h2 className="text-xl font-semibold mb-4">Search Results</h2>
+      <h2 className="text-xl font-bold mb-2">Search Results</h2>
+      <div className="flex flex-wrap items-center text-sm text-gray-600 mb-4 space-x-2">
+        {filters.term && (
+          <span className="inline-flex items-center bg-blue-50 text-blue-700 px-2 py-0.5 rounded">
+            Term: <span className="ml-1 font-medium">{filters.term}</span>
+          </span>
+        )}
+        {filters.category_name && (
+          <span className="inline-flex items-center bg-green-50 text-green-700 px-2 py-0.5 rounded">
+            Category: <span className="ml-1 font-medium">{filters.category_name}</span>
+          </span>
+        )}
+        {filters.service_category_name && (
+          <span className="inline-flex items-center bg-purple-50 text-purple-700 px-2 py-0.5 rounded">
+            Service: <span className="ml-1 font-medium">{filters.service_category_name}</span>
+          </span>
+        )}
+      </div>
 
       {providers.length === 0 ? (
         <div className="text-gray-600 text-center p-6 bg-gray-50 rounded-lg">
@@ -101,8 +117,8 @@ export default function List({ providers, pagination, onPageChange }) {
                 <button
                   onClick={() => pagination.current_page > 1 && onPageChange(pagination.current_page - 1)}
                   className={`flex items-center justify-center px-4 h-10 ms-0 leading-tight bg-white border border-e-0 border-gray-300 rounded-s-lg ${pagination.current_page === 1
-                      ? 'text-gray-400 cursor-not-allowed'
-                      : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700 cursor-pointer'
+                    ? 'text-gray-400 cursor-not-allowed'
+                    : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700 cursor-pointer'
                     }`}
                   disabled={pagination.current_page === 1}
                 >
@@ -115,8 +131,8 @@ export default function List({ providers, pagination, onPageChange }) {
                   <button
                     onClick={() => onPageChange(page)}
                     className={`flex items-center justify-center px-4 h-10 leading-tight border border-gray-300 ${pagination.current_page === page
-                        ? 'text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 cursor-default'
-                        : 'text-gray-500 bg-white hover:bg-gray-100 hover:text-gray-700 cursor-pointer'
+                      ? 'text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 cursor-default'
+                      : 'text-gray-500 bg-white hover:bg-gray-100 hover:text-gray-700 cursor-pointer'
                       }`}
                   >
                     {page}
@@ -128,8 +144,8 @@ export default function List({ providers, pagination, onPageChange }) {
                 <button
                   onClick={() => pagination.current_page < totalPages && onPageChange(pagination.current_page + 1)}
                   className={`flex items-center justify-center px-4 h-10 leading-tight bg-white border border-gray-300 rounded-e-lg ${pagination.current_page === totalPages
-                      ? 'text-gray-400 cursor-not-allowed'
-                      : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700 cursor-pointer'
+                    ? 'text-gray-400 cursor-not-allowed'
+                    : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700 cursor-pointer'
                     }`}
                   disabled={pagination.current_page === totalPages}
                 >

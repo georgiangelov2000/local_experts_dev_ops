@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export default function SearchBar({ categories, cities, onSearch, filters }) {
+export default function SearchBar({ categories, cities, serviceCategories, onSearch, filters }) {
   const [localFilters, setLocalFilters] = useState(filters);
 
   useEffect(() => {
@@ -32,6 +32,29 @@ export default function SearchBar({ categories, cities, onSearch, filters }) {
             <option key={city.id} value={city.id}>{city.name}</option>
           ))}
         </select>
+
+
+        <select
+          name="service_category"
+          value={localFilters.service_category || ''}
+          onChange={handleChange}
+          className="text-sm text-gray-900 bg-gray-100 w-full md:w-auto border-0 md:border-r md:border-r-white focus:outline-none pb-5 pt-5"
+        >
+          {serviceCategories.length > 0 && (
+            <option value="">All</option>
+          )}
+
+          {serviceCategories.length === 0 && (
+            <option value="">Not Available</option>
+          )}
+
+          {serviceCategories.map((service) => (
+            <option key={service.id} value={service.id}>
+              {service.name}
+            </option>
+          ))}
+        </select>
+
 
         <select
           name="category"

@@ -13,6 +13,8 @@ export default function Service() {
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('grid');
+  const [serviceCategories, setServiceCategories] = useState([]);
+  const [filters, setFilters] = useState([]);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -20,12 +22,14 @@ export default function Service() {
     setLoading(true);
     apiService.getAds({ params: paramsObj })
       .then((response) => {
+        // console.log(response);
         setCategories(response.data.categories);
         setCities(response.data.cities);
         setProviders(response.data.service_providers);
         setPagination(response.data.pagination);
-
-        if (paramsObj.category_id || paramsObj.city_id || paramsObj.term) {
+        setServiceCategories(response.data.service_provider_categories)
+        setFilters(response.data.filters)
+        if (paramsObj.category_id || paramsObj.term) {
           setViewMode('list');
         } else {
           setViewMode('grid');
@@ -44,6 +48,7 @@ export default function Service() {
     const newParams = new URLSearchParams();
     if (filters.city) newParams.set('city_id', filters.city);
     if (filters.category) newParams.set('category_id', filters.category);
+    if (filters.service_category) newParams.set('service_category_id', filters.service_category);
     if (filters.term) newParams.set('term', filters.term);
     newParams.set('page', 1);
     setSearchParams(newParams);
@@ -64,18 +69,19 @@ export default function Service() {
       <SearchBar
         categories={categories}
         cities={cities}
+        serviceCategories={serviceCategories}
         onSearch={handleSearch}
         filters={{
           city: searchParams.get('city_id') || '',
           category: searchParams.get('category_id') || '',
+          service_category: searchParams.get('service_category_id') || '',
           term: searchParams.get('term') || ''
         }}
       />
 
-      <Categories categories={categories} />
-
       {viewMode === 'grid' ? (
         <>
+          <Categories categories={categories} />
           <h2 className="text-xl font-semibold mb-4">Providers</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
             {providers.map((provider) => (
@@ -84,7 +90,13 @@ export default function Service() {
           </div>
         </>
       ) : (
-        <List providers={providers} pagination={pagination} onPageChange={handlePageChange} />
+        <List
+           providers={providers} 
+           filters={filters}
+           pagination={pagination} 
+           onPageChange={handlePageChange}
+           serviceCategories = {serviceCategories} 
+        />
       )}
     </div>
   );
