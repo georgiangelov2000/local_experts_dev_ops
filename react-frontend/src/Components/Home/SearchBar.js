@@ -1,13 +1,21 @@
-export default function SearchBar({ categories, cities, onSearch, filters, setFilters }) {
+import { useEffect, useState } from 'react';
+
+export default function SearchBar({ categories, cities, onSearch, filters }) {
+  const [localFilters, setLocalFilters] = useState(filters);
+
+  useEffect(() => {
+    setLocalFilters(filters); // Keep local filters in sync with URL params
+  }, [filters]);
+
   const handleChange = (e) => {
-    setFilters({
-      ...filters,
+    setLocalFilters({
+      ...localFilters,
       [e.target.name]: e.target.value
     });
   };
 
   const handleSearch = () => {
-    onSearch(filters);
+    onSearch(localFilters);
   };
 
   return (
@@ -15,7 +23,7 @@ export default function SearchBar({ categories, cities, onSearch, filters, setFi
       <div className="flex flex-col md:flex-row overflow-hidden rounded-lg bg-gray-100">
         <select
           name="city"
-          value={filters.city}
+          value={localFilters.city}
           onChange={handleChange}
           className="text-sm text-gray-900 bg-gray-100 w-full md:w-auto border-0 md:border-r md:border-r-white focus:outline-none pb-5 pt-5"
         >
@@ -27,9 +35,10 @@ export default function SearchBar({ categories, cities, onSearch, filters, setFi
 
         <select
           name="category"
-          value={filters.category}
+          value={localFilters.category}
           onChange={handleChange}
-          className="text-sm text-gray-900 bg-gray-100 w-full md:w-auto border-0 md:border-r md:border-r-white focus:outline-none pb-5 pt-5" >
+          className="text-sm text-gray-900 bg-gray-100 w-full md:w-auto border-0 md:border-r md:border-r-white focus:outline-none pb-5 pt-5"
+        >
           <option value="">Select Category</option>
           {categories.map((cat) => (
             <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -39,7 +48,7 @@ export default function SearchBar({ categories, cities, onSearch, filters, setFi
         <input
           type="text"
           name="term"
-          value={filters.term}
+          value={localFilters.term}
           onChange={handleChange}
           placeholder="Search..."
           className="text-sm text-gray-900 bg-gray-100 flex-1 border-0 focus:outline-none p-3"

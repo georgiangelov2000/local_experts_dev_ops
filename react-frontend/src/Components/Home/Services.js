@@ -1,68 +1,58 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import apiService from '../../Services/apiService';
 import ServiceProviderCard from './ServiceProviderCard';
 import SearchBar from './SearchBar';
-import List from './List'
+import List from './List';
 import Categories from './Categories';
 
 export default function Service() {
   const [categories, setCategories] = useState([]);
   const [cities, setCities] = useState([]);
   const [providers, setProviders] = useState([]);
+  const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState('grid'); // or 'list'
-  const [page, setPage] = useState(1);
-  const [pagination, setPagination] = useState ([]);
+  const [viewMode, setViewMode] = useState('grid');
 
-  const [filters, setFilters] = useState({
-    city: '',
-    category: '',
-    term: ''
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const fetchProviders = (filters = {}, pageNum = 1) => {
+  const fetchProviders = (paramsObj) => {
     setLoading(true);
-    // Example: Adjust API call to include filters + pagination
-    apiService.getAds({
-      params: {
-        category_id: filters.category,
-        city_id: filters.city,
-        term: filters.term,
-        page: pageNum
-      }
-    })
+    apiService.getAds({ params: paramsObj })
       .then((response) => {
         setCategories(response.data.categories);
         setCities(response.data.cities);
         setProviders(response.data.service_providers);
-        setPagination(response.data.pagination)
-        // If filters applied, switch view mode to list
-        if (filters.category || filters.city || filters.term) {
+        setPagination(response.data.pagination);
+
+        if (paramsObj.category_id || paramsObj.city_id || paramsObj.term) {
           setViewMode('list');
         } else {
           setViewMode('grid');
         }
       })
-      .catch((err) => {
-        console.error('Error loading data:', err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .catch((err) => console.error('Error loading data:', err))
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
-    fetchProviders({}, page);
-  }, [page]);
-
-  const handlePageChange = (pageNum) => {
-    setPage(pageNum);
-    fetchProviders({}, pageNum);
-  };
+    const paramsObj = Object.fromEntries(searchParams.entries());
+    fetchProviders(paramsObj);
+  }, [searchParams]);
 
   const handleSearch = (filters) => {
-    setPage(1);
-    fetchProviders(filters, 1);
+    const newParams = new URLSearchParams();
+    if (filters.city) newParams.set('city_id', filters.city);
+    if (filters.category) newParams.set('category_id', filters.category);
+    if (filters.term) newParams.set('term', filters.term);
+    newParams.set('page', 1);
+    setSearchParams(newParams);
+  };
+
+  const handlePageChange = (pageNum) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('page', pageNum);
+    setSearchParams(newParams);
   };
 
   if (loading) {
@@ -71,15 +61,18 @@ export default function Service() {
 
   return (
     <div className="p-6 bg-white rounded-t-lg">
-      <SearchBar 
-        categories={categories} 
-        cities={cities} 
-        onSearch={handleSearch} 
-        filters={filters}
-        setFilters={setFilters}
+      <SearchBar
+        categories={categories}
+        cities={cities}
+        onSearch={handleSearch}
+        filters={{
+          city: searchParams.get('city_id') || '',
+          category: searchParams.get('category_id') || '',
+          term: searchParams.get('term') || ''
+        }}
       />
 
-      <Categories  categories = {categories} />
+      <Categories categories={categories} />
 
       {viewMode === 'grid' ? (
         <>
@@ -91,9 +84,7 @@ export default function Service() {
           </div>
         </>
       ) : (
-        <>
-          <List providers={providers}  pagination={pagination} onPageChange={handlePageChange} />
-        </>
+        <List providers={providers} pagination={pagination} onPageChange={handlePageChange} />
       )}
     </div>
   );
