@@ -4,24 +4,24 @@ export default function FavouritesPage() {
         id: 1,
         title: "Clean & Shine Homes",
         description: "Professional residential and commercial cleaning services.",
-        image: "https://via.placeholder.com/300x200",
+        image: "https://media.istockphoto.com/id/1444666625/photo/online-advertising-concept-ad-on-internet.jpg?s=612x612&w=0&k=20&c=Lp2QzOAMWOt4QaJRyk5aBUIkw6EgnsjcvDuDIktJ8yY=",
       },
       {
         id: 2,
         title: "Super Plumber",
         description: "Fast and reliable plumbing services 24/7.",
-        image: "https://via.placeholder.com/300x200",
+        image: "https://media.istockphoto.com/id/1444666625/photo/online-advertising-concept-ad-on-internet.jpg?s=612x612&w=0&k=20&c=Lp2QzOAMWOt4QaJRyk5aBUIkw6EgnsjcvDuDIktJ8yY=",
       },
       {
         id: 3,
         title: "Garden Experts",
         description: "Beautiful garden designs and maintenance.",
-        image: "https://via.placeholder.com/300x200",
+        image: "https://media.istockphoto.com/id/1444666625/photo/online-advertising-concept-ad-on-internet.jpg?s=612x612&w=0&k=20&c=Lp2QzOAMWOt4QaJRyk5aBUIkw6EgnsjcvDuDIktJ8yY=",
       },
     ];
   
     return (
-      <div className="min-h-screen p-6">
+      <div className="p-6 bg-white rounded-t-lg">
         <h1 className="text-3xl font-bold mb-6 text-gray-800 text-center">Your Favourites</h1>
   
         <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
