@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FiMapPin, FiLayers, FiList, FiSearch } from 'react-icons/fi';
+import { FiMapPin, FiLayers, FiList, FiSearch, FiFilter } from 'react-icons/fi';
 
 export default function SearchBar({ categories, cities, serviceCategories, onSearch, filters }) {
   const [localFilters, setLocalFilters] = useState(filters);
@@ -23,7 +23,7 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
     <div className="mb-6">
       <div className="flex flex-col md:flex-row overflow-hidden rounded-lg bg-gray-100">
         <div className="relative w-full md:w-auto">
-          <FiMapPin className=" ml-2 absolute left-2 top-1/2 -translate-y-1/2 text-gray-500" />
+          <FiMapPin className="ml-2 absolute left-2 top-1/2 -translate-y-1/2 text-gray-500" />
           <select
             name="city"
             value={localFilters.city}
@@ -74,14 +74,31 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
           </select>
         </div>
 
-          <input
-            type="text"
-            name="term"
-            value={localFilters.term}
+        <input
+          type="text"
+          name="term"
+          value={localFilters.term}
+          onChange={handleChange}
+          placeholder="Search..."
+          className="text-sm text-gray-900 bg-gray-100 flex-1 border-0 focus:outline-none p-3"
+        />
+
+        <div className="relative w-full md:w-auto">
+          <FiFilter className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500" />
+          <select
+            name="sort"
+            value={localFilters.sort || ''}
             onChange={handleChange}
-            placeholder="Search..."
-            className="text-sm text-gray-900 bg-gray-100 flex-1 border-0 focus:outline-none p-3"
-            />
+            className="pl-8 text-sm text-gray-900 bg-gray-100 w-full border-0 focus:outline-none pb-5 pt-5"
+          >
+            <option value="">Sort By</option>
+            <option value="promoted">Promoted First</option>
+            <option value="reviews_desc">Reviews: High to Low</option>
+            <option value="reviews_asc">Reviews: Low to High</option>
+            <option value="price_desc">Price: High to Low</option>
+            <option value="price_asc">Price: Low to High</option>
+          </select>
+        </div>
 
         <button
           onClick={handleSearch}
@@ -90,7 +107,6 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
           <FiSearch className="text-white" />
           <span>Search</span>
         </button>
-
       </div>
     </div>
   );
