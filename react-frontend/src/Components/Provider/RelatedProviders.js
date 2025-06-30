@@ -16,14 +16,25 @@ export default function RelatedProviders({ providers = [] }) {
               src={
                 provider.media?.length > 0
                   ? provider.media[0].url
-                  : 'https://media.istockphoto.com/id/1444666625/photo/online-advertising-concept-ad-on-internet.jpg?s=612x612&w=0&k=20&c=Lp2QzOAMWOt4QaJRyk5aBUIkw6EgnsjcvDuDIktJ8yY='
+                  : "https://media.istockphoto.com/id/1444666625/photo/online-advertising-concept-ad-on-internet.jpg?s=612x612&w=0&k=20&c=Lp2QzOAMWOt4QaJRyk5aBUIkw6EgnsjcvDuDIktJ8yY="
               }
               alt={provider.business_name}
               className="w-full h-24 object-cover rounded mb-2 object-contain"
             />
             <h4 className="text-sm font-semibold">{provider.business_name}</h4>
-            <p className="text-xs text-gray-600 mb-2">
-              {provider.description || 'No description available.'}
+            <p className="text-xs text-gray-600 mb-1">
+              {provider.description || "No description available."}
+            </p>
+            <p className="text-xs text-gray-500 mb-1">
+              <strong>Category:</strong>{" "}
+              {provider.service_category?.name || "N/A"}
+            </p>
+            <p className="text-xs text-gray-500 mb-1">
+              <strong>Service:</strong>{" "}
+              {provider.service_category?.description || "N/A"}
+            </p>
+            <p className="text-xs text-gray-500 mb-2">
+              <strong>Email:</strong> {provider.user?.email || "N/A"}
             </p>
             <Link
               to={`/providers/${provider.id}`}

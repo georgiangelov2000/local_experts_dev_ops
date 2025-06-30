@@ -81,11 +81,18 @@ class ServiceProviderController extends Controller
     }
 
     /**
-     * Show a specific service provider + related providers.
+     * Show a specific service provider + related providers + reviews.
      */
     public function show($id)
     {
-        $provider = ServiceProvider::with(['user', 'serviceCategory', 'media', 'category'])
+        $provider = ServiceProvider::with([
+                'user',
+                'serviceCategory',
+                'media',
+                'category',
+                'reviews',
+                'userProjects'
+            ])
             ->find($id);
 
         if (!$provider) {
@@ -97,6 +104,7 @@ class ServiceProviderController extends Controller
         // Fetch related providers in the same category
         $relatedProviders = ServiceProvider::with(['user', 'serviceCategory', 'media'])
             ->where('category_id', $provider->category_id)
+            ->where('id', '!=', $provider->id) 
             ->limit(5)
             ->get();
 
@@ -105,5 +113,4 @@ class ServiceProviderController extends Controller
             'related_providers' => $relatedProviders,
         ], 200);
     }
-
 }

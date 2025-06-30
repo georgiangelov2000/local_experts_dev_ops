@@ -6,8 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Category;
 use App\Models\ServiceCategory;
+use App\Models\Review;
+use App\Models\UserProject;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ServiceProvider extends Model
 {
@@ -24,12 +27,12 @@ class ServiceProvider extends Model
     /**
      * Relationships
      */
-    public function user():BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function category():BelongsTo
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
@@ -39,9 +42,18 @@ class ServiceProvider extends Model
         return $this->belongsTo(ServiceCategory::class);
     }
 
-    public function media():MorphMany
+    public function media(): MorphMany
     {
         return $this->morphMany(Media::class, 'model');
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function userProjects(): HasMany
+    {
+        return $this->hasMany(UserProject::class);
+    }
 }
