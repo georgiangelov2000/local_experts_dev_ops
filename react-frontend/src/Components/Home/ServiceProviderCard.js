@@ -1,79 +1,80 @@
 import { Link } from "react-router-dom";
-import { FiHeart, FiThumbsUp, FiThumbsDown, FiEye } from "react-icons/fi";
+import { FiHeart, FiThumbsUp, FiThumbsDown, FiEye, FiMapPin } from "react-icons/fi";
 
 export default function ServiceProviderCard({ provider }) {
   return (
-    <Link to={`/providers/${provider.id}`} className="block">
-      <div className="relative max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700 hover:shadow-lg hover:scale-[1.02] transition-transform duration-200">
-        {/* Promoted badge */}
-        <div className="absolute top-[6px] left-2 bg-yellow-400 text-yellow-900 text-xs font-semibold px-2 py-0.5 rounded">
+    <Link
+      to={`/providers/${provider.id}`}
+      className="block hover:no-underline"
+    >
+      <div className="relative bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg hover:ring-2 hover:ring-blue-100 transition-transform transform hover:-translate-y-1 duration-200 dark:bg-gray-800 dark:border-gray-700">
+        {/* Badge */}
+        <div className="bg-yellow-400 text-yellow-900 absolute top-0 left-2 bg-gradient-to-r from-yellow-400 to-yellow-300 text-yellow-900 text-[10px] font-semibold px-2 py-0.5 rounded-full shadow">
           Promoted
         </div>
 
         <img
-          className="w-full h-48 object-cover"
+          className="w-full h-44 object-cover"
           src={
             provider.media.length > 0
               ? provider.media[0].url
-              : 'https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='
+              : "https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ="
           }
           alt={provider.business_name}
         />
 
         <div className="p-4">
           {provider.service_category?.name && (
-            <span className="text-sm inline-block mb-2 bg-blue-600 text-white rounded px-2 py-0.5">
+            <span className="inline-block text-xs font-medium bg-blue-600 text-white rounded-full px-3 py-0.5 mb-2">
               {provider.service_category.name}
             </span>
           )}
 
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-1">
             {provider.business_name}
           </h3>
 
-          <p className="text-sm text-gray-700 dark:text-gray-400 mb-2">
-            {provider.description}
+          <p className="text-sm text-gray-600 dark:text-gray-300 mb-2 line-clamp-2">
+            {provider.description || "No description provided."}
           </p>
 
-          <div className="flex items-center text-sm text-gray-900 mb-1 font-bold">
-            Price: {provider.price ?? 10} BGN
+          <div className="flex items-center text-xs text-gray-500 mb-1">
+            <FiMapPin className="mr-1" />
+            {provider.location ?? "Plovdiv"}
           </div>
 
-          <div className="flex items-center text-sm text-gray-900 mb-2 font-bold">
-            Location: {provider.location ?? "Plovdiv"}
+          <div className="flex justify-between items-center text-xs text-gray-500 mb-2">
+            <div>Price: <span className="font-semibold">{provider.price ?? 10} BGN</span></div>
+            <div className="flex items-center">
+              <FiEye className="mr-1" /> {provider.views ?? 100}
+            </div>
           </div>
 
-          {/* Reviews + Views */}
-          <div className="flex items-center text-sm text-gray-600 mb-2 space-x-4">
-            <span>
-              Reviews: {provider.reviews_count ?? 12}
-            </span>
-            <span className="flex items-center">
-              <FiEye className="mr-1" /> {provider.views ?? 100} views
-            </span>
+          <div className="flex justify-between text-xs text-gray-500 mb-3">
+            <div>Reviews: <span className="font-semibold">{provider.reviews_count ?? 12}</span></div>
           </div>
-          
-          <div className="flex space-x-2">
+
+          <div className="flex space-x-3">
             <button
-              className="text-gray-500 hover:text-red-500 cursor-pointer transition"
+              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              onClick={(e) => e.preventDefault()}
               title="Dislike"
-              onClick={(e) => e.preventDefault()}
             >
-              <FiThumbsDown />
+              <FiThumbsDown className="text-gray-500 hover:text-red-500" />
             </button>
             <button
-              className="text-gray-500 hover:text-green-500 cursor-pointer transition"
+              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              onClick={(e) => e.preventDefault()}
               title="Like"
-              onClick={(e) => e.preventDefault()}
             >
-              <FiThumbsUp />
+              <FiThumbsUp className="text-gray-500 hover:text-green-500" />
             </button>
             <button
-              className="text-gray-500 hover:text-pink-500 cursor-pointer transition"
-              title="Favorite"
+              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
               onClick={(e) => e.preventDefault()}
+              title="Favorite"
             >
-              <FiHeart />
+              <FiHeart className="text-gray-500 hover:text-pink-500" />
             </button>
           </div>
         </div>
