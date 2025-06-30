@@ -10,21 +10,27 @@ import Provider from './Layouts/Provider';
 export default function App() {
   return (
     <Router>
-      <Header />
-      
-      <main className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="w-full max-w-7xl mx-auto">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/favourites" element={<Favourites />} />
-            <Route path="/providers/:id" element={<Provider />} />
-          </Routes>
-        </div>
-      </main>
-      
-      <Footer />
+      <Routes>
+        <Route path="/register" element={<Register />} />
+
+        <Route
+          path="*"
+          element={
+            <>
+              <Header />
+              <main className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 w-full max-w-7xl">
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/favourites" element={<Favourites />} />
+                  <Route path="/providers/:id" element={<Provider />} />
+                </Routes>
+              </main>
+              <Footer />
+            </>
+          }
+        />
+      </Routes>
     </Router>
   );
 }

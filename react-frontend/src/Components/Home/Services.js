@@ -28,7 +28,7 @@ export default function Service() {
         setProviders(response.data.service_providers);
         setPagination(response.data.pagination);
         setServiceCategories(response.data.service_provider_categories)
-        setFilters(response.data.filters)
+        setFilters(response.data)
         if (paramsObj.category_id || paramsObj.term) {
           setViewMode('list');
         } else {

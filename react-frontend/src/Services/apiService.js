@@ -11,6 +11,8 @@ const apiClient = axios.create({
 const apiService = {
   getAds: (config = {}) => apiClient.get('/services', config),
   getAdById: (id) => apiClient.get(`/services/${id}`),
+  getCategories: () => apiClient.get('/categories'),
+  getCategoryById: (id) => apiClient.get(`/categories/${id}/service-categories`)
   // Add more endpoints here
 };
 
