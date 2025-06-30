@@ -1,7 +1,31 @@
-import { Link } from 'react-router-dom';
-import { FiLogIn, FiUserPlus, FiHeart, FiHome } from 'react-icons/fi';
+import { Link, useNavigate } from 'react-router-dom';
+import { FiLogIn, FiUserPlus, FiHeart, FiHome, FiUser, FiLogOut } from 'react-icons/fi';
+import { useEffect, useState } from 'react';
+import apiService from '../Services/apiService';
 
 export default function Header() {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      apiService.auth()
+        .then(res => setUser(res.data))
+        .catch(() => {
+          // Ако токенът е невалиден - изчистваме
+          localStorage.removeItem('token');
+          setUser(null);
+        });
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    navigate('/login');
+  };
+
   return (
     <header className="bg-gray-800 text-white p-5 mb-10">
       <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center text-sm">
@@ -13,6 +37,7 @@ export default function Header() {
           />
           <span className="text-xl font-bold">Local Experts</span>
         </div>
+
         <nav className="flex items-center space-x-4">
           <Link
             to="/"
@@ -30,24 +55,44 @@ export default function Header() {
             Favourites
           </Link>
 
-          <Link
-            to="/login"
-            className="flex items-center px-3 py-1 text-sm font-medium border border-white rounded hover:bg-white hover:text-blue-600 transition"
-          >
-            <FiLogIn className="mr-1" />
-            Login
-          </Link>
+          {user ? (
+            <>
+              <Link
+                to="/profile"
+                className="flex items-center px-3 py-1 text-sm font-medium border-0 rounded hover:bg-white hover:text-blue-600 transition"
+              >
+                <FiUser className="mr-1" />
+                {user.name}
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="flex items-center px-3 py-1 text-sm font-medium border border-white rounded hover:bg-white hover:text-blue-600 transition"
+              >
+                <FiLogOut className="mr-1" />
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="flex items-center px-3 py-1 text-sm font-medium border border-white rounded hover:bg-white hover:text-blue-600 transition"
+              >
+                <FiLogIn className="mr-1" />
+                Login
+              </Link>
 
-          <Link
-            to="/register"
-            className="flex items-center px-3 py-1 text-sm font-medium border border-white rounded hover:bg-white hover:text-blue-600 transition"
-          >
-            <FiUserPlus className="mr-1" />
-            Register
-          </Link>
+              <Link
+                to="/register"
+                className="flex items-center px-3 py-1 text-sm font-medium border border-white rounded hover:bg-white hover:text-blue-600 transition"
+              >
+                <FiUserPlus className="mr-1" />
+                Register
+              </Link>
+            </>
+          )}
         </nav>
       </div>
-
     </header>
   );
 }

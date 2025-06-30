@@ -13,7 +13,9 @@ Route::prefix('v1')->group(function () {
     Route::get('/categories/{category}/service-categories', [CategoryController::class, 'serviceCategories']);
 
     Route::post('register', [AuthController::class, 'register']);
-    Route::post('login', [AuthController::class, 'login']);
+    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+    Route::post('refresh', [AuthController::class, 'refresh']);
+
     Route::middleware('auth:api')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
         Route::get('me', [AuthController::class, 'me']);

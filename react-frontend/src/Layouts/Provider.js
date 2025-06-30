@@ -215,7 +215,7 @@ export default function Provider() {
         )}
       </div>
       <div>
-        <h3 className="text-xl font-bold mt-3">Related Providers</h3>
+        <h3 className="text-xl font-bold mt-5 mb-5">Related Providers</h3>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 bg-white rounded-lg">
           <RelatedProviders providers={related} />
         </div>
