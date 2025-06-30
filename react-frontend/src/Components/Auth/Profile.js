@@ -5,26 +5,25 @@ export default function Profile({ user }) {
   const [activeTab, setActiveTab] = useState("profile");
 
   const handleLogout = () => {
-    // Добави реална логика за logout тук
     alert("Logged out!");
   };
 
   return (
     <div className="mx-auto bg-white p-6 rounded-lg shadow-md mt-8">
-      <h2 className="text-2xl font-bold mb-4 text-center">User Profile</h2>
+      {/* <h2 className="text-2xl font-bold mb-4 text-center">User Profile</h2> */}
 
-      <div className="flex justify-center mb-4">
+      {/* <div className="flex justify-center mb-4">
         <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
           <FiUser className="text-5xl text-gray-500" />
         </div>
-      </div>
+      </div> */}
 
-      <h3 className="text-xl font-semibold text-center">{user?.name || "John Doe"}</h3>
-      <p className="text-gray-600 mb-4 text-center">{user?.email || "johndoe@example.com"}</p>
+        {/* <h3 className="text-xl font-semibold text-center">{user?.name || "John Doe"}</h3>
+        <p className="text-gray-600 mb-4 text-center">{user?.email || "johndoe@example.com"}</p> */}
 
       {/* Tabs */}
-      <div className="flex justify-center space-x-2 border-b mb-4">
-        {["profile", "password", "settings", "logout"].map((tab) => (
+      <div>
+        {["profile", "password", "settings"].map((tab) => (
           <button
             key={tab}
             className={`py-2 px-3 text-sm font-medium ${
@@ -41,13 +40,12 @@ export default function Profile({ user }) {
             {tab === "profile" && "Profile"}
             {tab === "password" && "Password"}
             {tab === "settings" && "Settings"}
-            {tab === "logout" && "Log Out"}
           </button>
         ))}
       </div>
 
       {/* Tab Content */}
-      <div className="text-sm text-gray-700">
+      {/* <div className="text-sm text-gray-700">
         {activeTab === "profile" && (
           <form className="space-y-2">
             <div>
@@ -125,7 +123,7 @@ export default function Profile({ user }) {
             </button>
           </form>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }

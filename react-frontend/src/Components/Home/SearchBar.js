@@ -28,7 +28,7 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
             name="city"
             value={localFilters.city}
             onChange={handleChange}
-            className="pl-8 text-sm text-gray-900 bg-gray-100 w-full border-0 md:border-r md:border-r-white focus:outline-none pb-5 pt-5"
+            className="cursor-pointer pl-8 text-sm text-gray-900 bg-gray-100 w-full border-0 md:border-r md:border-r-white focus:outline-none pb-5 pt-5"
           >
             <option value="">Select City</option>
             {cities.map((city) => (
@@ -43,7 +43,7 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
             name="category"
             value={localFilters.category}
             onChange={handleChange}
-            className="pl-8 text-sm text-gray-900 bg-gray-100 w-full border-0 md:border-r md:border-r-white focus:outline-none pb-5 pt-5"
+            className="cursor-pointer pl-8 text-sm text-gray-900 bg-gray-100 w-full border-0 md:border-r md:border-r-white focus:outline-none pb-5 pt-5"
           >
             <option value="">Select Category</option>
             {categories.map((cat) => (
@@ -58,7 +58,7 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
             name="service_category"
             value={localFilters.service_category || ''}
             onChange={handleChange}
-            className="pl-8 text-sm text-gray-900 bg-gray-100 w-full border-0 md:border-r md:border-r-white focus:outline-none pb-5 pt-5"
+            className="cursor-pointer pl-8 text-sm text-gray-900 bg-gray-100 w-full border-0 md:border-r md:border-r-white focus:outline-none pb-5 pt-5"
           >
             {serviceCategories.length > 0 && (
               <option value="">All</option>

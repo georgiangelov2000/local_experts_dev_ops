@@ -39,7 +39,7 @@ export default function Provider() {
     <>
       <div className="bg-white rounded-lg p-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 cursor-pointer">
           <div className="flex items-center">
             <img
               src={
@@ -80,7 +80,7 @@ export default function Provider() {
               onClick={() => setActiveTab(tab)}
               className={`pb-2 ${activeTab === tab
                   ? 'border-b-2 border-blue-600 text-blue-600 font-medium'
-                  : 'text-gray-600 hover:text-blue-600'
+                  : 'text-gray-600 hover:text-blue-600 cursor-pointer'
                 }`}
             >
               {tab}

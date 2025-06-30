@@ -56,21 +56,21 @@ export default function ServiceProviderCard({ provider }) {
 
           <div className="flex space-x-3">
             <button
-              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
               onClick={(e) => e.preventDefault()}
               title="Dislike"
             >
               <FiThumbsDown className="text-gray-500 hover:text-red-500" />
             </button>
             <button
-              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
               onClick={(e) => e.preventDefault()}
               title="Like"
             >
               <FiThumbsUp className="text-gray-500 hover:text-green-500" />
             </button>
             <button
-              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
               onClick={(e) => e.preventDefault()}
               title="Favorite"
             >
