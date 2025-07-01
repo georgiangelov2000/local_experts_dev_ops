@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Media extends Model
 {
+    const COMPLETED  = 1;
+    const PENDING = 2;
+    
     use HasFactory;
 
     protected $fillable = [

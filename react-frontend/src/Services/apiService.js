@@ -39,6 +39,17 @@ const apiService = {
   getCategoryById: (id) => apiClient.get(`/categories/${id}/service-categories`),
   register: (data) => apiClient.post('/register', data),
   login: (data) => apiClient.post('/login', data),
+  createProjects: (data) => apiClient.post('/projects', data, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }),
+  updateProjects: (data) => apiClient.put('/projects', data, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }),
+  
   auth: () => apiClient.get('/me'),
   logout: () => apiClient.post('/logout'),
 };

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Category;
 use App\Models\ServiceCategory;
 use App\Models\Review;
-use App\Models\UserProject;
+use App\Models\Project;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -52,8 +52,8 @@ class ServiceProvider extends Model
         return $this->hasMany(Review::class);
     }
 
-    public function userProjects(): HasMany
+    public function projects(): HasMany
     {
-        return $this->hasMany(UserProject::class);
+        return $this->hasMany(Project::class);
     }
 }

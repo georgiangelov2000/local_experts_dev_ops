@@ -91,7 +91,7 @@ class ServiceProviderController extends Controller
                 'media',
                 'category',
                 'reviews',
-                'userProjects'
+                'projects'
             ])
             ->find($id);
 

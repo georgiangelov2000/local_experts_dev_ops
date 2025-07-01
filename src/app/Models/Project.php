@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\ServiceProvider;
 
-class UserProject extends Model
+class Project extends Model
 {
     use HasFactory;
+
+    protected $table = "user_projects";
 
     protected $fillable = [
         'service_provider_id',

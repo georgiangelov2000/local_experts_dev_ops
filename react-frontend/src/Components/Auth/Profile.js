@@ -1,8 +1,10 @@
 import { useState } from "react";
+import apiService from '../../Services/apiService';
 
 export default function Profile({ user }) {
   const [activeTab, setActiveTab] = useState("profile");
   const [projects, setProjects] = useState([]);
+  const [errors, setErrors] = useState([]);
 
   const handleAddProject = () => {
     if (projects.length >= 3) {
@@ -42,9 +44,40 @@ export default function Profile({ user }) {
     setProjects(updated);
   };
 
+
   const handleSubmitProjects = () => {
-    console.log("Projects submitted:", projects);
-    alert("Projects submitted!");
+    const formData = new FormData();
+    formData.append("service_provider_id", user.service_provider_id);
+  
+    projects.forEach((proj, index) => {
+      formData.append(`projects[${index}][project_name]`, proj.project_name);
+      formData.append(`projects[${index}][description]`, proj.description);
+      formData.append(`projects[${index}][status]`, proj.status);
+      formData.append(`projects[${index}][date_start]`, proj.date_start);
+      formData.append(`projects[${index}][date_end]`, proj.date_end);
+      if (proj.image) {
+        formData.append(`projects[${index}][image]`, proj.image);
+      }
+      if (proj.video) {
+        formData.append(`projects[${index}][video]`, proj.video);
+      }
+    });
+  
+    apiService.createProjects(formData)
+      .then(() => {
+        setErrors([]);
+      })
+      .catch((err) => {
+        if (err.response && err.response.data && err.response.data.errors) {
+          const errMsgs = [];
+          Object.entries(err.response.data.errors).forEach(([key, messages]) => {
+            messages.forEach((msg) => errMsgs.push(msg));
+          });
+          setErrors(errMsgs);
+        } else {
+          setErrors(["An unexpected error occurred."]);
+        }
+      });
   };
 
   return (
@@ -66,6 +99,16 @@ export default function Profile({ user }) {
           </button>
         ))}
       </div>
+
+      {errors.length > 0 && (
+      <div className="bg-red-100 border border-red-400 text-red-700 p-2 rounded mb-2 mt-4">
+        <ul className="list-disc list-inside text-xs">
+          {errors.map((error, idx) => (
+            <li key={idx}>{error}</li>
+          ))}
+        </ul>
+      </div>
+    )}
 
       <div className="text-sm text-gray-700 bg-white p-6 rounded-lg shadow-lg mt-5">
         {activeTab === "profile" && (
@@ -241,7 +284,7 @@ export default function Profile({ user }) {
               <button
                 type="button"
                 onClick={handleSubmitProjects}
-                className="bg-blue-600 text-white p-3 rounded hover:bg-blue-700 cursor-pointer"
+              className="bg-blue-600 text-white p-3 rounded hover:bg-blue-700 cursor-pointer"
               >
                 Submit Projects
               </button>

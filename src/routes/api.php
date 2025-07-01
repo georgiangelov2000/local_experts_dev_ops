@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\Api\V1\FrontEnd\AuthController;
 use App\Http\Controllers\Api\V1\FrontEnd\CategoryController;
+use App\Http\Controllers\Api\V1\FrontEnd\ProfileController;
 use App\Http\Controllers\Api\V1\FrontEnd\ServiceProviderController;
 
 use Illuminate\Support\Facades\Route;
@@ -17,6 +18,8 @@ Route::prefix('v1')->group(function () {
     Route::post('refresh', [AuthController::class, 'refresh']);
 
     Route::middleware('auth:api')->group(function () {
+        Route::post('projects',[ProfileController::class,'projects']);
+        Route::put('projects',[ProfileController::class,'projects']);
         Route::post('logout', [AuthController::class, 'logout']);
         Route::get('me', [AuthController::class, 'me']);
     });
