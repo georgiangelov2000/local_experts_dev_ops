@@ -1,6 +1,6 @@
 import { useState } from "react";
 import apiService from '../../Services/apiService';
-import { FiSave, FiEye, FiUser, FiFolder, FiLock, FiSettings, FiBarChart2, FiMessageSquare, FiStar } from "react-icons/fi";
+import { FiSave, FiEye, FiUser, FiFolder, FiLock, FiSettings, FiBarChart2, FiMessageSquare, FiStar, FiBriefcase } from "react-icons/fi";
 
 export default function Profile({ user }) {
   const [activeTab, setActiveTab] = useState("profile");
@@ -124,7 +124,7 @@ export default function Profile({ user }) {
       </div>
 
       <div className="shadow-lg bg-white p-4 rounded-lg flex flex-wrap gap-2">
-        {["profile", "projects", "password", "settings", "statics"].map((tab) => (
+        {["profile", "projects", "password", "settings", "statics", "services"].map((tab) => (
           <button
             key={tab}
             className={`flex items-center gap-1 py-2 px-4 text-sm font-medium cursor-pointer ${activeTab === tab
@@ -163,6 +163,7 @@ export default function Profile({ user }) {
                 Statics
               </>
             )}
+            {tab === "services" && <><FiBriefcase className="text-base" /> Services</>}
           </button>
         ))}
       </div>
@@ -205,26 +206,6 @@ export default function Profile({ user }) {
                 <option>Sofia</option>
                 <option>Plovdiv</option>
                 <option>Varna</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block mb-1 font-medium text-sm">Category</label>
-              <select className="w-full border border-gray-300 rounded p-2 text-sm">
-                <option value="">Select Category</option>
-                <option>Cleaning</option>
-                <option>Electrician</option>
-                <option>Plumbing</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block mb-1 font-medium text-sm">Subcategory</label>
-              <select className="w-full border border-gray-300 rounded p-2 text-sm">
-                <option value="">Select Subcategory</option>
-                <option>Deep Cleaning</option>
-                <option>Installation</option>
-                <option>Repair</option>
               </select>
             </div>
           </form>
@@ -343,6 +324,40 @@ export default function Profile({ user }) {
           </div>
         )}
 
+
+        {activeTab === "services" && (
+          <div className="bg-white p-6 rounded-lg shadow-lg mt-5 text-sm text-gray-700 space-y-4">
+            <h3 className="text-lg font-bold mb-4">Add a New Service</h3> 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label className="block mb-1 font-medium text-xs text-gray-500">Category</label>
+                <select
+                  className="w-full border border-gray-300 rounded p-2 text-sm focus:ring focus:ring-blue-100"
+                >
+                  <option value="">Select Category</option>
+                  <option>Cleaning</option>
+                  <option>Electrician</option>
+                  <option>Plumbing</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block mb-1 font-medium text-xs text-gray-500">Subcategory</label>
+                <select
+                  className="w-full border border-gray-300 rounded p-2 text-sm focus:ring focus:ring-blue-100"
+                >
+                  <option value="">Select Subcategory</option>
+                  <option>Deep Cleaning</option>
+                  <option>Installation</option>
+                  <option>Repair</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
+
+
+
         {activeTab === "password" && (
           <form className="space-y-2">
             <div>
@@ -418,25 +433,25 @@ export default function Profile({ user }) {
         )}
       </div>
 
-        <div className="text-sm flex justify-start mt-5 mb-5">
-          <button
-            onClick={handleSubmitAll}
-            className="flex items-center gap-1 text-white py-2 px-4 mr-2 cursor-pointer"
-            style={{
-              backgroundColor: 'oklch(0.373 0.034 259.733)',
-            }}
-          >
-            <FiSave /> Save Profile
-          </button>
+      <div className="text-sm flex justify-start mt-5 mb-5">
+        <button
+          onClick={handleSubmitAll}
+          className="flex items-center gap-1 text-white py-2 px-4 mr-2 cursor-pointer"
+          style={{
+            backgroundColor: 'oklch(0.373 0.034 259.733)',
+          }}
+        >
+          <FiSave /> Save Profile
+        </button>
 
-          <button
-            onClick={handlePreview}
-            className="flex items-center gap-1 bg-gray-500 text-white py-2 px-4 hover:bg-gray-600 cursor-pointer"
-          >
-            <FiEye /> Preview
-          </button>
+        <button
+          onClick={handlePreview}
+          className="flex items-center gap-1 bg-gray-500 text-white py-2 px-4 hover:bg-gray-600 cursor-pointer"
+        >
+          <FiEye /> Preview
+        </button>
 
-        </div>
+      </div>
     </>
   );
 }
