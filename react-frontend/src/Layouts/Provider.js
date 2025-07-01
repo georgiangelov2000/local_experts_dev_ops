@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import apiService from '../Services/apiService';
 import RelatedProviders from '../Components/Provider/RelatedProviders';
-import { FiPhone, FiMail, FiGlobe, FiStar, FiMapPin } from 'react-icons/fi';
+import { FiPhone, FiMail, FiGlobe, FiStar } from 'react-icons/fi';
+import ProfileTab from '../Components/Provider/Tabs/ProfileTab';
+import ProjectsTab from '../Components/Provider/Tabs/ProjectsTab';
+import VideosTab from '../Components/Provider/Tabs/VideosTab';
+import Reviews from '../Components/Provider/Reviews';
 
 export default function Provider() {
   const { id } = useParams();
@@ -12,7 +16,7 @@ export default function Provider() {
   const [activeTab, setActiveTab] = useState('Profile');
   const [showContact, setShowContact] = useState(false);
 
-  const tabs = ['Profile', 'Projects', 'Reviews', 'Videos'];
+  const tabs = ['Profile', 'Projects', 'Videos'];
 
   useEffect(() => {
     setLoading(true);
@@ -118,98 +122,9 @@ export default function Provider() {
         </div>
 
         {/* Tab Content */}
-        {activeTab === 'Profile' && (
-          <>
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-1">About</h3>
-              <p className="text-sm text-gray-700">{provider.description}</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-              <div>
-                <h4 className="font-semibold mb-1">Contact Information</h4>
-                <div className="flex items-center text-sm text-gray-700">
-                  <FiPhone className="mr-2" /> (example) +359 888 123 456
-                </div>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-1">Address</h4>
-                <div className="flex items-center text-sm text-gray-700">
-                  <FiMapPin className="mr-2" /> No address set
-                </div>
-              </div>
-            </div>
-            <div className="mb-4">
-              <h4 className="font-semibold mb-1">Services Offered</h4>
-              <ul className="list-disc list-inside text-sm text-gray-700">
-                <li>Leak repair</li>
-                <li>Pipe installation</li>
-                <li>Drain cleaning</li>
-              </ul>
-            </div>
-          </>
-        )}
-
-        {activeTab === 'Projects' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {provider?.user_projects?.map((project) => (
-              <div key={project.id} className="bg-gray-100 rounded-lg shadow-sm overflow-hidden">
-                <img
-                  src={project.image_url || "https://media.istockphoto.com/id/1444666625/photo/online-advertising-concept-ad-on-internet.jpg?s=612x612&w=0&k=20&c=Lp2QzOAMWOt4QaJRyk5aBUIkw6EgnsjcvDuDIktJ8yY="}
-                  alt={project.project_name}
-                  className="w-full h-40 object-cover"
-                />
-                <div className="p-2">
-                  <h4 className="font-medium text-sm mb-1">{project.project_name}</h4>
-                  <p className="text-xs text-gray-600 mb-1">{project.description}</p>
-                  <p className="text-xs text-gray-500">
-                    {new Date(project.date_start).toLocaleDateString()} - {new Date(project.date_end).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-            ))}
-            {provider?.user_projects?.length === 0 && (
-              <div className="text-sm text-gray-500">No projects available.</div>
-            )}
-          </div>
-        )}
-
-        {activeTab === 'Reviews' && (
-          <div className="space-y-2">
-            {provider.reviews && provider.reviews.length > 0 ? (
-              provider.reviews.map((review) => (
-                <div key={review.id} className="bg-gray-100 p-3 rounded-lg">
-                  <p className="text-sm text-gray-700">"{review.review_text}"</p>
-                  <div className="flex items-center mt-1">
-                    {[...Array(review.rating)].map((_, i) => (
-                      <FiStar key={i} className="text-yellow-400 mr-1 text-xs" />
-                    ))}
-                    {[...Array(5 - review.rating)].map((_, i) => (
-                      <FiStar key={i} className="text-yellow-400 mr-1 opacity-30 text-xs" />
-                    ))}
-                  </div>
-                  <span className="text-xs text-gray-500">Posted on {new Date(review.created_at).toLocaleDateString()}</span>
-                </div>
-              ))
-            ) : (
-              <p className="text-sm text-gray-500">No reviews yet.</p>
-            )}
-          </div>
-        )}
-
-        {activeTab === 'Videos' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="aspect-w-16 aspect-h-9 bg-black rounded-lg overflow-hidden">
-              <iframe
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                title="Sample Video"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-              ></iframe>
-            </div>
-          </div>
-        )}
+        {activeTab === 'Profile' && <ProfileTab provider={provider} />}
+        {activeTab === 'Projects' && <ProjectsTab projects={provider.user_projects} />}
+        {activeTab === 'Videos' && <VideosTab videos={provider.videos || ['https://www.youtube.com/embed/dQw4w9WgXcQ']} />}
 
         {/* Contact modal */}
         {showContact && (
@@ -243,11 +158,15 @@ export default function Provider() {
           </div>
         )}
       </div>
-      <div>
-        <h3 className="text-xl font-bold mt-5 mb-5">Related Providers</h3>
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 bg-white rounded-lg">
-          <RelatedProviders providers={related} />
-        </div>
+
+      <h3 className="text-xl font-bold mt-5 mb-5">Reviews</h3>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 bg-white rounded-lg p-5">
+        <Reviews reviews={provider.reviews} />
+      </div>
+
+      <h3 className="text-xl font-bold mt-5 mb-5">Related Providers</h3>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 bg-white rounded-lg">
+        <RelatedProviders providers={related} />
       </div>
     </>
   );
