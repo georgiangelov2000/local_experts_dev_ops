@@ -392,29 +392,29 @@ export default function Profile({ user }) {
         )}
 
         {activeTab === "statics" && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-blue-100 p-4 rounded flex items-center gap-3">
-                <FiEye className="text-2xl text-blue-600" />
-                <div>
-                  <p className="text-xs text-gray-500">Total Views</p>
-                  <p className="text-xl font-bold">1,250</p>
-                </div>
-              </div>
-              <div className="bg-green-100 p-4 rounded flex items-center gap-3">
-                <FiMessageSquare className="text-2xl text-green-600" />
-                <div>
-                  <p className="text-xs text-gray-500">Reviews Received</p>
-                  <p className="text-xl font-bold">48</p>
-                </div>
-              </div>
-              <div className="bg-yellow-100 p-4 rounded flex items-center gap-3">
-                <FiStar className="text-2xl text-yellow-600" />
-                <div>
-                  <p className="text-xs text-gray-500">Average Rating</p>
-                  <p className="text-xl font-bold">4.7 / 5</p>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-blue-100 p-4 rounded flex items-center gap-3">
+              <FiEye className="text-2xl text-blue-600" />
+              <div>
+                <p className="text-xs text-gray-500">Total Views</p>
+                <p className="text-xl font-bold">1,250</p>
               </div>
             </div>
+            <div className="bg-green-100 p-4 rounded flex items-center gap-3">
+              <FiMessageSquare className="text-2xl text-green-600" />
+              <div>
+                <p className="text-xs text-gray-500">Reviews Received</p>
+                <p className="text-xl font-bold">48</p>
+              </div>
+            </div>
+            <div className="bg-yellow-100 p-4 rounded flex items-center gap-3">
+              <FiStar className="text-2xl text-yellow-600" />
+              <div>
+                <p className="text-xs text-gray-500">Average Rating</p>
+                <p className="text-xl font-bold">4.7 / 5</p>
+              </div>
+            </div>
+          </div>
         )}
       </div>
 
@@ -422,16 +422,21 @@ export default function Profile({ user }) {
         <div className="flex justify-start">
           <button
             onClick={handleSubmitAll}
-            className="flex items-center gap-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 mr-2"
+            className="flex items-center gap-1 text-white py-2 px-4 mr-2 cursor-pointer"
+            style={{
+              backgroundColor: 'oklch(0.373 0.034 259.733)',
+            }}
           >
             <FiSave /> Save Profile
           </button>
+
           <button
             onClick={handlePreview}
-            className="flex items-center gap-1 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"
+            className="flex items-center gap-1 bg-gray-500 text-white py-2 px-4 hover:bg-gray-600 cursor-pointer"
           >
             <FiEye /> Preview
           </button>
+
         </div>
       </div>
     </>

@@ -66,7 +66,7 @@ export default function Header() {
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex items-center px-3 py-1 text-lg font-medium border border-white rounded hover:bg-white hover:text-blue-600 transition"
+                className="flex items-center px-3 py-1 text-lg font-medium border border-white rounded hover:bg-white hover:text-blue-600 transition cursor-pointer"
               >
                 <FiLogOut className="mr-1" />
                 Logout
