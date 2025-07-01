@@ -1,5 +1,9 @@
 export default function ProfileTab({ user }) {
-    return (
+  return (
+    <>
+      <p className="mb-4 bg-gray-400 p-2 text-white">
+        Попълнете информацията за вашия бизнес, за да се показва коректно пред клиентите.
+      </p>
       <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block mb-1 font-medium text-sm">Name</label>
@@ -26,6 +30,7 @@ export default function ProfileTab({ user }) {
           ></textarea>
         </div>
       </form>
-    );
-  }
-  
+    </>
+
+  );
+}

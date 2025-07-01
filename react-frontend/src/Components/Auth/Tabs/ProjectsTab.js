@@ -1,6 +1,9 @@
 export default function ProjectsTab({ projects, onChange, onAdd, onRemove, onFileChange }) {
     return (
       <div className="space-y-4">
+            <p className="mb-4 bg-gray-400 p-2 text-white">
+              Добавете до 3 проекта, с които да демонстрирате опита си.
+            </p>
         {projects.map((proj, index) => (
           <div key={proj.id} className="border rounded p-3 space-y-2">
             <input

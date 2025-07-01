@@ -3,6 +3,9 @@ import { FiFileText, FiPhone, FiMail } from "react-icons/fi";
 export default function ContractsTab() {
     return (
         <div className="bg-white p-6 rounded-lg shadow-lg text-sm text-gray-700 space-y-6">
+            <p className="mb-4 bg-gray-400 p-2 text-white">
+                Прегледайте сключените договори с клиенти и техните данни за контакт.
+            </p>
             <h3 className="text-lg font-bold mb-4">Your Contracts</h3>
 
             {/* List of contracts */}
