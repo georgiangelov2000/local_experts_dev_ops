@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\FrontEnd;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProfileRequest;
 use App\Models\Media;
 use App\Models\Project;
 use Illuminate\Http\Request;

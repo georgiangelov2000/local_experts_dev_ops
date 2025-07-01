@@ -1,9 +1,21 @@
 import { useState } from "react";
 import apiService from '../../Services/apiService';
+import { FiSave, FiEye, FiUser, FiFolder, FiLock, FiSettings, FiBarChart2, FiMessageSquare, FiStar } from "react-icons/fi";
 
 export default function Profile({ user }) {
   const [activeTab, setActiveTab] = useState("profile");
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState([
+    {
+      id: Date.now(),
+      project_name: "",
+      description: "",
+      status: 1,
+      date_start: "",
+      date_end: "",
+      image: null,
+      video: null
+    }
+  ]);
   const [errors, setErrors] = useState([]);
 
   const handleAddProject = () => {
@@ -44,11 +56,16 @@ export default function Profile({ user }) {
     setProjects(updated);
   };
 
+  const handlePreview = () => {
+    console.log("Preview data:", { projects });
+    alert("Check console for preview");
+  };
 
-  const handleSubmitProjects = () => {
+  const handleSubmitAll = () => {
     const formData = new FormData();
     formData.append("service_provider_id", user.service_provider_id);
-  
+
+    // Добавяне на проекти
     projects.forEach((proj, index) => {
       formData.append(`projects[${index}][project_name]`, proj.project_name);
       formData.append(`projects[${index}][description]`, proj.description);
@@ -62,10 +79,12 @@ export default function Profile({ user }) {
         formData.append(`projects[${index}][video]`, proj.video);
       }
     });
-  
+
+    // Изпращане към API
     apiService.createProjects(formData)
       .then(() => {
         setErrors([]);
+        alert("Profile saved successfully!");
       })
       .catch((err) => {
         if (err.response && err.response.data && err.response.data.errors) {
@@ -82,33 +101,81 @@ export default function Profile({ user }) {
 
   return (
     <>
+      <div className="text-sm text-gray-700 bg-white p-6 rounded-lg shadow-lg mb-5 space-y-2">
+        <div className="flex justify-between">
+          <span className="font-medium">Username:</span>
+          <span className="text-gray-600">john_doe</span>
+        </div>
+
+        <div className="flex justify-between">
+          <span className="font-medium">Created At:</span>
+          <span className="text-gray-600">2024-07-01 10:30</span>
+        </div>
+
+        <div className="flex justify-between">
+          <span className="font-medium">Expired Service:</span>
+          <span className="text-red-500">Yes</span>
+        </div>
+
+        <div className="flex justify-between">
+          <span className="font-medium">Category:</span>
+          <span className="text-gray-600">Cleaning</span>
+        </div>
+      </div>
+
       <div className="shadow-lg bg-white p-4 rounded-lg flex flex-wrap gap-2">
-        {["profile", "projects", "password", "settings"].map((tab) => (
+        {["profile", "projects", "password", "settings", "statics"].map((tab) => (
           <button
             key={tab}
-            className={`py-2 px-4 text-sm font-medium cursor-pointer ${activeTab === tab
-                ? "border-b-2 border-blue-600 text-blue-600"
-                : "text-gray-600"
+            className={`flex items-center gap-1 py-2 px-4 text-sm font-medium cursor-pointer ${activeTab === tab
+              ? "border-b-2 border-blue-600 text-blue-600"
+              : "text-gray-600"
               }`}
             onClick={() => setActiveTab(tab)}
           >
-            {tab === "profile" && "Business Profile"}
-            {tab === "projects" && "Projects"}
-            {tab === "password" && "Password"}
-            {tab === "settings" && "Settings"}
+            {tab === "profile" && (
+              <>
+                <FiUser className="text-base" />
+                Business Profile
+              </>
+            )}
+            {tab === "projects" && (
+              <>
+                <FiFolder className="text-base" />
+                Projects
+              </>
+            )}
+            {tab === "password" && (
+              <>
+                <FiLock className="text-base" />
+                Password
+              </>
+            )}
+            {tab === "settings" && (
+              <>
+                <FiSettings className="text-base" />
+                Settings
+              </>
+            )}
+            {tab === "statics" && (
+              <>
+                <FiBarChart2 className="text-base" />
+                Statics
+              </>
+            )}
           </button>
         ))}
       </div>
 
       {errors.length > 0 && (
-      <div className="bg-red-100 border border-red-400 text-red-700 p-2 rounded mb-2 mt-4">
-        <ul className="list-disc list-inside text-xs">
-          {errors.map((error, idx) => (
-            <li key={idx}>{error}</li>
-          ))}
-        </ul>
-      </div>
-    )}
+        <div className="bg-red-100 border border-red-400 text-red-700 p-2 rounded mb-2 mt-4">
+          <ul className="list-disc list-inside text-xs">
+            {errors.map((error, idx) => (
+              <li key={idx}>{error}</li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="text-sm text-gray-700 bg-white p-6 rounded-lg shadow-lg mt-5">
         {activeTab === "profile" && (
@@ -159,12 +226,6 @@ export default function Profile({ user }) {
                 <option>Installation</option>
                 <option>Repair</option>
               </select>
-            </div>
-
-            <div className="md:col-span-2">
-              <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
-                Save Profile
-              </button>
             </div>
           </form>
         )}
@@ -279,16 +340,6 @@ export default function Profile({ user }) {
                 Add Project
               </button>
             )}
-
-            {projects.length > 0 && (
-              <button
-                type="button"
-                onClick={handleSubmitProjects}
-              className="bg-blue-600 text-white p-3 rounded hover:bg-blue-700 cursor-pointer"
-              >
-                Submit Projects
-              </button>
-            )}
           </div>
         )}
 
@@ -315,9 +366,6 @@ export default function Profile({ user }) {
                 className="w-full border border-gray-300 rounded p-2"
               />
             </div>
-            <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
-              Change Password
-            </button>
           </form>
         )}
 
@@ -340,11 +388,51 @@ export default function Profile({ user }) {
                 <option>German</option>
               </select>
             </div>
-            <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
-              Save Settings
-            </button>
           </form>
         )}
+
+        {activeTab === "statics" && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-blue-100 p-4 rounded flex items-center gap-3">
+                <FiEye className="text-2xl text-blue-600" />
+                <div>
+                  <p className="text-xs text-gray-500">Total Views</p>
+                  <p className="text-xl font-bold">1,250</p>
+                </div>
+              </div>
+              <div className="bg-green-100 p-4 rounded flex items-center gap-3">
+                <FiMessageSquare className="text-2xl text-green-600" />
+                <div>
+                  <p className="text-xs text-gray-500">Reviews Received</p>
+                  <p className="text-xl font-bold">48</p>
+                </div>
+              </div>
+              <div className="bg-yellow-100 p-4 rounded flex items-center gap-3">
+                <FiStar className="text-2xl text-yellow-600" />
+                <div>
+                  <p className="text-xs text-gray-500">Average Rating</p>
+                  <p className="text-xl font-bold">4.7 / 5</p>
+                </div>
+              </div>
+            </div>
+        )}
+      </div>
+
+      <div className="text-sm text-gray-700 bg-white p-6 rounded-lg shadow-lg mt-5">
+        <div className="flex justify-start">
+          <button
+            onClick={handleSubmitAll}
+            className="flex items-center gap-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 mr-2"
+          >
+            <FiSave /> Save Profile
+          </button>
+          <button
+            onClick={handlePreview}
+            className="flex items-center gap-1 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"
+          >
+            <FiEye /> Preview
+          </button>
+        </div>
       </div>
     </>
   );
