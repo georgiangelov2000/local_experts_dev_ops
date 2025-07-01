@@ -41,7 +41,7 @@ export default function Header() {
         <nav className="flex items-center space-x-4">
           <Link
             to="/"
-            className="flex items-center px-3 py-1 text-lg font-medium border-0 rounded hover:bg-white hover:text-blue-600 transition"
+            className="flex items-center px-3 py-1 text-sm font-medium border-0 rounded hover:bg-white hover:text-blue-600 transition"
           >
             <FiHome className="mr-1" />
             Home
@@ -49,7 +49,7 @@ export default function Header() {
 
           <Link
             to="/favourites"
-            className="flex items-center px-3 py-1 text-lg font-medium border-0 rounded hover:bg-white hover:text-blue-600 transition"
+            className="flex items-center px-3 py-1 text-sm font-medium border-0 rounded hover:bg-white hover:text-blue-600 transition"
           >
             <FiHeart className="mr-1" />
             Favourites
@@ -59,14 +59,14 @@ export default function Header() {
             <>
               <Link
                 to="/profile"
-                className="flex items-center px-3 py-1 text-lg font-medium border-0 rounded hover:bg-white hover:text-blue-600 transition"
+                className="flex items-center px-3 py-1 text-sm font-medium border-0 rounded hover:bg-white hover:text-blue-600 transition"
               >
                 <FiUser className="mr-1" />
                 {user.name}
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex items-center px-3 py-1 text-lg font-medium border border-white rounded hover:bg-white hover:text-blue-600 transition cursor-pointer"
+                className="flex items-center px-3 py-1 text-sm font-medium border border-white rounded hover:bg-white hover:text-blue-600 transition cursor-pointer"
               >
                 <FiLogOut className="mr-1" />
                 Logout
@@ -76,7 +76,7 @@ export default function Header() {
             <>
               <Link
                 to="/login"
-                className="flex items-center px-3 py-1 text-lg font-medium border border-white rounded hover:bg-white hover:text-blue-600 transition"
+                className="flex items-center px-3 py-1 text-sm font-medium border border-white rounded hover:bg-white hover:text-blue-600 transition"
               >
                 <FiLogIn className="mr-1" />
                 Login
@@ -84,7 +84,7 @@ export default function Header() {
 
               <Link
                 to="/register"
-                className="flex items-center px-3 py-1 text-lg font-medium border border-white rounded hover:bg-white hover:text-blue-600 transition"
+                className="flex items-center px-3 py-1 text-sm font-medium border border-white rounded hover:bg-white hover:text-blue-600 transition"
               >
                 <FiUserPlus className="mr-1" />
                 Register

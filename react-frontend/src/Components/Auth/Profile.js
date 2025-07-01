@@ -335,7 +335,7 @@ export default function Profile({ user }) {
               <button
                 type="button"
                 onClick={handleAddProject}
-                className="bg-green-600 text-white p-3 mr-2 rounded hover:bg-green-700 cursor-pointer"
+                className="bg-green-600 text-white p-3 mr-2 hover:bg-green-700 cursor-pointer"
               >
                 Add Project
               </button>
