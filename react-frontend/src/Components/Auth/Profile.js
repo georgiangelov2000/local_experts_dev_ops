@@ -418,8 +418,7 @@ export default function Profile({ user }) {
         )}
       </div>
 
-      <div className="text-sm text-gray-700 bg-white p-6 rounded-lg shadow-lg mt-5">
-        <div className="flex justify-start">
+        <div className="text-sm flex justify-start mt-5 mb-5">
           <button
             onClick={handleSubmitAll}
             className="flex items-center gap-1 text-white py-2 px-4 mr-2 cursor-pointer"
@@ -438,7 +437,6 @@ export default function Profile({ user }) {
           </button>
 
         </div>
-      </div>
     </>
   );
 }
