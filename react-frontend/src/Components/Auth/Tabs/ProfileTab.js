@@ -17,14 +17,13 @@ export default function ProfileTab({ user }) {
             className="w-full border border-gray-300 rounded p-2 text-sm"
           />
         </div>
-        <div>
-          <label className="block mb-1 font-medium text-sm">City</label>
-          <select className="w-full border border-gray-300 rounded p-2 text-sm">
-            <option value="">Select City</option>
-            <option>Sofia</option>
-            <option>Plovdiv</option>
-            <option>Varna</option>
-          </select>
+        <div className="md:col-span-2">
+          <label className="block mb-1 font-medium text-sm">Description</label>
+          <textarea
+            placeholder="Tell us more about your business..."
+            className="w-full border border-gray-300 rounded p-2 text-sm"
+            rows={4}
+          ></textarea>
         </div>
       </form>
     );

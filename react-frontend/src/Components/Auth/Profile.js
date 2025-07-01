@@ -1,12 +1,13 @@
 import { useState } from "react";
 import apiService from '../../Services/apiService';
-import { FiSave, FiEye, FiUser, FiFolder, FiLock, FiSettings, FiBarChart2, FiMessageSquare, FiStar, FiBriefcase } from "react-icons/fi";
+import { FiSave, FiEye, FiUser, FiFolder, FiLock, FiSettings, FiBarChart2, FiMessageSquare, FiStar, FiBriefcase, FiFileText } from "react-icons/fi";
 import ProfileTab from "./Tabs/ProfileTab";
 import ProjectsTab from "./Tabs/ProjectsTab";
 import ServicesTab from "./Tabs/ServicesTab";
 import PasswordTab from "./Tabs/PasswordTab";
 import SettingsTab from "./Tabs/SettingsTab";
 import StaticsTab from "./Tabs/StaticsTab";
+import ContractsTab from "./Tabs/ContactsTab";
 
 export default function Profile({ user }) {
   const [activeTab, setActiveTab] = useState("profile");
@@ -130,7 +131,7 @@ export default function Profile({ user }) {
       </div>
 
       <div className="shadow-lg bg-white p-4 rounded-lg flex flex-wrap gap-2">
-        {["profile", "projects", "password", "settings", "statics", "services"].map((tab) => (
+        {["profile", "projects", "password", "settings", "statics", "services", "contacts"].map((tab) => (
           <button
             key={tab}
             className={`flex items-center gap-1 py-2 px-4 text-sm font-medium cursor-pointer ${activeTab === tab
@@ -170,6 +171,8 @@ export default function Profile({ user }) {
               </>
             )}
             {tab === "services" && <><FiBriefcase className="text-base" /> Services</>}
+            {tab === "contacts" && <><FiFileText className="text-base" /> Contacts</>}
+
           </button>
         ))}
       </div>
@@ -199,6 +202,7 @@ export default function Profile({ user }) {
         {activeTab === "password" && <PasswordTab />}
         {activeTab === "settings" && <SettingsTab />}
         {activeTab === "statics" && <StaticsTab />}
+        {activeTab === "contacts" && <ContractsTab />}
       </div>
 
       <div className="text-sm flex justify-start mt-5 mb-5">
