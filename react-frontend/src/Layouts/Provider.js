@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { FiPhone, FiMapPin, FiStar } from 'react-icons/fi';
 import apiService from '../Services/apiService';
 import RelatedProviders from '../Components/Provider/RelatedProviders';
+import { FiPhone, FiMail, FiGlobe, FiStar, FiMapPin } from 'react-icons/fi';
 
 export default function Provider() {
   const { id } = useParams();
@@ -39,6 +39,7 @@ export default function Provider() {
     <>
       <div className="bg-white rounded-lg p-6">
         {/* Header */}
+
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 cursor-pointer">
           <div className="flex items-center">
             <img
@@ -62,6 +63,34 @@ export default function Provider() {
                   {provider.reviews?.length || 0} reviews
                 </span>
               </div>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {provider.phone && (
+                  <a
+                    href={`tel:${provider.phone}`}
+                    className="flex items-center text-blue-600 hover:underline text-sm"
+                  >
+                    <FiPhone className="mr-1" /> Call
+                  </a>
+                )}
+                {provider.email && (
+                  <a
+                    href={`mailto:${provider.email}`}
+                    className="flex items-center text-blue-600 hover:underline text-sm"
+                  >
+                    <FiMail className="mr-1" /> Email
+                  </a>
+                )}
+                {provider.website && (
+                  <a
+                    href={provider.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center text-blue-600 hover:underline text-sm"
+                  >
+                    <FiGlobe className="mr-1" /> Website
+                  </a>
+                )}
+              </div>
             </div>
           </div>
           <button
@@ -79,8 +108,8 @@ export default function Provider() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`pb-2 ${activeTab === tab
-                  ? 'border-b-2 border-blue-600 text-blue-600 font-medium'
-                  : 'text-gray-600 hover:text-blue-600 cursor-pointer'
+                ? 'border-b-2 border-blue-600 text-blue-600 font-medium'
+                : 'text-gray-600 hover:text-blue-600 cursor-pointer'
                 }`}
             >
               {tab}
@@ -119,16 +148,16 @@ export default function Provider() {
             </div>
           </>
         )}
-        
+
         {activeTab === 'Projects' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {provider?.user_projects?.map((project) => (
               <div key={project.id} className="bg-gray-100 rounded-lg shadow-sm overflow-hidden">
                 <img
-                    src={project.image_url || "https://media.istockphoto.com/id/1444666625/photo/online-advertising-concept-ad-on-internet.jpg?s=612x612&w=0&k=20&c=Lp2QzOAMWOt4QaJRyk5aBUIkw6EgnsjcvDuDIktJ8yY="}
-                    alt={project.project_name}
-                    className="w-full h-40 object-cover"
-                  />
+                  src={project.image_url || "https://media.istockphoto.com/id/1444666625/photo/online-advertising-concept-ad-on-internet.jpg?s=612x612&w=0&k=20&c=Lp2QzOAMWOt4QaJRyk5aBUIkw6EgnsjcvDuDIktJ8yY="}
+                  alt={project.project_name}
+                  className="w-full h-40 object-cover"
+                />
                 <div className="p-2">
                   <h4 className="font-medium text-sm mb-1">{project.project_name}</h4>
                   <p className="text-xs text-gray-600 mb-1">{project.description}</p>
