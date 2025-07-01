@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function AboutPlatform() {
   return (
-    <div className="rounded-b-xl p-8 shadow-lg bg-gradient-to-r from-blue-50 to-blue-100 flex items-start space-x-4 hover:shadow-xl transition-shadow duration-300">
+    <div className="p-8 bg-gradient-to-r from-blue-50 to-blue-100 flex items-start space-x-4 transition-shadow duration-300">
       <div className="bg-blue-600 p-3 rounded-full flex-shrink-0">
         <svg
           xmlns="http://www.w3.org/2000/svg"
