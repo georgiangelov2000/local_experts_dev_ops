@@ -7,24 +7,38 @@ export default function Categories({ categories }) {
     const newParams = new URLSearchParams(searchParams);
     newParams.set('category_id', categoryId);
     newParams.set('page', 1);
-
     setSearchParams(newParams);
   };
 
   return (
-    <>
-      <h1 className="text-2xl font-bold mb-4">Categories</h1>
-      <div className="flex flex-wrap gap-2 mb-6">
-        {categories.map((cat, index) => (
-          <button
-            key={index}
+    <div className="bg-indigo-50 p-6 rounded-lg mb-4">
+      <h1 className="text-2xl font-bold mb-6 text-center">Categories</h1>
+
+      <div className="flex flex-wrap justify-center gap-6">
+        {categories.map((cat) => (
+          <div
+            key={cat.id}
             onClick={() => handleCategoryClick(cat.id)}
-            className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm hover:bg-blue-200 transition cursor-pointer"
+            className="flex flex-col items-center cursor-pointer group"
           >
-            {cat.name} ({cat.service_providers_count || 0})
-          </button>
+            <div
+              className="w-20 h-20 rounded-full flex items-center justify-center mb-2 transition-transform group-hover:scale-105"
+              style={{
+                backgroundColor: cat.bgColor || '#f3f4f6' // по избор цвят
+              }}
+            >
+              <img
+                src={cat.icon || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}
+                alt={cat.name}
+                className="w-10 h-10 object-contain"
+              />
+            </div>
+            <span className="text-sm text-center font-medium text-gray-700 group-hover:text-blue-600">
+              {cat.name}
+            </span>
+          </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }
