@@ -68,32 +68,32 @@ export default function Provider() {
                 </span>
               </div>
               <div className="flex flex-wrap gap-2 mt-2">
-                {provider.phone && (
+                {/* {provider.phone && ( */}
                   <a
-                    href={`tel:${provider.phone}`}
+                    // href={`tel:${provider.phone}`}
                     className="flex items-center text-blue-600 hover:underline text-sm"
                   >
                     <FiPhone className="mr-1" /> Call
                   </a>
-                )}
-                {provider.email && (
+                {/* )} */}
+                {/* {provider.email && ( */}
                   <a
-                    href={`mailto:${provider.email}`}
+                    // href={`mailto:${provider.email}`}
                     className="flex items-center text-blue-600 hover:underline text-sm"
                   >
                     <FiMail className="mr-1" /> Email
                   </a>
-                )}
-                {provider.website && (
+                {/* )} */}
+                {/* {provider.website && ( */}
                   <a
-                    href={provider.website}
+                    // href={provider.website}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center text-blue-600 hover:underline text-sm"
                   >
                     <FiGlobe className="mr-1" /> Website
                   </a>
-                )}
+                {/* )} */}
               </div>
             </div>
           </div>
