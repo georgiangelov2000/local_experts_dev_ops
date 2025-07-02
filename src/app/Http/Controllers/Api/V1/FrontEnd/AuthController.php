@@ -71,14 +71,21 @@ class AuthController extends Controller
     public function me()
     {
         $user = auth()->user();
+        $provider = $user->serviceProvider;
     
-        $user->load([
-            'serviceProvider',
-            'projects',
-            'services'
-        ]);
+        if ($provider) {
+            $provider->projects = $provider->projects()->get() ?? [];
+            $provider->services = $provider->services()->get() ?? [];
+            $provider->reviews = $provider->reviews()->get() ?? [];
+            $provider->service_category = $provider->serviceCategory()->first() ?? null;
+        } else {
+            $provider = null;
+        }
+    
+        $user->service_provider = $provider;
     
         return response()->json($user);
-    }    
+    }
+    
 
 }
