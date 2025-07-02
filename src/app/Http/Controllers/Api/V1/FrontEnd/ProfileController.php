@@ -39,14 +39,13 @@ class ProfileController extends Controller
         $serviceProvider = $user->serviceProvider()->first();
         
         // Service provider
-        if (!$serviceProvider) {
-            $serviceProvider = new ServiceProvider(['user_id' => $user->id]);
-        }
-        $serviceProvider->business_name = $validated['business_name'];
-        $serviceProvider->description = $validated['description'];
-        $serviceProvider->category_id = $validated['category_id'];
-        $serviceProvider->service_category_id = $validated['service_category_id'];
-        $serviceProvider->save();
+        $serviceProvider = $user->serviceProvider()->firstOrCreate(['user_id' => $user->id]);
+        $serviceProvider->update([
+            'business_name' => $validated['business_name'],
+            'description' => $validated['description'],
+            'category_id' => $validated['category_id'],
+            'service_category_id' => $validated['service_category_id'],
+        ]);
 
         $responseProjects = [];
 
@@ -80,13 +79,17 @@ class ProfileController extends Controller
         $responseServices = [];
         if (!empty($validated['services'])) {
             foreach ($validated['services'] as $serviceData) {
-                $service = $serviceProvider->services()->create([
-                    'price' => $serviceData['price'],
-                    'description' => $serviceData['description'],
-                ]);
+                $service = isset($serviceData['id'])
+                    ? $serviceProvider->services()->where('id', $serviceData['id'])->firstOrFail()
+                    : $serviceProvider->services()->make();
+    
+                $service->price = $serviceData['price'];
+                $service->description = $serviceData['description'];
+                $service->save();
+    
                 $responseServices[] = $service;
             }
-        }
+        }    
 
         return response()->json([
             'message' => 'Profile, projects and services saved successfully.',
