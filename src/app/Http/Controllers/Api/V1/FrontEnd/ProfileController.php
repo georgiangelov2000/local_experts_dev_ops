@@ -29,6 +29,10 @@ class ProfileController extends Controller
             'projects.*.date_end' => 'required|date|after_or_equal:projects.*.date_start',
             'projects.*.image' => 'nullable|image|max:2048',
             'projects.*.video' => 'nullable|mimetypes:video/mp4,video/avi,video/mov|max:10240',
+
+            'services' => 'array',
+            'services.*.price' => 'required|numeric|min:0',
+            'services.*.description' => 'required|string|max:500',
         ]);
 
         $user = $request->user();
@@ -42,7 +46,6 @@ class ProfileController extends Controller
         $serviceProvider->description = $validated['description'];
         $serviceProvider->category_id = $validated['category_id'];
         $serviceProvider->service_category_id = $validated['service_category_id'];
-
         $serviceProvider->save();
 
         $responseProjects = [];
@@ -74,9 +77,22 @@ class ProfileController extends Controller
             }
         }
 
+        $responseServices = [];
+        if (!empty($validated['services'])) {
+            foreach ($validated['services'] as $serviceData) {
+                $service = $serviceProvider->services()->create([
+                    'price' => $serviceData['price'],
+                    'description' => $serviceData['description'],
+                ]);
+                $responseServices[] = $service;
+            }
+        }
+
         return response()->json([
-            'message' => 'Projects saved successfully.',
-            'data' => $responseProjects
+            'message' => 'Profile, projects and services saved successfully.',
+            'projects' => $responseProjects,
+            'services' => $responseServices,
+            'service_provider' => $serviceProvider,
         ], 200);
     }
 
