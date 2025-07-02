@@ -187,13 +187,6 @@ export default function Profile({ user }) {
           >
             <FiSave /> Save Profile
           </button>
-
-          <button
-            className="flex items-center gap-1 bg-gray-500 text-white py-2 px-4 hover:bg-gray-600 cursor-pointer"
-          >
-            <FiEye /> Preview
-          </button>
-
         </div>
       </form>
     </>
