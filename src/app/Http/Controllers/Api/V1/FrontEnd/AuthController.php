@@ -74,10 +74,11 @@ class AuthController extends Controller
     
         $user->load([
             'serviceProvider',
+            'projects',
+            'services'
         ]);
     
         return response()->json($user);
-    }
-    
+    }    
 
 }

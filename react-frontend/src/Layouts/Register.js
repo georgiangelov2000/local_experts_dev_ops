@@ -64,7 +64,7 @@ export default function Register() {
               value={formData.username}
               onChange={handleChange}
               placeholder="Enter your username"
-              className="border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+              className="border border-gray-300 text-gray-900 text-sm block w-full p-2.5"
               required
             />
           </div>
@@ -79,7 +79,7 @@ export default function Register() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter your email"
-                className="pl-10 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                className="pl-10 border border-gray-300 text-gray-900 text-sm block w-full p-2.5"
                 required
               />
             </div>
@@ -95,7 +95,7 @@ export default function Register() {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Enter your password"
-                className="pl-10 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                className="pl-10 border border-gray-300 text-gray-900 text-sm block w-full p-2.5"
                 required
               />
             </div>
@@ -111,7 +111,7 @@ export default function Register() {
                 value={formData.confirm_password}
                 onChange={handleChange}
                 placeholder="Confirm your password"
-                className="pl-10 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                className="pl-10 border border-gray-300 text-gray-900 text-sm block w-full p-2.5"
                 required
               />
             </div>
@@ -119,7 +119,7 @@ export default function Register() {
 
           <button
             type="submit"
-            className="w-full bg-blue-700 text-white rounded-lg p-2.5 hover:bg-blue-800"
+            className="w-full bg-blue-700 text-white p-2.5 hover:bg-blue-800 cursor-pointer"
           >
             Register
           </button>

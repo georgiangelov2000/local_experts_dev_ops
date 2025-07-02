@@ -21,16 +21,18 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
-
+  
     apiService.login(formData)
       .then(res => {
         localStorage.setItem('token', res.data.token);
         navigate('/profile');
       })
-      .catch(() => {
-        setError('Invalid email or password');
+      .catch((err) => {
+        const serverMessage = err.response?.data?.error || "Something went wrong.";
+        setError(serverMessage);
       });
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -53,7 +55,7 @@ export default function Login() {
               value={formData.email}
               onChange={handleChange}
               placeholder="Email"
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -66,14 +68,14 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
               placeholder="Password"
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition cursor-pointer"
+            className="w-full bg-blue-600 text-white py-2   hover:bg-blue-700 transition cursor-pointer"
           >
             Sign In
           </button>
@@ -85,6 +87,10 @@ export default function Login() {
             Sign up
           </Link>
         </p>
+
+        <div className="mt-4 text-center">
+          <Link to="/" className="text-blue-600 hover:underline text-sm">← Go back to Home</Link>
+        </div>
       </div>
     </div>
   );
