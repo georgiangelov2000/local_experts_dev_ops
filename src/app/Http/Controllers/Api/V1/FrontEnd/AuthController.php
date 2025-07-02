@@ -14,33 +14,39 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         $user = User::create([
-            'email'    => $request->email,
+            'email' => $request->email,
             'password' => Hash::make($request->password),
             'role_id' => User::CUSTOMER
         ]);
-
-        $token = JWTAuth::fromUser($user);
-
+    
+        $user->sendEmailVerificationNotification();
+    
         return response()->json([
-            'user'  => $user,
-            'token' => $token,
+            'message' => 'User registered successfully. Please verify your email.',
         ], 201);
     }
 
     public function login(LoginRequest $request)
     {
         $credentials = $request->only('email', 'password');
-
+    
         if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json(['error' => 'Authentication failed'], 401);
-        }    
-
+        }
+    
+        $user = auth()->user();
+    
+        if (!$user->hasVerifiedEmail()) {
+            return response()->json(['error' => 'Please verify your email before logging in.'], 403);
+        }
+    
         return response()->json([
-        'token' => $token,
-        'token_type' => 'bearer',
-        'expires_in' => auth('api')->factory()->getTTL() * 60,
+            'token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
         ]);
     }
+    
 
     public function refresh()
     {

@@ -3,11 +3,24 @@ use App\Http\Controllers\Api\V1\FrontEnd\AuthController;
 use App\Http\Controllers\Api\V1\FrontEnd\CategoryController;
 use App\Http\Controllers\Api\V1\FrontEnd\ProfileController;
 use App\Http\Controllers\Api\V1\FrontEnd\ServiceProviderController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('v1')->group(function () {
+
+    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+        $request->fulfill();
+        return response()->json(['message' => 'Email verified successfully.']);
+    })->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
+
+    Route::post('/email/verification-notification', function (Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return response()->json(['message' => 'Verification link sent!']);
+    })->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
+
+
     Route::get('services', [ServiceProviderController::class, 'index']);
     Route::get('services/{id}', [ServiceProviderController::class, 'show']);
     Route::get('/categories', [CategoryController::class, 'index']);
@@ -18,7 +31,7 @@ Route::prefix('v1')->group(function () {
     Route::post('refresh', [AuthController::class, 'refresh']);
 
     Route::middleware('auth:api')->group(function () {
-        Route::put('profile',[ProfileController::class,'profile']);
+        Route::put('profile', [ProfileController::class, 'profile']);
         Route::post('logout', [AuthController::class, 'logout']);
         Route::get('me', [AuthController::class, 'me']);
     });
