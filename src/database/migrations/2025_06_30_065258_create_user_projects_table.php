@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('user_projects')) {
-            Schema::create('user_projects', function (Blueprint $table) {
+        if (!Schema::hasTable('projects')) {
+            Schema::create('projects', function (Blueprint $table) {
                 $table->id();
                 $table->unsignedBigInteger('service_provider_id')->index();
                 $table->string('project_name');
