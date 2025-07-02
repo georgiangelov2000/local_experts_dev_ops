@@ -9,26 +9,25 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('v1')->group(function () {
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+    Route::post('refresh', [AuthController::class, 'refresh']);
 
     Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
         $request->fulfill();
         return response()->json(['message' => 'Email verified successfully.']);
-    })->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
+    })->middleware(['signed'])->name('verification.verify');
 
     Route::post('/email/verification-notification', function (Request $request) {
-        $request->user()->sendEmailVerificationNotification();
+        $user = auth()->user();
+        $user->sendEmailVerificationNotification();
         return response()->json(['message' => 'Verification link sent!']);
-    })->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
-
+    })->middleware(['throttle:6,1'])->name('verification.send');
 
     Route::get('services', [ServiceProviderController::class, 'index']);
     Route::get('services/{id}', [ServiceProviderController::class, 'show']);
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/categories/{category}/service-categories', [CategoryController::class, 'serviceCategories']);
-
-    Route::post('register', [AuthController::class, 'register']);
-    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:5,1');
-    Route::post('refresh', [AuthController::class, 'refresh']);
 
     Route::middleware('auth:api')->group(function () {
         Route::put('profile', [ProfileController::class, 'profile']);
