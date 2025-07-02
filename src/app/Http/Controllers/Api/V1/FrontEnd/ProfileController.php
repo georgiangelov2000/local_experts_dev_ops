@@ -19,6 +19,7 @@ class ProfileController extends Controller
             'description' => 'nullable|string|max:500',
             'category_id' => 'nullable|integer|exists:categories,id',
             'service_category_id' => 'nullable|integer|exists:service_categories,id',
+            'image' => 'nullable|image|max:2048',
 
             'projects' => 'array|max:3',
             'projects.*.id' => 'nullable|exists:projects,id',

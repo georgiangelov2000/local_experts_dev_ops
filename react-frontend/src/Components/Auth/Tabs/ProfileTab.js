@@ -88,7 +88,7 @@ export default function ProfileTab({ user, register, errors, categories = [], su
         <label className="block mb-1 font-medium text-sm text-gray-700">Business Image</label>
 
         <div className="flex items-center gap-3">
-          <label className="cursor-pointer inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700">
+          <label className="cursor-pointer inline-flex items-center px-4 py-2 bg-blue-600 text-white shadow hover:bg-blue-700">
             Upload Image
             <input
               type="file"
