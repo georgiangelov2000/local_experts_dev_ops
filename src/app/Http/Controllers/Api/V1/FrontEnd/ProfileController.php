@@ -37,7 +37,7 @@ class ProfileController extends Controller
 
         $user = $request->user();
         $serviceProvider = $user->serviceProvider()->first();
-        
+
         // Service provider
         $serviceProvider = $user->serviceProvider()->firstOrCreate(['user_id' => $user->id]);
         $serviceProvider->update([
@@ -46,6 +46,19 @@ class ProfileController extends Controller
             'category_id' => $validated['category_id'],
             'service_category_id' => $validated['service_category_id'],
         ]);
+
+        // Save business image if present
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('service_providers/images', 'public');
+
+            Media::create([
+                'model_id' => $serviceProvider->id,
+                'model_type' => ServiceProvider::class,
+                'file_path' => $path,
+                'file_name' => $request->file('image')->getClientOriginalName(),
+                'file_type' => 'image',
+            ]);
+        }
 
         $responseProjects = [];
 
@@ -82,14 +95,14 @@ class ProfileController extends Controller
                 $service = isset($serviceData['id'])
                     ? $serviceProvider->services()->where('id', $serviceData['id'])->firstOrFail()
                     : $serviceProvider->services()->make();
-    
+
                 $service->price = $serviceData['price'];
                 $service->description = $serviceData['description'];
                 $service->save();
-    
+
                 $responseServices[] = $service;
             }
-        }    
+        }
 
         return response()->json([
             'message' => 'Profile, projects and services saved successfully.',

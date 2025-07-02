@@ -1,4 +1,8 @@
+import { useState } from "react";
+
 export default function ProfileTab({ user, register, errors, categories = [], subcategories = [] }) {
+  const [preview, setPreview] = useState(null);
+
   return (
     <>
       <p className="mb-4 bg-gray-400 p-2 text-white">
@@ -79,6 +83,44 @@ export default function ProfileTab({ user, register, errors, categories = [], su
           <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>
         )}
       </div>
+
+      <div className="mt-4">
+        <label className="block mb-1 font-medium text-sm text-gray-700">Business Image</label>
+
+        <div className="flex items-center gap-3">
+          <label className="cursor-pointer inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700">
+            Upload Image
+            <input
+              type="file"
+              accept="image/*"
+              {...register("image", {
+                onChange: (e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    setPreview(URL.createObjectURL(file));
+                  }
+                }
+              })}
+              className="hidden"
+            />
+          </label>
+
+          {preview && (
+            <img
+              src={preview}
+              alt="Selected preview"
+              className="w-16 h-16 rounded object-cover border"
+            />
+          )}
+        </div>
+
+        <span className="text-xs text-gray-500 mt-1 block">Accepted: JPG, PNG, WEBP — Max 2MB</span>
+
+        {errors.image && (
+          <p className="text-red-500 text-xs mt-1">{errors.image.message}</p>
+        )}
+      </div>
+
     </>
   );
 }

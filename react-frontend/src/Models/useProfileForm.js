@@ -46,6 +46,16 @@ const profileSchema = yup.object().shape({
     .typeError("Service category is required")
     .required("Service category is required")
     .integer("Service category must be an integer"),
+  image: yup
+    .mixed()
+    .nullable()
+    .test("fileSize", "The file is too large", value => {
+      return !value || (value && value[0]?.size <= 2 * 1024 * 1024);
+    })
+    .test("fileType", "Unsupported file type", value => {
+      return !value || (value && ["image/jpeg", "image/png", "image/webp"].includes(value[0]?.type));
+    }),
+
   projects: yup.array().of(projectSchema).max(3, "Up to 3 projects allowed").notRequired(),
   services: yup.array().of(serviceSchema).max(3, "Up to 3 projects allowed").notRequired()
 });
