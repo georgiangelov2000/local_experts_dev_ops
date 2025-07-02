@@ -62,7 +62,7 @@ export default function Header() {
                 className="flex items-center px-3 py-1 text-sm font-medium border-0 rounded hover:bg-white hover:text-blue-600 transition"
               >
                 <FiUser className="mr-1" />
-                {user.name}
+                {user.email}
               </Link>
               <button
                 onClick={handleLogout}

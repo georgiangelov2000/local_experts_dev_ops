@@ -19,19 +19,6 @@ apiClient.interceptors.request.use(config => {
   return Promise.reject(error);
 });
 
-// Можеш да добавиш response interceptor за глобален 401 хендлинг
-// apiClient.interceptors.response.use(
-//   response => response,
-//   error => {
-//     if (error.response && error.response.status === 401) {
-//       console.warn("Unauthorized, redirecting to login...");
-//       // Може би redirect към login
-//       window.location.href = '/login';
-//     }
-//     return Promise.reject(error);
-//   }
-// );
-
 const apiService = {
   getAds: (config = {}) => apiClient.get('/services', config),
   getAdById: (id) => apiClient.get(`/services/${id}`),
@@ -39,17 +26,7 @@ const apiService = {
   getCategoryById: (id) => apiClient.get(`/categories/${id}/service-categories`),
   register: (data) => apiClient.post('/register', data),
   login: (data) => apiClient.post('/login', data),
-  createProjects: (data) => apiClient.post('/projects', data, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  }),
-  updateProjects: (data) => apiClient.put('/projects', data, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  }),
-  
+  profile: (data) => apiClient.put('/profile', data),
   auth: () => apiClient.get('/me'),
   logout: () => apiClient.post('/logout'),
 };

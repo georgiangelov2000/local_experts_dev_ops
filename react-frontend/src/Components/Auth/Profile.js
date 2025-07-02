@@ -1,136 +1,108 @@
 import { useState } from "react";
 import apiService from '../../Services/apiService';
-import { FiSave, FiEye, FiUser, FiFolder, FiLock,  FiBarChart2, FiBriefcase, FiFileText } from "react-icons/fi";
+import { FiSave, FiEye, FiUser, FiFolder, FiLock, FiBarChart2, FiBriefcase, FiFileText } from "react-icons/fi";
 import ProfileTab from "./Tabs/ProfileTab";
 import ProjectsTab from "./Tabs/ProjectsTab";
 import ServicesTab from "./Tabs/ServicesTab";
 import PasswordTab from "./Tabs/PasswordTab";
 import StaticsTab from "./Tabs/StaticsTab";
 import ContractsTab from "./Tabs/ContactsTab";
+import { useProfileForm } from "../../Models/useProfileForm";
+
 
 export default function Profile({ user }) {
+  const { register, handleSubmit, fields, append, remove, errors } = useProfileForm(user);
   const [activeTab, setActiveTab] = useState("profile");
-  const [projects, setProjects] = useState([
-    {
-      id: Date.now(),
-      project_name: "",
-      description: "",
-      status: 1,
-      date_start: "",
-      date_end: "",
-      image: null,
-      video: null
-    }
-  ]);
-  const [errors, setErrors] = useState([]);
+  const [apiMessage, setApiMessage] = useState(null);
 
-  const handleAddProject = () => {
-    if (projects.length >= 3) {
-      alert("Maximum 3 projects allowed.");
-      return;
-    }
-    setProjects([
-      ...projects,
-      {
-        id: Date.now(),
-        project_name: "",
-        description: "",
-        status: 1,
-        date_start: "",
-        date_end: "",
-        image: null,
-        video: null
-      }
-    ]);
-  };
+  const onSubmit = async (data) => {
+    try {
+      const filteredProjects = data.projects.filter(
+        (p) => p.project_name?.trim() !== ""
+      );
 
-  const handleChangeProject = (index, field, value) => {
-    const updated = [...projects];
-    updated[index][field] = value;
-    setProjects(updated);
-  };
+      const filteredServices = (data.services || []).filter(
+        (s) =>
+          (s.price !== undefined && s.price !== "" && !isNaN(s.price)) ||
+          (s.description && s.description.trim() !== "")
+      );
+        
+      const formData = new FormData();
 
-  const handleFileChange = (index, field, file) => {
-    const updated = [...projects];
-    updated[index][field] = file;
-    setProjects(updated);
-  };
+      formData.append("business_name", data.business_name);
+      formData.append("email", data.email);
+      formData.append("description", data.description);
 
-  const handleRemoveProject = (index) => {
-    const updated = [...projects];
-    updated.splice(index, 1);
-    setProjects(updated);
-  };
+      filteredProjects.forEach((proj, index) => {
+        formData.append(`projects[${index}][project_name]`, proj.project_name);
+        formData.append(`projects[${index}][description]`, proj.description);
+        formData.append(`projects[${index}][date_start]`, proj.date_start || "");
+        formData.append(`projects[${index}][date_end]`, proj.date_end || "");
+        formData.append(`projects[${index}][status]`, proj.status ?? 1);
 
-  const handlePreview = () => {
-    console.log("Preview data:", { projects });
-    alert("Check console for preview");
-  };
-
-  const handleSubmitAll = () => {
-    const formData = new FormData();
-    formData.append("service_provider_id", user.service_provider_id);
-
-    // Добавяне на проекти
-    projects.forEach((proj, index) => {
-      formData.append(`projects[${index}][project_name]`, proj.project_name);
-      formData.append(`projects[${index}][description]`, proj.description);
-      formData.append(`projects[${index}][status]`, proj.status);
-      formData.append(`projects[${index}][date_start]`, proj.date_start);
-      formData.append(`projects[${index}][date_end]`, proj.date_end);
-      if (proj.image) {
-        formData.append(`projects[${index}][image]`, proj.image);
-      }
-      if (proj.video) {
-        formData.append(`projects[${index}][video]`, proj.video);
-      }
-    });
-
-    // Изпращане към API
-    apiService.createProjects(formData)
-      .then(() => {
-        setErrors([]);
-        alert("Profile saved successfully!");
-      })
-      .catch((err) => {
-        if (err.response && err.response.data && err.response.data.errors) {
-          const errMsgs = [];
-          Object.entries(err.response.data.errors).forEach(([key, messages]) => {
-            messages.forEach((msg) => errMsgs.push(msg));
-          });
-          setErrors(errMsgs);
-        } else {
-          setErrors(["An unexpected error occurred."]);
+        if (proj.image?.length > 0) {
+          formData.append(`projects[${index}][image]`, proj.image[0]);
+        }
+        if (proj.video?.length > 0) {
+          formData.append(`projects[${index}][video]`, proj.video[0]);
         }
       });
+
+      filteredServices.forEach((service, index) => {
+        formData.append(`services[${index}][price]`, service.price ?? "");
+        formData.append(`services[${index}][description]`, service.description ?? "");
+      });
+
+      const response = await apiService.profile(formData);
+
+      console.log("Server response:", response.data);
+      setApiMessage(response.data.message || "Profile updated successfully!");
+
+    } catch (err) {
+      console.error("Error submitting profile:", err);
+      const message = err.response?.data?.message || "Something went wrong.";
+      setApiMessage(message);
+    }
   };
+
 
   return (
     <>
+      {apiMessage && (
+        <div className="bg-green-100 border border-green-400 text-green-700 p-2 rounded mt-2">
+          {apiMessage}
+        </div>
+      )}
       <div className="text-sm text-gray-700 bg-white p-6 rounded-lg shadow-lg mb-5 space-y-2">
         <div className="flex justify-between">
           <span className="font-medium">Username:</span>
-          <span className="text-gray-600">john_doe</span>
+          <span className="text-gray-600">{user?.username || "N/A"}</span>
         </div>
 
         <div className="flex justify-between">
           <span className="font-medium">Created At:</span>
-          <span className="text-gray-600">2024-07-01 10:30</span>
+          <span className="text-gray-600">
+            {user?.created_at
+              ? new Date(user.created_at).toLocaleString()
+              : "N/A"}
+          </span>
         </div>
 
         <div className="flex justify-between">
           <span className="font-medium">Expired Service:</span>
-          <span className="text-red-500">Yes</span>
+          <span className={user?.service_expired ? "text-red-500" : "text-green-500"}>
+            {user?.service_expired ? "Yes" : "No"}
+          </span>
         </div>
 
         <div className="flex justify-between">
           <span className="font-medium">Category:</span>
-          <span className="text-gray-600">Cleaning</span>
+          <span className="text-gray-600">{user?.category || "N/A"}</span>
         </div>
       </div>
 
       <div className="shadow-lg bg-white p-4 rounded-lg flex flex-wrap gap-2">
-        {["profile", "projects", "password", "statics", "services", "contacts"].map((tab) => (
+        {["profile", "projects", "services", "contacts" ,"password", "statics"].map((tab) => (
           <button
             key={tab}
             className={`flex items-center gap-1 py-2 px-4 text-sm font-medium cursor-pointer ${activeTab === tab
@@ -151,6 +123,8 @@ export default function Profile({ user }) {
                 Projects
               </>
             )}
+            {tab === "services" && <><FiBriefcase className="text-base" /> Services</>}
+            {tab === "contacts" && <><FiFileText className="text-base" /> Contacts</>}
             {tab === "password" && (
               <>
                 <FiLock className="text-base" />
@@ -164,8 +138,6 @@ export default function Profile({ user }) {
                 Statics
               </>
             )}
-            {tab === "services" && <><FiBriefcase className="text-base" /> Services</>}
-            {tab === "contacts" && <><FiFileText className="text-base" /> Contacts</>}
 
           </button>
         ))}
@@ -181,42 +153,49 @@ export default function Profile({ user }) {
         </div>
       )}
 
-      <div className="text-sm text-gray-700 bg-white p-6 rounded-lg shadow-lg mt-5">
-        {activeTab === "profile" && <ProfileTab user={user} />}
-        {activeTab === "projects" && (
-          <ProjectsTab
-            projects={projects}
-            onChange={handleChangeProject}
-            onAdd={handleAddProject}
-            onRemove={handleRemoveProject}
-            onFileChange={handleFileChange}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="text-sm text-gray-700 bg-white p-6 rounded-lg shadow-lg mt-5">
+          {activeTab === "profile" && <ProfileTab user={user} register={register} errors={errors} />}
+          {activeTab === "projects" && (
+            <ProjectsTab
+              fields={fields}
+              register={register}
+              remove={remove}
+              append={append}
+            />
+          )}
+          {activeTab === "services" && <ServicesTab
+            fields={fields}
+            register={register}
+            append={append}
+            remove={remove}
+            errors={errors}
           />
-        )}
-        {activeTab === "services" && <ServicesTab />}
-        {activeTab === "password" && <PasswordTab />}
-        {activeTab === "statics" && <StaticsTab />}
-        {activeTab === "contacts" && <ContractsTab />}
-      </div>
+          }
+          {activeTab === "password" && <PasswordTab register={register} />}
+          {activeTab === "statics" && <StaticsTab />}
+          {activeTab === "contacts" && <ContractsTab />}
+        </div>
 
-      <div className="text-sm flex justify-start mt-5 mb-5">
-        <button
-          onClick={handleSubmitAll}
-          className="flex items-center gap-1 text-white py-2 px-4 mr-2 cursor-pointer"
-          style={{
-            backgroundColor: 'oklch(0.373 0.034 259.733)',
-          }}
-        >
-          <FiSave /> Save Profile
-        </button>
+        <div className="text-sm flex justify-start mt-5 mb-5">
+          <button
+            className="flex items-center gap-1 text-white py-2 px-4 mr-2 cursor-pointer"
+            type="submit"
+            style={{
+              backgroundColor: 'oklch(0.373 0.034 259.733)',
+            }}
+          >
+            <FiSave /> Save Profile
+          </button>
 
-        <button
-          onClick={handlePreview}
-          className="flex items-center gap-1 bg-gray-500 text-white py-2 px-4 hover:bg-gray-600 cursor-pointer"
-        >
-          <FiEye /> Preview
-        </button>
+          <button
+            className="flex items-center gap-1 bg-gray-500 text-white py-2 px-4 hover:bg-gray-600 cursor-pointer"
+          >
+            <FiEye /> Preview
+          </button>
 
-      </div>
+        </div>
+      </form>
     </>
   );
 }

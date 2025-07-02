@@ -18,8 +18,7 @@ Route::prefix('v1')->group(function () {
     Route::post('refresh', [AuthController::class, 'refresh']);
 
     Route::middleware('auth:api')->group(function () {
-        Route::post('projects',[ProfileController::class,'projects']);
-        Route::put('projects',[ProfileController::class,'projects']);
+        Route::put('profile',[ProfileController::class,'profile']);
         Route::post('logout', [AuthController::class, 'logout']);
         Route::get('me', [AuthController::class, 'me']);
     });
