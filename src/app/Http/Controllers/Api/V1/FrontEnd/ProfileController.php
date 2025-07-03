@@ -1,14 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Api\V1\FrontEnd;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileRequest;
 use App\Models\Certification;
 use App\Models\ServiceProvider;
 use App\Models\Media;
-
 use App\Models\Project;
-use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Str;
 
@@ -17,6 +16,7 @@ class ProfileController extends Controller
     public function profile(ProfileRequest $request)
     {
         $user = $request->user();
+
         if (!$user->hasVerifiedEmail()) {
             return response()->json(['error' => 'Please verify your email before logging in.'], 403);
         }
@@ -24,13 +24,8 @@ class ProfileController extends Controller
         $validated = $request->validated();
 
         // Service provider
-        $serviceProvider = $user->serviceProvider()->first();
-
-        if (!$serviceProvider) {
-            $serviceProvider = new ServiceProvider();
-            $serviceProvider->user_id = $user->id;
-        }
-
+        $serviceProvider = $user->serviceProvider()->first() ?? new ServiceProvider();
+        $serviceProvider->user_id = $user->id;
         $serviceProvider->business_name = $validated['business_name'];
         $serviceProvider->description = $validated['description'];
         $serviceProvider->category_id = (int) $validated['category_id'];
@@ -44,8 +39,6 @@ class ProfileController extends Controller
             $this->replaceBusinessImage($serviceProvider, $request->file('image'));
         }
 
-        $responseProjects = [];
-
         if (!empty($validated['projects'])) {
             foreach ($validated['projects'] as $projectData) {
                 $project = isset($projectData['id'])
@@ -57,6 +50,7 @@ class ProfileController extends Controller
                 $project->status = $projectData['status'];
                 $project->date_start = Carbon::parse($projectData['date_start'])->toDateTimeString();
                 $project->date_end = Carbon::parse($projectData['date_end'])->toDateTimeString();
+                $project->save();
 
                 if (isset($projectData['image'])) {
                     $path = $projectData['image']->store('projects/images', 'public');
@@ -67,13 +61,9 @@ class ProfileController extends Controller
                     $path = $projectData['video']->store('projects/videos', 'public');
                     $this->saveMedia($project, $path, $projectData['video']->getClientOriginalName(), 'video');
                 }
-
-                $project->save();
-                $responseProjects[] = $project;
             }
         }
 
-        $responseServices = [];
         if (!empty($validated['services'])) {
             foreach ($validated['services'] as $serviceData) {
                 $service = isset($serviceData['id'])
@@ -83,12 +73,8 @@ class ProfileController extends Controller
                 $service->price = $serviceData['price'];
                 $service->description = $serviceData['description'];
                 $service->save();
-
-                $responseServices[] = $service;
             }
         }
-
-        $responseCertifications = [];
 
         if (!empty($validated['certifications'])) {
             foreach ($validated['certifications'] as $certData) {
@@ -104,52 +90,11 @@ class ProfileController extends Controller
                     $path = $certData['image']->store('images', 'public');
                     $this->saveCertificationMedia($cert, $path, $certData['image']->getClientOriginalName(), 'image');
                 }
-
-                $responseCertifications[] = $cert;
             }
         }
 
-
-        // Get business images
-        $businessImages = Media::where('model_id', $serviceProvider->id)
-            ->where('model_type', ServiceProvider::class)
-            ->get()
-            ->map(function ($media) {
-                return [
-                    'file_path' => asset('storage/' . $media->file_path),
-                    'file_name' => $media->file_name,
-                    'file_type' => $media->file_type,
-                ];
-            });
-
-
-        $projectMedia = [];
-        foreach ($responseProjects as $project) {
-            $media = Media::where('model_id', $project->id)
-                ->where('model_type', Project::class)
-                ->get()
-                ->map(function ($m) {
-                    return [
-                        'file_path' => asset('storage/' . $m->file_path),
-                        'file_name' => $m->file_name,
-                        'file_type' => $m->file_type,
-                    ];
-                });
-
-            $projectMedia[] = [
-                'project_id' => $project->id,
-                'media' => $media,
-            ];
-        }
-
         return response()->json([
-            'message' => 'Profile, projects and services saved successfully.',
-            'service_provider' => $serviceProvider,
-            'projects' => $responseProjects,
-            'services' => $responseServices,
-            'business_images' => $businessImages,
-            'project_media' => $projectMedia,
-            'certifications' => $responseCertifications,
+            'message' => 'Profile, projects, services and certifications saved successfully.',
         ], 200);
     }
 
@@ -189,7 +134,6 @@ class ProfileController extends Controller
 
     private function generateSeoAlias($businessName, $userId)
     {
-        // Пример: barber-shop-sofia-123
         $slug = Str::slug($businessName);
         return $slug . '-' . $userId;
     }
@@ -204,5 +148,4 @@ class ProfileController extends Controller
             'file_type' => $fileType,
         ]);
     }
-
 }
