@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api\V1\FrontEnd;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\City;
+use App\Models\Review;
 use App\Models\ServiceCategory;
 use App\Models\ServiceProvider;
 use Illuminate\Http\Request;
+
 
 class ServiceProviderController extends Controller
 {
@@ -17,7 +19,7 @@ class ServiceProviderController extends Controller
     public function index(Request $request)
     {
         $query = ServiceProvider::with(['user', 'serviceCategory', 'media']);
-    
+
         // Resolve names for applied filters
         $categoryName = null;
         $serviceCategoryName = null;
@@ -33,7 +35,7 @@ class ServiceProviderController extends Controller
             $query->where('service_category_id', $serviceCategoryId);
             $serviceCategoryName = ServiceCategory::find($serviceCategoryId)?->name;
         }
-        
+
         if ($request->has('service_category_id')) {
             $query->where('service_category_id', $request->service_category_id);
         }
@@ -42,13 +44,13 @@ class ServiceProviderController extends Controller
             $term = $request->term;
             $query->where(function ($q) use ($term) {
                 $q->where('business_name', 'LIKE', "%{$term}%")
-                  ->orWhere('description', 'LIKE', "%{$term}%");
+                    ->orWhere('description', 'LIKE', "%{$term}%");
             });
         }
 
         // Default values
         $perPage = $request->get('per_page', 20);
-        $page = max(1, (int) $request->get('page', 1)); 
+        $page = max(1, (int) $request->get('page', 1));
         $offset = ($page - 1) * $perPage;
 
         // Count total before limit/offset
@@ -58,10 +60,10 @@ class ServiceProviderController extends Controller
         $serviceProviders = $query->limit($perPage)->offset($offset)->get();
 
         $categories = Category::select('id', 'name')
-        ->withCount('serviceProviders')  // assuming relation name is serviceProviders
-        ->get();
-        $cities = City::select('id','name')->get();
-        
+            ->withCount('serviceProviders')  // assuming relation name is serviceProviders
+            ->get();
+        $cities = City::select('id', 'name')->get();
+
         return response()->json([
             'categories' => $categories,
             'cities' => $cities,
@@ -75,7 +77,7 @@ class ServiceProviderController extends Controller
                 'current_page' => $page,
                 'per_page' => $perPage,
                 'total' => $total,
-                'last_page' => ceil($total / $perPage),                
+                'last_page' => ceil($total / $perPage),
             ]
         ], 200);
     }
@@ -86,13 +88,13 @@ class ServiceProviderController extends Controller
     public function show($id)
     {
         $provider = ServiceProvider::with([
-                'user',
-                'serviceCategory',
-                'media',
-                'category',
-                'reviews',
-                'projects'
-            ])
+            'user',
+            'serviceCategory',
+            'media',
+            'category',
+            'reviews',
+            'projects'
+        ])
             ->find($id);
 
         if (!$provider) {
@@ -104,7 +106,7 @@ class ServiceProviderController extends Controller
         // Fetch related providers in the same category
         $relatedProviders = ServiceProvider::with(['user', 'serviceCategory', 'media'])
             ->where('category_id', $provider->category_id)
-            ->where('id', '!=', $provider->id) 
+            ->where('id', '!=', $provider->id)
             ->limit(5)
             ->get();
 
@@ -112,5 +114,52 @@ class ServiceProviderController extends Controller
             'service_provider' => $provider,
             'related_providers' => $relatedProviders,
         ], 200);
+    }
+
+    /**
+     * Create a review for a service provider
+     */
+    public function createReview(Request $request)
+    {
+        $validated = $request->validate([
+            'review_text' => 'required|string',
+            'rating' => 'required|integer|min:1|max:5',
+            'consumer_id' => 'nullable|integer|exists:users,id',
+            'service_provider_id' => 'required|integer|exists:service_providers,id',
+        ]);
+
+        $review = Review::create($validated);
+
+        return response()->json($review, 201);
+    }
+
+    /**
+     * Update a review
+     */
+    public function updateReview(Request $request, $id)
+    {
+        $review = Review::findOrFail($id);
+
+        $validated = $request->validate([
+            'review_text' => 'sometimes|required|string',
+            'rating' => 'sometimes|required|integer|min:1|max:5',
+        ]);
+
+        $review->update($validated);
+
+        return response()->json($review);
+    }
+
+    /**
+     * Delete a review
+     */
+    public function deleteReview($id)
+    {
+        $review = Review::findOrFail($id);
+        $review->delete();
+
+        return response()->json([
+            'message' => 'Review deleted successfully.'
+        ]);
     }
 }

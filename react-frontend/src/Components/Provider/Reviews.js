@@ -1,32 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FiStar } from 'react-icons/fi';
+import apiService from '../../Services/apiService';
+import { useReviewForm } from '../../Models/useReviewForm';
 
-export default function Reviews({ reviews = [], onAddReview }) {
-  const [newComment, setNewComment] = useState('');
-  const [newRating, setNewRating] = useState(5);
-  const [error, setError] = useState('');
+export default function Reviews({ reviews = [], serviceProviderId, onReviewAdded }) {
+  const [user, setUser] = useState(null);
+  const { register, handleSubmit, errors, reset } = useReviewForm(user);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!newComment.trim()) {
-      setError('Comment cannot be empty.');
-      return;
-    }
-
-    // Изпрати към родител или API
-    if (onAddReview) {
-      onAddReview({
-        review_text: newComment,
-        rating: newRating,
-        created_at: new Date().toISOString(),
-        id: Math.random().toString(36).substr(2, 9),
+  useEffect(() => {
+    apiService.auth()
+      .then((res) => {
+        setUser(res.data);
+      })
+      .catch(() => {
+        setUser(null);
       });
-    }
+  }, []);
 
-    setNewComment('');
-    setNewRating(5);
-    setError('');
+  const submitHandler = async (data) => {
+    const payload = {
+      ...data,
+      consumer_id: user ? user.id : null,
+      service_provider_id: serviceProviderId,
+    };
+
+    try {
+      const response = await apiService.reviews(payload);
+      if (onReviewAdded) {
+        onReviewAdded(response.data);
+      }
+      reset();
+    } catch (error) {
+      console.error("Error submitting review", error);
+      // Може да добавиш toast или друго известие
+    }
   };
 
   return (
@@ -54,6 +61,9 @@ export default function Reviews({ reviews = [], onAddReview }) {
               <p className="text-sm text-gray-700 leading-relaxed italic">
                 "{review.review_text}"
               </p>
+              {review.user && (
+                <p className="text-xs text-gray-500 mt-1">By {review.user.name}</p>
+              )}
             </div>
           ))
         ) : (
@@ -61,24 +71,22 @@ export default function Reviews({ reviews = [], onAddReview }) {
         )}
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="border-t border-gray-100 pt-4 space-y-3"
-      >
+      <form onSubmit={handleSubmit(submitHandler)} className="border-t border-gray-100 pt-4 space-y-3">
         <h4 className="text-sm font-medium text-gray-700">Add a review</h4>
         <textarea
+          {...register("review_text")}
+          placeholder="Write your comment..."
           className="w-full border border-gray-300 rounded p-2 text-sm"
           rows="3"
-          placeholder="Write your comment..."
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-        ></textarea>
+        />
+        {errors.review_text && (
+          <p className="text-xs text-red-500">{errors.review_text.message}</p>
+        )}
 
         <div className="flex items-center gap-2">
           <label className="text-xs text-gray-500">Rating:</label>
           <select
-            value={newRating}
-            onChange={(e) => setNewRating(parseInt(e.target.value))}
+            {...register("rating")}
             className="border border-gray-300 rounded p-1 text-sm"
           >
             {[5, 4, 3, 2, 1].map((val) => (
@@ -89,12 +97,11 @@ export default function Reviews({ reviews = [], onAddReview }) {
           </select>
         </div>
 
-        {error && <p className="text-xs text-red-500">{error}</p>}
+        {errors.rating && (
+          <p className="text-xs text-red-500">{errors.rating.message}</p>
+        )}
 
-        <button
-          type="submit"
-          className="bg-blue-600 text-white py-1.5 px-3 text-sm hover:bg-blue-700 cursor-pointer"
-        >
+        <button type="submit" className="bg-blue-600 text-white py-1.5 px-3 text-sm hover:bg-blue-700">
           Submit Review
         </button>
       </form>
