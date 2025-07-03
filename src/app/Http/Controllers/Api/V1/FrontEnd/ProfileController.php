@@ -9,7 +9,7 @@ use App\Models\ServiceProvider;
 use App\Models\Media;
 use App\Models\Project;
 use Illuminate\Support\Carbon;
-use Str;
+use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 {
@@ -24,8 +24,8 @@ class ProfileController extends Controller
         $validated = $request->validated();
 
         // Service provider
-        $serviceProvider = $user->serviceProvider()->first() ?? new ServiceProvider();
-        $serviceProvider->user_id = $user->id;
+        $serviceProvider = $user->serviceProvider()->first() ?? new ServiceProvider(['user_id' => $user->id]);
+
         $serviceProvider->business_name = $validated['business_name'];
         $serviceProvider->description = $validated['description'];
         $serviceProvider->category_id = (int) $validated['category_id'];
@@ -54,12 +54,12 @@ class ProfileController extends Controller
 
                 if (isset($projectData['image'])) {
                     $path = $projectData['image']->store('projects/images', 'public');
-                    $this->saveMedia($project, $path, $projectData['image']->getClientOriginalName(), 'image');
+                    $this->saveMediaGeneric($project, $path, $projectData['image']->getClientOriginalName(), 'image');
                 }
 
                 if (isset($projectData['video'])) {
                     $path = $projectData['video']->store('projects/videos', 'public');
-                    $this->saveMedia($project, $path, $projectData['video']->getClientOriginalName(), 'video');
+                    $this->saveMediaGeneric($project, $path, $projectData['video']->getClientOriginalName(), 'video');
                 }
             }
         }
@@ -88,25 +88,14 @@ class ProfileController extends Controller
 
                 if (isset($certData['image'])) {
                     $path = $certData['image']->store('images', 'public');
-                    $this->saveCertificationMedia($cert, $path, $certData['image']->getClientOriginalName(), 'image');
+                    $this->saveMediaGeneric($cert, $path, $certData['image']->getClientOriginalName(), 'image');
                 }
             }
         }
 
         return response()->json([
-            'message' => 'Profile, projects, services and certifications saved successfully.',
+            'message' => 'Profile, projects, services and certifications saved successfully.'
         ], 200);
-    }
-
-    private function saveMedia(Project $project, $path, $fileName, $fileType)
-    {
-        Media::create([
-            'model_id' => $project->id,
-            'model_type' => Project::class,
-            'file_path' => $path,
-            'file_name' => $fileName,
-            'file_type' => $fileType,
-        ]);
     }
 
     private function replaceBusinessImage(ServiceProvider $serviceProvider, $file)
@@ -123,7 +112,7 @@ class ProfileController extends Controller
 
         $path = $file->store('images', 'public');
 
-        return Media::create([
+        Media::create([
             'model_id' => $serviceProvider->id,
             'model_type' => ServiceProvider::class,
             'file_path' => $path,
@@ -132,20 +121,20 @@ class ProfileController extends Controller
         ]);
     }
 
-    private function generateSeoAlias($businessName, $userId)
-    {
-        $slug = Str::slug($businessName);
-        return $slug . '-' . $userId;
-    }
-
-    private function saveCertificationMedia($certification, $path, $fileName, $fileType)
+    private function saveMediaGeneric($model, $path, $fileName, $fileType)
     {
         Media::create([
-            'model_id' => $certification->id,
-            'model_type' => Certification::class,
+            'model_id' => $model->id,
+            'model_type' => get_class($model),
             'file_path' => $path,
             'file_name' => $fileName,
             'file_type' => $fileType,
         ]);
+    }
+
+    private function generateSeoAlias($businessName, $userId)
+    {
+        $slug = Str::slug($businessName);
+        return $slug . '-' . $userId;
     }
 }
