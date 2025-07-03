@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function ProfileTab({ user, register, errors, categories = [], subcategories = [] }) {
+export default function ProfileTab({ user, register, errors, categories = [], subcategories = [], onCategoryChange }) {
   const [preview, setPreview] = useState(null);
 
   return (
@@ -39,6 +39,12 @@ export default function ProfileTab({ user, register, errors, categories = [], su
         <label className="block mb-1 font-medium text-sm">Category</label>
         <select
           {...register("category_id")}
+          onChange={(e) => {
+            register("category_id").onChange(e);
+            if (typeof onCategoryChange === 'function') {
+              onCategoryChange(e.target.value);
+            }
+          }}
           className="w-full border border-gray-300 p-2 text-sm"
         >
           <option value="">Select Category</option>
