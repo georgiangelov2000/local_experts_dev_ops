@@ -8,6 +8,7 @@ use App\Models\Media;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Str;
 
 class ProfileController extends Controller
 {
@@ -32,8 +33,10 @@ class ProfileController extends Controller
         $serviceProvider->description = $validated['description'];
         $serviceProvider->category_id = (int) $validated['category_id'];
         $serviceProvider->service_category_id = (int) $validated['service_category_id'];
+        $serviceProvider->start_time = Carbon::now();
+        $serviceProvider->stop_time = Carbon::now()->addMonth();
+        $serviceProvider->alias = $this->generateSeoAlias($validated['business_name'], $user->id);
         $serviceProvider->save();
-
 
         if ($request->hasFile('image')) {
             $this->replaceBusinessImage($serviceProvider, $request->file('image'));
@@ -158,5 +161,13 @@ class ProfileController extends Controller
             'file_type' => 'image',
         ]);
     }
+
+    private function generateSeoAlias($businessName, $userId)
+    {
+        // Пример: barber-shop-sofia-123
+        $slug = Str::slug($businessName);
+        return $slug . '-' . $userId;
+    }
+
 
 }

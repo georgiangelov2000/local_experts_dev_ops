@@ -19,6 +19,9 @@ return new class extends Migration
                 $table->text('description');
                 $table->integer('category_id')->index();
                 $table->integer('service_category_id')->index();
+                $table->dateTime('start_time')->nullable();
+                $table->dateTime('stop_time')->nullable();
+                $table->string('alias')->unique();
                 $table->timestamps();
             });
         }

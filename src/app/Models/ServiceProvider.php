@@ -23,6 +23,9 @@ class ServiceProvider extends Model
         'description',
         'category_id',
         'service_category_id',
+        'start_date',
+        'end_date',
+        'alias'
     ];
 
     /**
