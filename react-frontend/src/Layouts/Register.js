@@ -1,38 +1,21 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import apiService from '../Services/apiService';
 import { FiMail, FiLock, FiKey } from 'react-icons/fi';
+import { useRegisterForm } from "../Models/useRegisterForm";
 
 export default function Register() {
   const [message, setMessage] = useState({ text: '', type: '' });
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirm_password: ''
-  });
+  const { register, handleSubmit, errors, reset } = useRegisterForm();
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (formData.password !== formData.confirm_password) {
-      setMessage({ text: "Passwords do not match", type: "error" });
-      return;
-    }
-
-    apiService.register(formData)
+  const onSubmit = (data) => {
+    apiService.register(data)
       .then((res) => {
         setMessage({
           text: res.data.message || "Registration successful!",
           type: "success"
         });
+        reset();
       })
       .catch((err) => {
         console.error("Registration error", err);
@@ -56,17 +39,15 @@ export default function Register() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className="block mb-1 text-sm font-medium text-gray-900">Username</label>
             <input
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
+              {...register("username")}
               placeholder="Enter your username"
               className="border border-gray-300 text-gray-900 text-sm block w-full p-2.5"
-              required
             />
+            {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username.message}</p>}
           </div>
 
           <div>
@@ -74,15 +55,12 @@ export default function Register() {
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><FiMail /></span>
               <input
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
+                {...register("email")}
                 placeholder="Enter your email"
                 className="pl-10 border border-gray-300 text-gray-900 text-sm block w-full p-2.5"
-                required
               />
             </div>
+            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
           </div>
 
           <div>
@@ -90,15 +68,13 @@ export default function Register() {
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><FiLock /></span>
               <input
-                name="password"
+                {...register("password")}
                 type="password"
-                value={formData.password}
-                onChange={handleChange}
                 placeholder="Enter your password"
                 className="pl-10 border border-gray-300 text-gray-900 text-sm block w-full p-2.5"
-                required
               />
             </div>
+            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
           </div>
 
           <div>
@@ -106,15 +82,13 @@ export default function Register() {
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><FiKey /></span>
               <input
-                name="confirm_password"
+                {...register("confirm_password")}
                 type="password"
-                value={formData.confirm_password}
-                onChange={handleChange}
                 placeholder="Confirm your password"
                 className="pl-10 border border-gray-300 text-gray-900 text-sm block w-full p-2.5"
-                required
               />
             </div>
+            {errors.confirm_password && <p className="text-red-500 text-xs mt-1">{errors.confirm_password.message}</p>}
           </div>
 
           <button

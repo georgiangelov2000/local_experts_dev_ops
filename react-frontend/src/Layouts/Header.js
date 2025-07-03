@@ -61,16 +61,16 @@ export default function Header() {
             <>
               <Link
                 to="/login"
-                className="flex items-center px-3 py-1 text-sm font-medium border border-white rounded hover:bg-white hover:text-blue-600 transition"
-              >
+                className="flex items-center px-3 py-1 text-sm font-medium border border-white/50 rounded hover:bg-white/10 transition"
+                >
                 <FiLogIn className="mr-1" />
                 Login
               </Link>
 
               <Link
                 to="/register"
-                className="flex items-center px-3 py-1 text-sm font-medium border border-white rounded hover:bg-white hover:text-blue-600 transition"
-              >
+                className="flex items-center px-3 py-1 text-sm font-medium border border-white/50 rounded hover:bg-white/10 transition"
+                >
                 <FiUserPlus className="mr-1" />
                 Register
               </Link>
