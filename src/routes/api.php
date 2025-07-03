@@ -33,7 +33,7 @@ Route::prefix('v1')->group(function () {
         Route::post('services/reviews', [ServiceProviderController::class, 'createReview']);
         Route::put('services/reviews/{id}', [ServiceProviderController::class, 'updateReview']);
         Route::delete('services/reviews/{id}', [ServiceProviderController::class, 'deleteReview']);    
-        Route::put('profile', [ProfileController::class, 'profile']);
+        Route::post('profile', [ProfileController::class, 'profile']);
         Route::post('logout', [AuthController::class, 'logout']);
         Route::get('me', [AuthController::class, 'me']);
     });

@@ -11,6 +11,7 @@ class Media extends Model
     const PENDING = 2;
     
     use HasFactory;
+    public $timestamps = false;
 
     protected $fillable = [
         'model_id',

@@ -22,25 +22,26 @@ class ProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'service_provider_id' => 'nullable|exists:service_providers,id',
+            'business_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'description' => 'nullable|string|max:500',
+            'category_id' => 'nullable|integer|exists:categories,id',
+            'service_category_id' => 'nullable|integer|exists:service_categories,id',
+            'image' => 'nullable|image|max:2048',
 
-            // Профилни полета
-            'email' => 'nullable|email|max:255|unique:users,email,' . $this->user()->id,
-            'city_id' => 'nullable|exists:cities,id',
-            'category_id' => 'nullable|exists:categories,id',
-            'subcategory_id' => 'nullable|exists:service_categories,id',
-            'password' => 'nullable|string|min:6|confirmed',
+            // 'projects' => 'array|max:3',
+            // 'projects.*.id' => 'nullable|exists:projects,id',
+            // 'projects.*.project_name' => 'required|string|max:255',
+            // 'projects.*.description' => 'required|string',
+            // 'projects.*.status' => 'required|integer|in:0,1',
+            // 'projects.*.date_start' => 'required|date',
+            // 'projects.*.date_end' => 'required|date|after_or_equal:projects.*.date_start',
+            // 'projects.*.image' => 'nullable|image|max:2048',
+            // 'projects.*.video' => 'nullable|mimetypes:video/mp4,video/avi,video/mov|max:10240',
 
-            // Проекти
-            'projects' => 'nullable|array|max:3',
-            'projects.*.id' => 'nullable|exists:projects,id',
-            'projects.*.project_name' => 'required_with:projects|string|max:255',
-            'projects.*.description' => 'required_with:projects|string',
-            'projects.*.status' => 'required_with:projects|integer|in:0,1',
-            'projects.*.date_start' => 'required_with:projects|date',
-            'projects.*.date_end' => 'required_with:projects|date|after_or_equal:projects.*.date_start',
-            'projects.*.image' => 'nullable|image|max:2048',
-            'projects.*.video' => 'nullable|mimetypes:video/mp4,video/avi,video/mov|max:10240',
+            // 'services' => 'array',
+            // 'services.*.price' => 'required|numeric|min:0',
+            // 'services.*.description' => 'required|string|max:500',
         ];
     }
 }

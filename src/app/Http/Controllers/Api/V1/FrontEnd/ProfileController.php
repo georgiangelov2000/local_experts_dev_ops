@@ -11,47 +11,33 @@ use Illuminate\Support\Carbon;
 
 class ProfileController extends Controller
 {
-    public function profile(Request $request)
+    public function profile(ProfileRequest $request)
     {
-        $validated = $request->validate([
-            'business_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'description' => 'nullable|string|max:500',
-            'category_id' => 'nullable|integer|exists:categories,id',
-            'service_category_id' => 'nullable|integer|exists:service_categories,id',
-            'image' => 'nullable|image|max:2048',
-
-            'projects' => 'array|max:3',
-            'projects.*.id' => 'nullable|exists:projects,id',
-            'projects.*.project_name' => 'required|string|max:255',
-            'projects.*.description' => 'required|string',
-            'projects.*.status' => 'required|integer|in:0,1',
-            'projects.*.date_start' => 'required|date',
-            'projects.*.date_end' => 'required|date|after_or_equal:projects.*.date_start',
-            'projects.*.image' => 'nullable|image|max:2048',
-            'projects.*.video' => 'nullable|mimetypes:video/mp4,video/avi,video/mov|max:10240',
-
-            'services' => 'array',
-            'services.*.price' => 'required|numeric|min:0',
-            'services.*.description' => 'required|string|max:500',
-        ]);
-
         $user = $request->user();
-        $serviceProvider = $user->serviceProvider()->first();
+        if (!$user->hasVerifiedEmail()) {
+            return response()->json(['error' => 'Please verify your email before logging in.'], 403);
+        }
+
+        $validated = $request->validated();
 
         // Service provider
-        $serviceProvider = $user->serviceProvider()->firstOrCreate(['user_id' => $user->id]);
-        $serviceProvider->update([
-            'business_name' => $validated['business_name'],
-            'description' => $validated['description'],
-            'category_id' => $validated['category_id'],
-            'service_category_id' => $validated['service_category_id'],
-        ]);
+        $serviceProvider = $user->serviceProvider()->first();
+
+        if (!$serviceProvider) {
+            $serviceProvider = new ServiceProvider();
+            $serviceProvider->user_id = $user->id;
+        }
+
+        $serviceProvider->business_name = $validated['business_name'];
+        $serviceProvider->description = $validated['description'];
+        $serviceProvider->category_id = (int) $validated['category_id'];
+        $serviceProvider->service_category_id = (int) $validated['service_category_id'];
+        $serviceProvider->save();
+
 
         // Save business image if present
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('service_providers/images', 'public');
-
+            $path = $request->file('image')->store('images', 'public');
             Media::create([
                 'model_id' => $serviceProvider->id,
                 'model_type' => ServiceProvider::class,
@@ -105,11 +91,45 @@ class ProfileController extends Controller
             }
         }
 
+        // Get business images
+        $businessImages = Media::where('model_id', $serviceProvider->id)
+            ->where('model_type', ServiceProvider::class)
+            ->get()
+            ->map(function ($media) {
+                return [
+                    'file_path' => asset('storage/' . $media->file_path),
+                    'file_name' => $media->file_name,
+                    'file_type' => $media->file_type,
+                ];
+            });
+
+
+        $projectMedia = [];
+        foreach ($responseProjects as $project) {
+            $media = Media::where('model_id', $project->id)
+                ->where('model_type', Project::class)
+                ->get()
+                ->map(function ($m) {
+                    return [
+                        'file_path' => asset('storage/' . $m->file_path),
+                        'file_name' => $m->file_name,
+                        'file_type' => $m->file_type,
+                    ];
+                });
+
+            $projectMedia[] = [
+                'project_id' => $project->id,
+                'media' => $media,
+            ];
+        }
+        
         return response()->json([
             'message' => 'Profile, projects and services saved successfully.',
+            'service_provider' => $serviceProvider,
             'projects' => $responseProjects,
             'services' => $responseServices,
-            'service_provider' => $serviceProvider,
+            'business_images' => $businessImages,
+            'project_media' => $projectMedia,
         ], 200);
     }
 
