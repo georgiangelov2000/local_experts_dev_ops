@@ -65,5 +65,10 @@ class ServiceProvider extends Model
     {
         return $this->hasMany(Service::class);
     }
+
+    public function certifications(): HasMany
+    {
+        return $this->hasMany(Certification::class);
+    }
     
 }

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api\V1\FrontEnd;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileRequest;
+use App\Models\Certification;
 use App\Models\ServiceProvider;
 use App\Models\Media;
+
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -86,6 +88,28 @@ class ProfileController extends Controller
             }
         }
 
+        $responseCertifications = [];
+
+        if (!empty($validated['certifications'])) {
+            foreach ($validated['certifications'] as $certData) {
+                $cert = isset($certData['id'])
+                    ? $serviceProvider->certifications()->where('id', $certData['id'])->firstOrFail()
+                    : $serviceProvider->certifications()->make();
+
+                $cert->name = $certData['name'];
+                $cert->description = $certData['description'];
+                $cert->save();
+
+                if (isset($certData['image'])) {
+                    $path = $certData['image']->store('images', 'public');
+                    $this->saveCertificationMedia($cert, $path, $certData['image']->getClientOriginalName(), 'image');
+                }
+
+                $responseCertifications[] = $cert;
+            }
+        }
+
+
         // Get business images
         $businessImages = Media::where('model_id', $serviceProvider->id)
             ->where('model_type', ServiceProvider::class)
@@ -125,6 +149,7 @@ class ProfileController extends Controller
             'services' => $responseServices,
             'business_images' => $businessImages,
             'project_media' => $projectMedia,
+            'certifications' => $responseCertifications,
         ], 200);
     }
 
@@ -169,5 +194,15 @@ class ProfileController extends Controller
         return $slug . '-' . $userId;
     }
 
+    private function saveCertificationMedia($certification, $path, $fileName, $fileType)
+    {
+        Media::create([
+            'model_id' => $certification->id,
+            'model_type' => Certification::class,
+            'file_path' => $path,
+            'file_name' => $fileName,
+            'file_type' => $fileType,
+        ]);
+    }
 
 }
