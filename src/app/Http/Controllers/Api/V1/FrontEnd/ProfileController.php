@@ -35,16 +35,8 @@ class ProfileController extends Controller
         $serviceProvider->save();
 
 
-        // Save business image if present
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('images', 'public');
-            Media::create([
-                'model_id' => $serviceProvider->id,
-                'model_type' => ServiceProvider::class,
-                'file_path' => $path,
-                'file_name' => $request->file('image')->getClientOriginalName(),
-                'file_type' => 'image',
-            ]);
+            $this->replaceBusinessImage($serviceProvider, $request->file('image'));
         }
 
         $responseProjects = [];
@@ -122,7 +114,7 @@ class ProfileController extends Controller
                 'media' => $media,
             ];
         }
-        
+
         return response()->json([
             'message' => 'Profile, projects and services saved successfully.',
             'service_provider' => $serviceProvider,
@@ -143,4 +135,28 @@ class ProfileController extends Controller
             'file_type' => $fileType,
         ]);
     }
+
+    private function replaceBusinessImage(ServiceProvider $serviceProvider, $file)
+    {
+        $oldMedia = Media::where('model_id', $serviceProvider->id)
+            ->where('model_type', ServiceProvider::class)
+            ->where('file_type', 'image')
+            ->first();
+
+        if ($oldMedia) {
+            \Storage::disk('public')->delete($oldMedia->file_path);
+            $oldMedia->delete();
+        }
+
+        $path = $file->store('images', 'public');
+
+        return Media::create([
+            'model_id' => $serviceProvider->id,
+            'model_type' => ServiceProvider::class,
+            'file_path' => $path,
+            'file_name' => $file->getClientOriginalName(),
+            'file_type' => 'image',
+        ]);
+    }
+
 }
