@@ -1,28 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { FiLogIn, FiUserPlus, FiHeart, FiHome, FiUser, FiLogOut } from 'react-icons/fi';
-import { useEffect, useState } from 'react';
-import apiService from '../Services/apiService';
+import { useAuth } from "../Context/AuthContext";
 
 export default function Header() {
-  const [user, setUser] = useState(null);
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      apiService.auth()
-        .then(res => setUser(res.data))
-        .catch(() => {
-          // Ако токенът е невалиден - изчистваме
-          localStorage.removeItem('token');
-          setUser(null);
-        });
-    }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
+  const handleLogout = async () => {
+    await logout();
     navigate('/login');
   };
 

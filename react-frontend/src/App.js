@@ -8,40 +8,59 @@ import Favourites from './Layouts/Favourites';
 import Provider from './Layouts/Provider';
 import ProfilePage from './Layouts/ProfilePage';
 import ProtectedRoute from './Layouts/ProtectedRoute';
+import { AuthProvider } from "./Context/AuthContext";
 
 export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-
-        <Route
-          path="*"
-          element={
-            <>
-              <Header />
-              <main className="min-h-720 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 w-full max-w-7xl">
-              <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/favourites" element={<Favourites />} />
-                  <Route path="/providers/:id" element={<Provider />} />
-                  <Route
-                    path="/profile"
-                    element={
-                      <ProtectedRoute>
-                        <ProfilePage />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route path="*" element={<div>Page not found</div>} />
-                </Routes>
-              </main>
-              <Footer />
-            </>
-          }
-        />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Header />
+        <main className="min-h-720 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 w-full max-w-7xl">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/favourites" element={<Favourites />} />
+            <Route path="/providers/:id" element={<Provider />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<div>Page not found</div>} />
+          </Routes>
+        </main>
+        <Footer />
+      </Router>
+    </AuthProvider>
   );
 }
+
+
+
+
+// import { useAuth } from "@/contexts/AuthContext";
+
+// export default function SomeComponent() {
+//   const { user, authChecked, logout } = useAuth();
+
+//   if (!authChecked) {
+//     return <p>Loading...</p>;
+//   }
+
+//   return (
+//     <div>
+//       {user ? (
+//         <div>
+//           <p>Welcome {user.name}</p>
+//           <button onClick={logout}>Logout</button>
+//         </div>
+//       ) : (
+//         <p>You are not logged in</p>
+//       )}
+//     </div>
+//   );
+// }

@@ -27,7 +27,8 @@ const apiService = {
   register: (data) => apiClient.post('/register', data),
   login: (data) => apiClient.post('/login', data),
   profile: (data) => apiClient.put('/profile', data),
-  reviews: (data) => apiClient.put('/reviews', data),
+  reviews: (data) => apiClient.post('/reviews', data),
+  refresh: () => apiClient.post("/refresh"),
   auth: () => apiClient.get('/me'),
   logout: () => apiClient.post('/logout'),
 };

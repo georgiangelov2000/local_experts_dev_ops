@@ -139,27 +139,30 @@ class ServiceProviderController extends Controller
     public function updateReview(Request $request, $id)
     {
         $review = Review::findOrFail($id);
-
+    
+        if (auth()->check() && $review->consumer_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized.'], 403);
+        }
+    
         $validated = $request->validate([
             'review_text' => 'sometimes|required|string',
             'rating' => 'sometimes|required|integer|min:1|max:5',
         ]);
-
+    
         $review->update($validated);
-
+    
         return response()->json($review);
     }
-
-    /**
-     * Delete a review
-     */
     public function deleteReview($id)
     {
         $review = Review::findOrFail($id);
+    
+        if (auth()->check() && $review->consumer_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized.'], 403);
+        }
+    
         $review->delete();
-
-        return response()->json([
-            'message' => 'Review deleted successfully.'
-        ]);
+    
+        return response()->json(['message' => 'Review deleted successfully.']);
     }
 }

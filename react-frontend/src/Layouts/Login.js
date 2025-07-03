@@ -1,38 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FiMail, FiLock } from 'react-icons/fi';
-import apiService from '../Services/apiService';
+import { useAuth } from "../Context/AuthContext";
+import { useLoginForm } from "../Models/useLoginForm";
 
 export default function Login() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
-  const [error, setError] = useState('');
+  const { user, authChecked, login } = useAuth();
   const navigate = useNavigate();
+  const [submitError, setSubmitError] = useState("");
+  const { register, handleSubmit, errors, reset } = useLoginForm();
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  useEffect(() => {
+    if (authChecked && user) {
+      navigate("/profile");
+    }
+  }, [authChecked, user, navigate]);
+
+  const onSubmit = async (data) => {
+    setSubmitError("");
+    try {
+      await login(data);
+      navigate("/profile");
+    } catch (err) {
+      setSubmitError("Invalid credentials");
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setError('');
-  
-    apiService.login(formData)
-      .then(res => {
-        localStorage.setItem('token', res.data.token);
-        navigate('/profile');
-      })
-      .catch((err) => {
-        const serverMessage = err.response?.data?.error || "Something went wrong.";
-        setError(serverMessage);
-      });
-  };
-  
+
+  if (!authChecked) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -40,45 +37,33 @@ export default function Login() {
         <h2 className="text-2xl font-bold text-center mb-2">Sign In</h2>
         <p className="text-center text-gray-600 mb-6">Sign in to your account</p>
 
-        {error && (
-          <div className="mb-4 text-red-600 text-center text-sm">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)} >
           <div className="mb-4 relative">
             <FiMail style={{ left: '18px' }} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
+              {...register("email")} 
               placeholder="Email"
               className="w-full pl-10 pr-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
+            {errors.email && <p>{errors.email.message}</p>}
           </div>
 
           <div className="mb-4 relative">
             <FiLock style={{ left: '18px' }} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
-              name="password"
+              {...register("password")} 
+              placeholder="Password" 
               type="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Password"
               className="w-full pl-10 pr-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2   hover:bg-blue-700 transition cursor-pointer"
-          >
+          <button type="submit" className="w-full bg-blue-600 text-white py-2   hover:bg-blue-700 transition cursor-pointer">
             Sign In
           </button>
+          {submitError && <p className="text-red-500">{submitError}</p>}
         </form>
 
         <p className="text-center text-sm text-gray-600 mt-4">

@@ -26,14 +26,13 @@ Route::prefix('v1')->group(function () {
 
     Route::get('services', [ServiceProviderController::class, 'index']);
     Route::get('services/{id}', [ServiceProviderController::class, 'show']);
-    Route::post('services/reviews', [ServiceProviderController::class, 'createReview']);
-    Route::put('services/reviews/{id}', [ServiceProviderController::class, 'updateReview']);
-    Route::delete('services/reviews/{id}', [ServiceProviderController::class, 'deleteReview']);
-
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/categories/{category}/service-categories', [CategoryController::class, 'serviceCategories']);
 
     Route::middleware('auth:api')->group(function () {
+        Route::post('services/reviews', [ServiceProviderController::class, 'createReview']);
+        Route::put('services/reviews/{id}', [ServiceProviderController::class, 'updateReview']);
+        Route::delete('services/reviews/{id}', [ServiceProviderController::class, 'deleteReview']);    
         Route::put('profile', [ProfileController::class, 'profile']);
         Route::post('logout', [AuthController::class, 'logout']);
         Route::get('me', [AuthController::class, 'me']);
