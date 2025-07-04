@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\FrontEnd;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\City;
+use App\Models\Favourite;
 use App\Models\Review;
 use App\Models\ServiceCategory;
 use App\Models\ServiceProvider;
@@ -139,30 +140,115 @@ class ServiceProviderController extends Controller
     public function updateReview(Request $request, $id)
     {
         $review = Review::findOrFail($id);
-    
+
         if (auth()->check() && $review->consumer_id !== auth()->id()) {
             return response()->json(['error' => 'Unauthorized.'], 403);
         }
-    
+
         $validated = $request->validate([
             'review_text' => 'sometimes|required|string',
             'rating' => 'sometimes|required|integer|min:1|max:5',
         ]);
-    
+
         $review->update($validated);
-    
-        return response()->json($review);
+
+        return response()->json(['message' => 'Review updated successfully.', 'review' => $review], 200);
     }
     public function deleteReview($id)
     {
         $review = Review::findOrFail($id);
-    
+
         if (auth()->check() && $review->consumer_id !== auth()->id()) {
             return response()->json(['error' => 'Unauthorized.'], 403);
         }
-    
+
         $review->delete();
-    
-        return response()->json(['message' => 'Review deleted successfully.']);
+
+        return response()->json(['message' => 'Review deleted successfully.'], 200);
     }
+
+    public function createFavourites(Request $request)
+    {
+        $request->validate([
+            'service_provider_id' => 'required|exists:service_providers,id',
+        ]);
+
+        $favourite = Favourite::firstOrCreate([
+            'user_id' => $request->user()->id,
+            'service_provider_id' => $request->service_provider_id,
+        ]);
+
+        return response()->json([
+            'message' => 'Added to favourites.',
+            'favourite' => $favourite
+        ], 201);
+    }
+
+    public function removeFavourites(Request $request, $providerId)
+    {
+        $deleted = Favourite::where('user_id', $request->user()->id)
+            ->where('service_provider_id', $providerId)
+            ->delete();
+
+        if ($deleted) {
+            return response()->json(['message' => 'Removed from favourites.'], 200);
+        }
+
+        return response()->json(['message' => 'Not found in favourites.'], 404);
+    }
+
+    public function getFavourites()
+    {
+        $favourites = auth()->user()->favourites()->with('serviceProvider')->get();
+        return response()->json(['favourites' => $favourites], 200);
+    }
+
+    /**
+     * Like a service provider.
+     */
+    public function like(Request $request, $providerId)
+    {
+        $provider = ServiceProvider::findOrFail($providerId);
+
+        // Ако вече е харесал, не правим нищо
+        if ($request->user()->likes()->where('service_provider_id', $providerId)->exists()) {
+            return response()->json(['message' => 'Already liked.'],200);
+        }
+
+        // Премахваме дислайк ако има
+        $request->user()->dislikes()->where('service_provider_id', $providerId)->delete();
+
+        // Добавяме лайк
+        $request->user()->likes()->create([
+            'service_provider_id' => $providerId
+        ]);
+
+        // По избор: увеличи брояча
+        $provider->increment('likes_count');
+
+        return response()->json(['message' => 'Liked successfully.'], 200);
+    }
+
+    /**
+     * Dislike a service provider.
+     */
+    public function dislike(Request $request, $providerId)
+    {
+        $provider = ServiceProvider::findOrFail($providerId);
+
+        if ($request->user()->dislikes()->where('service_provider_id', $providerId)->exists()) {
+            return response()->json(['message' => 'Already disliked.'],200);
+        }
+
+        $request->user()->likes()->where('service_provider_id', $providerId)->delete();
+
+        $request->user()->dislikes()->create([
+            'service_provider_id' => $providerId
+        ]);
+
+        $provider->increment('dislikes_count');
+
+        return response()->json(['message' => 'Disliked successfully.'], 200);
+    }
+
 }

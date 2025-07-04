@@ -30,9 +30,16 @@ Route::prefix('v1')->group(function () {
     Route::get('/categories/{category}/service-categories', [CategoryController::class, 'serviceCategories']);
 
     Route::middleware('auth:api')->group(function () {
+        Route::post('providers/{provider}/like', [ServiceProviderController::class, 'like']);
+        Route::post('providers/{provider}/dislike', [ServiceProviderController::class, 'dislike']);
+        
+        Route::post('services/favourites', [ServiceProviderController::class, 'createFavourites']);
+        Route::delete('services/favourites/{providerId}', [ServiceProviderController::class, 'removeFavourites']);        
+        
         Route::post('services/reviews', [ServiceProviderController::class, 'createReview']);
         Route::put('services/reviews/{id}', [ServiceProviderController::class, 'updateReview']);
         Route::delete('services/reviews/{id}', [ServiceProviderController::class, 'deleteReview']);    
+        
         Route::post('profile', [ProfileController::class, 'profile']);
         Route::post('logout', [AuthController::class, 'logout']);
         Route::get('me', [AuthController::class, 'me']);

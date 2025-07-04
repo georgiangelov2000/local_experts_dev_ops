@@ -32,6 +32,15 @@ const apiService = {
   refresh: () => apiClient.post("/refresh"),
   auth: () => apiClient.get('/me'),
   logout: () => apiClient.post('/logout'),
+  likeProvider(id) {
+    return apiClient.post(`/providers/${id}/like`);
+  },
+  dislikeProvider(id) {
+    return apiClient.post(`/providers/${id}/dislike`);
+  },
+  toggleFavourite(id) {
+    return apiClient.post(`/providers/${id}/favourite`);
+  }
 };
 
 export default apiService;
