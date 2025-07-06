@@ -181,12 +181,12 @@ export default function Provider() {
       </div>
 
       <h3 className="text-xl font-bold mt-5 mb-5">Reviews</h3>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 bg-white rounded-lg p-5">
+      <div className="mx-auto max-w-7xl  bg-white rounded-lg p-5">
         <Reviews reviews={provider.reviews} />
       </div>
 
       <h3 className="text-xl font-bold mt-5 mb-5">Related Providers</h3>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 bg-white rounded-lg">
+      <div className="mx-auto max-w-7xl  bg-white rounded-lg">
         <RelatedProviders providers={related} />
       </div>
     </>

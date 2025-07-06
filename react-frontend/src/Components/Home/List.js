@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FiMapPin, FiEye, FiStar, FiThumbsUp, FiThumbsDown, FiHeart } from 'react-icons/fi';
+import { FiMapPin, FiEye, FiThumbsUp, FiThumbsDown, FiHeart } from 'react-icons/fi';
 
 export default function List({ providers, filters, pagination, onPageChange }) {
   const totalPages = Math.ceil(pagination.total / pagination.per_page);
@@ -39,7 +39,7 @@ export default function List({ providers, filters, pagination, onPageChange }) {
                   className="flex items-start bg-gray-100 transition group mb-2 rounded-lg"
                 >
                   {/* Promoted badge */}
-                  <div className="absolute top-0 left-2 bg-yellow-100 text-yellow-900 text-xs font-semibold px-2 py-0.5 rounded">
+                  <div className="absolute top-0 left-2 bg-yellow-500 text-yellow-900 text-xs font-semibold px-2 py-0.5 rounded">
                     Promoted
                   </div>
 
@@ -64,20 +64,23 @@ export default function List({ providers, filters, pagination, onPageChange }) {
                       </h3>
                       <p className="text-sm text-gray-700">{provider.description}</p>
 
-                      <div className="flex flex-wrap text-xs text-gray-600 mt-1 space-x-2">
+                      <div className="flex flex-wrap gap-2 mt-1 text-xs text-gray-600">
+                        {provider.locations?.map((loc, idx) => (
+                          <span key={idx} className="flex items-center bg-gray-100 rounded-full">
+                            <FiMapPin className="mr-1" /> {loc}
+                          </span>
+                        ))}
                         <span className="flex items-center">
-                          <FiMapPin className="mr-1" /> {provider.location || 'Unknown'}
+                          <FiEye className="mr-1" /> {provider.views ?? 0} views
                         </span>
                         <span className="flex items-center">
-                          <FiEye className="mr-1" /> {provider.views || 123} views
+                            👍 {provider.likes_count ?? 0}
                         </span>
                         <span className="flex items-center">
-                          <FiStar className="mr-1 text-yellow-400" /> {provider.reviews || 5} reviews
-                        </span>
-                        <span className="font-bold text-gray-800">
-                          {provider.price ? `${provider.price} BGN` : '10 BGN'}
+                            👎 {provider.dislikes_count ?? 0}
                         </span>
                       </div>
+                      
                     </div>
 
                     {/* Actions */}
