@@ -40,7 +40,9 @@ const apiService = {
   },
   toggleFavourite(id) {
     return apiClient.post(`/providers/${id}/favourite`);
-  }
+  },
+  forgotPassword: (data) => apiClient.post('/forgot-password', data),
+  resetPassword: (data) => apiClient.post('/reset-password', data),
 };
 
 export default apiService;

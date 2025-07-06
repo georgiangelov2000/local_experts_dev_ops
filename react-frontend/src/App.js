@@ -7,6 +7,8 @@ import Footer from './Layouts/Footer';
 import Favourites from './Layouts/Favourites';
 import Provider from './Layouts/Provider';
 import ProfilePage from './Layouts/ProfilePage';
+import ForgotPassword from './Layouts/ForgotPassword';
+import ResetPassword from './Layouts/ResetPassword';
 import ProtectedRoute from './Layouts/ProtectedRoute';
 import { AuthProvider } from "./Context/AuthContext";
 
@@ -22,6 +24,8 @@ export default function App() {
             <Route path="/providers/:id" element={<Provider />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route
               path="/profile"
               element={

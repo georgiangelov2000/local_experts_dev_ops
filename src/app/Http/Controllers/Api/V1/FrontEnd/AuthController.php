@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use Password;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -36,9 +38,9 @@ class AuthController extends Controller
     
         $user = auth()->user();
     
-        if (!$user->hasVerifiedEmail()) {
-            return response()->json(['error' => 'Please verify your email before logging in.'], 403);
-        }
+        // if (!$user->hasVerifiedEmail()) {
+        //     return response()->json(['error' => 'Please verify your email before logging in.'], 403);
+        // }
     
         return response()->json([
             'token' => $token,
@@ -86,5 +88,39 @@ class AuthController extends Controller
         return response()->json($user);
     }
     
+    public function forgotPassword(Request $request)
+{
+    $request->validate(['email' => 'required|email']);
+
+    $status = Password::sendResetLink(
+        $request->only('email')
+    );
+
+    return $status === Password::RESET_LINK_SENT
+        ? response()->json(['message' => 'Reset link sent.'], 200)
+        : response()->json(['message' => __($status)], 400);
+}
+
+public function resetPassword(Request $request)
+{
+    $request->validate([
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|min:8|confirmed',
+    ]);
+
+    $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function ($user, $password) {
+            $user->forceFill([
+                'password' => bcrypt($password)
+            ])->save();
+        }
+    );
+
+    return $status === Password::PASSWORD_RESET
+        ? response()->json(['message' => 'Password reset successfully.'], 200)
+        : response()->json(['message' => __($status)], 400);
+}
 
 }

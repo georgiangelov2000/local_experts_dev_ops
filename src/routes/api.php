@@ -12,7 +12,9 @@ Route::prefix('v1')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login'])->middleware('throttle:5,1');
     Route::post('refresh', [AuthController::class, 'refresh']);
-
+    Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('reset-password', [AuthController::class, 'resetPassword']);
+    
     Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
         $request->fulfill();
         return response()->json(['message' => 'Email verified successfully.']);
