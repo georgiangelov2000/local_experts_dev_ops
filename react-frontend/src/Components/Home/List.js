@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FiMapPin, FiEye, FiThumbsUp, FiThumbsDown, FiHeart } from 'react-icons/fi';
+import { FaStar, FaRegStar, FaStarHalfAlt } from 'react-icons/fa';
 
 export default function List({ providers, filters, pagination, onPageChange }) {
   const totalPages = Math.ceil(pagination.total / pagination.per_page);
@@ -59,29 +60,56 @@ export default function List({ providers, filters, pagination, onPageChange }) {
                   {/* Info */}
                   <div className="flex flex-col justify-between p-4 flex-1">
                     <div>
-                      <h3 className="text-lg font-bold text-blue-600 group-hover:underline">
+                      <h3 className="text-lg font-bold text-blue-600 group-hover:underline mb-1">
                         {provider.business_name}
                       </h3>
-                      <p className="text-sm text-gray-700">{provider.description}</p>
+                      <p className="text-sm text-gray-700 mb-2 line-clamp-2">
+                        {provider.description}
+                      </p>
 
-                      <div className="flex flex-wrap gap-2 mt-1 text-xs text-gray-600">
+                      <div className="flex flex-wrap gap-2 mb-2 text-xs text-gray-600">
                         {provider.locations?.map((loc, idx) => (
-                          <span key={idx} className="flex items-center bg-gray-100 rounded-full">
+                          <span
+                            key={idx}
+                            className="flex items-center bg-gray-100 rounded-full"
+                          >
                             <FiMapPin className="mr-1" /> {loc}
                           </span>
                         ))}
-                        <span className="flex items-center">
+                        <span className="flex items-center bg-gray-100 rounded-full">
                           <FiEye className="mr-1" /> {provider.views ?? 0} views
                         </span>
-                        <span className="flex items-center">
-                            👍 {provider.likes_count ?? 0}
+                        <span className="flex items-center bg-gray-100 rounded-full">
+                          👍 {provider.likes_count ?? 0}
                         </span>
-                        <span className="flex items-center">
-                            👎 {provider.dislikes_count ?? 0}
+                        <span className="flex items-center bg-gray-100 rounded-full">
+                          👎 {provider.dislikes_count ?? 0}
                         </span>
                       </div>
-                      
+
+                      <div className="flex items-center text-xs text-gray-500">
+                        <div className="flex items-center">
+                          {(() => {
+                            const fullStars = Math.floor(provider.final_grade || 0);
+                            const halfStar = (provider.final_grade || 0) - fullStars >= 0.5;
+                            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+                            return (
+                              <>
+                                {Array.from({ length: fullStars }).map((_, i) => (
+                                  <FaStar key={`star-filled-${i}`} className="text-yellow-400 w-4 h-4" />
+                                ))}
+                                {halfStar && <FaStarHalfAlt className="text-yellow-400 w-4 h-4" />}
+                                {Array.from({ length: emptyStars }).map((_, i) => (
+                                  <FaRegStar key={`star-empty-${i}`} className="text-yellow-400 w-4 h-4" />
+                                ))}
+                              </>
+                            );
+                          })()}
+                        </div>
+                        <span className="ml-2">({provider.reviews_count ?? 0} reviews)</span>
+                      </div>
                     </div>
+
 
                     {/* Actions */}
                     <div className="flex space-x-2 mt-2">
@@ -119,11 +147,11 @@ export default function List({ providers, filters, pagination, onPageChange }) {
               <li>
                 <button
                   onClick={() => pagination.current_page > 1 && onPageChange(pagination.current_page - 1)}
-                  className={`flex items-center justify-center px-4 h-10 ms-0 leading-tight bg-white border border-e-0 border-gray-300 rounded-s-lg ${pagination.current_page === 1
-                    ? 'text-gray-400 cursor-not-allowed'
-                    : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700 cursor-pointer'
-                    }`}
                   disabled={pagination.current_page === 1}
+                  className={`flex items-center justify-center px-4 h-10 bg-gray-200 text-gray-400 ${pagination.current_page === 1
+                    ? 'cursor-not-allowed'
+                    : 'hover:text-white transition'
+                    }`}
                 >
                   Previous
                 </button>
@@ -133,9 +161,9 @@ export default function List({ providers, filters, pagination, onPageChange }) {
                 <li key={page}>
                   <button
                     onClick={() => onPageChange(page)}
-                    className={`flex items-center justify-center px-4 h-10 leading-tight border border-gray-300 ${pagination.current_page === page
-                      ? 'text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 cursor-default'
-                      : 'text-gray-500 bg-white hover:bg-gray-100 hover:text-gray-700 cursor-pointer'
+                    className={`flex items-center justify-center px-4 h-10 ml-1 mr-1 ${pagination.current_page === page
+                      ? 'bg-gray-200 text-gray-400'
+                      : 'bg-gray-200 hover:text-white transition'
                       }`}
                   >
                     {page}
@@ -146,17 +174,18 @@ export default function List({ providers, filters, pagination, onPageChange }) {
               <li>
                 <button
                   onClick={() => pagination.current_page < totalPages && onPageChange(pagination.current_page + 1)}
-                  className={`flex items-center justify-center px-4 h-10 leading-tight bg-white border border-gray-300 rounded-e-lg ${pagination.current_page === totalPages
-                    ? 'text-gray-400 cursor-not-allowed'
-                    : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700 cursor-pointer'
-                    }`}
                   disabled={pagination.current_page === totalPages}
+                  className={`flex items-center justify-center px-4 h-10 ${pagination.current_page === totalPages
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-gray-100 text-gray-700 hover:text-white transition'
+                    }`}
                 >
                   Next
                 </button>
               </li>
             </ul>
           </nav>
+
 
         </>
       )}
