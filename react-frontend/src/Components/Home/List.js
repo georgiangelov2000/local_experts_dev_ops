@@ -175,7 +175,7 @@ export default function List({ providers, filters, pagination, onPageChange }) {
                   disabled={pagination.current_page === 1}
                   className={`flex items-center justify-center px-4 h-10 bg-gray-200 text-gray-400 ${pagination.current_page === 1
                     ? 'cursor-not-allowed'
-                    : 'hover:text-white transition'
+                    : 'hover:text-white transition cursor-pointer'
                     }`}
                 >
                   Previous
@@ -188,7 +188,7 @@ export default function List({ providers, filters, pagination, onPageChange }) {
                     onClick={() => onPageChange(page)}
                     className={`flex items-center justify-center px-4 h-10 ml-1 mr-1 ${pagination.current_page === page
                       ? 'bg-gray-200 text-gray-400'
-                      : 'bg-gray-200 hover:text-white transition'
+                      : 'bg-gray-200 cursor-pointer'
                       }`}
                   >
                     {page}
@@ -202,7 +202,7 @@ export default function List({ providers, filters, pagination, onPageChange }) {
                   disabled={pagination.current_page === totalPages}
                   className={`flex items-center justify-center px-4 h-10 ${pagination.current_page === totalPages
                     ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    : 'bg-gray-100 text-gray-700 hover:text-white transition'
+                    : 'bg-gray-100 text-gray-700 cursor-pointer'
                     }`}
                 >
                   Next

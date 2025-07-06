@@ -28,7 +28,8 @@ export default function Service() {
         setPagination(response.data.pagination);
         setServiceCategories(response.data.service_provider_categories)
         setFilters(response.data.filters)
-        if (paramsObj) {
+        console.log();
+        if (paramsObj.sort || paramsObj.category_alias || paramsObj.city_alias) {
           setViewMode('list');
         } else {
           setViewMode('grid');
