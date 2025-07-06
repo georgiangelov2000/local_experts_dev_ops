@@ -47,7 +47,7 @@ class ServiceProviderController extends Controller
         $serviceCategoryName = null;
         $serviceProviderCategories = collect();
 
-        if ($categoryAlias = $request->get('alias')) {
+        if ($categoryAlias = $request->get('category_alias')) {
             $category = Category::where('alias', $categoryAlias)->first();
             $query->where('category_id', $category->id);
             if ($category) {
@@ -56,6 +56,14 @@ class ServiceProviderController extends Controller
             }
         }
 
+        if ($request->has('city_alias')) {
+            $aliases = explode(',', $request->get('city_alias'));
+            $query->whereHas('workspaces.city', function ($q) use ($aliases) {
+                $q->whereIn('alias', $aliases);
+            });
+        }
+        
+        
         if ($serviceCategoryId = $request->get('service_category_id')) {
             $query->where('service_category_id', $serviceCategoryId);
             $serviceCategoryName = ServiceCategory::find($serviceCategoryId)?->name;
@@ -108,7 +116,7 @@ class ServiceProviderController extends Controller
         $categories = Category::select('id', 'name', 'alias')
             ->withCount('serviceProviders')  // assuming relation name is serviceProviders
             ->get();
-        $cities = City::select('id', 'name')->get();
+        $cities = City::select('id', 'name','alias')->get();
 
         return response()->json([
             'categories' => $categories,
@@ -116,8 +124,14 @@ class ServiceProviderController extends Controller
             'service_providers' => $serviceProviders,
             'service_provider_categories' => $serviceProviderCategories,
             'filters' => [
+                'category_alias' => $request->get('alias'),
                 'category_name' => $categoryName,
+                'service_category_id' => $request->get('service_category_id'),
                 'service_category_name' => $serviceCategoryName,
+                'term' => $request->get('term'),
+                'city_alias' => $request->get('city_alias'),
+                'per_page' => $perPage,
+                'page' => $page,
             ],
             "pagination" => [
                 'current_page' => $page,

@@ -8,23 +8,49 @@ export default function List({ providers, filters, pagination, onPageChange }) {
   return (
     <div className="mt-6">
       <h2 className="text-xl font-bold mb-2">Search Results</h2>
-      <div className="flex flex-wrap items-center text-sm text-gray-600 mb-4 space-x-2">
+      <div className="flex flex-wrap items-center text-sm text-gray-600 mb-4 gap-2">
         {filters.term && (
           <span className="inline-flex items-center bg-blue-50 text-blue-700 px-2 py-0.5 rounded">
             Term: <span className="ml-1 font-medium">{filters.term}</span>
           </span>
         )}
-        {filters.category_name && (
+        {filters.category_alias && (
           <span className="inline-flex items-center bg-green-50 text-green-700 px-2 py-0.5 rounded">
+            Category Alias: <span className="ml-1 font-medium">{filters.category_alias}</span>
+          </span>
+        )}
+        {filters.category_name && (
+          <span className="inline-flex items-center bg-green-100 text-green-800 px-2 py-0.5 rounded">
             Category: <span className="ml-1 font-medium">{filters.category_name}</span>
           </span>
         )}
-        {filters.service_category_name && (
+        {filters.service_category_id && (
           <span className="inline-flex items-center bg-purple-50 text-purple-700 px-2 py-0.5 rounded">
+            Service ID: <span className="ml-1 font-medium">{filters.service_category_id}</span>
+          </span>
+        )}
+        {filters.service_category_name && (
+          <span className="inline-flex items-center bg-purple-100 text-purple-800 px-2 py-0.5 rounded">
             Service: <span className="ml-1 font-medium">{filters.service_category_name}</span>
           </span>
         )}
+        {filters.city_alias && (
+          <span className="inline-flex items-center bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded">
+            City: <span className="ml-1 font-medium">{filters.city_alias}</span>
+          </span>
+        )}
+        {filters.per_page && (
+          <span className="inline-flex items-center bg-gray-100 text-gray-800 px-2 py-0.5 rounded">
+            Per Page: <span className="ml-1 font-medium">{filters.per_page}</span>
+          </span>
+        )}
+        {filters.page && (
+          <span className="inline-flex items-center bg-gray-200 text-gray-900 px-2 py-0.5 rounded">
+            Page: <span className="ml-1 font-medium">{filters.page}</span>
+          </span>
+        )}
       </div>
+
 
       {providers.length === 0 ? (
         <div className="text-gray-600 text-center p-6 bg-gray-50 rounded-lg">

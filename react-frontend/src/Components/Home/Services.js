@@ -29,7 +29,7 @@ export default function Service() {
         setPagination(response.data.pagination);
         setServiceCategories(response.data.service_provider_categories)
         setFilters(response.data)
-        if (paramsObj.alias || paramsObj.term) {
+        if (paramsObj.category_alias || paramsObj.term || paramsObj.city_alias) {
           setViewMode('list');
         } else {
           setViewMode('grid');
@@ -46,9 +46,9 @@ export default function Service() {
 
   const handleSearch = (filters) => {
     const newParams = new URLSearchParams();
-    if (filters.city) newParams.set('city_id', filters.city);
-    if (filters.category) newParams.set('category_id', filters.category);
-    if (filters.service_category) newParams.set('service_category_id', filters.service_category);
+    if (filters.city) newParams.set('city_alias', filters.city);
+    if (filters.category) newParams.set('category_alias', filters.category);
+    if (filters.service_category) newParams.set('service_category_alias', filters.service_category);
     if (filters.term) newParams.set('term', filters.term);
     newParams.set('page', 1);
     setSearchParams(newParams);

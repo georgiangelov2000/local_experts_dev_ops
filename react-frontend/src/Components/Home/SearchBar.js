@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FiMapPin, FiLayers, FiList, FiSearch, FiFilter } from 'react-icons/fi';
+import Select from 'react-select';
 
 export default function SearchBar({ categories, cities, serviceCategories, onSearch, filters }) {
   const [localFilters, setLocalFilters] = useState(filters);
@@ -32,7 +33,7 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
           >
             <option value="">Select City</option>
             {cities.map((city) => (
-              <option key={city.id} value={city.id}>{city.name}</option>
+              <option key={city.alias} value={city.alias}>{city.name}</option>
             ))}
           </select>
         </div>
@@ -47,7 +48,7 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
           >
             <option value="">Select Category</option>
             {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>{cat.name}</option>
+              <option key={cat.alias} value={cat.alias}>{cat.name}</option>
             ))}
           </select>
         </div>

@@ -14,6 +14,8 @@ return new class extends Migration
         if (!Schema::hasTable('cities')) {
             Schema::create('cities', function (Blueprint $table) {
                 $table->id();
+                $table->string('name');
+                $table->string('alias')->unique();
             });
         }
     }
