@@ -115,96 +115,86 @@ export default function Profile({ user }) {
             {apiMessage}
           </div>
         )}
-        <div className="text-sm text-gray-700 bg-white p-6 rounded-lg shadow-lg mb-5 space-y-2">
-          <div className="flex justify-between">
-            <span className="font-medium">Business Name:</span>
-            <span className="text-gray-600">{user?.service_provider?.business_name || "N/A"}</span>
-          </div>
+        <div className="bg-white p-6 rounded-xl shadow border border-gray-100 mb-6">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <FiUser className="text-blue-600" /> Profile Information
+          </h2>
 
-          <div className="flex justify-between">
-            <span className="font-medium">Category:</span>
-            <span className="text-gray-600">{user?.service_provider?.category?.name || "N/A"}</span>
-          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
+            <div className="flex justify-between border-b border-gray-300 pb-1">
+              <span className="font-medium">Business Name:</span>
+              <span className="text-gray-600">{user?.service_provider?.business_name || "N/A"}</span>
+            </div>
 
-          <div className="flex justify-between">
-            <span className="font-medium">Service Category:</span>
-            <span className="text-gray-600">{user?.service_provider?.service_category?.name || "N/A"}</span>
-          </div>
+            <div className="flex justify-between border-b border-gray-300 pb-1">
+              <span className="font-medium">Category:</span>
+              <span className="text-gray-600">{user?.service_provider?.category?.name || "N/A"}</span>
+            </div>
 
-          <div className="flex justify-between">
-            <span className="font-medium">Start Time:</span>
-            <span className="text-gray-600">
-              {user?.service_provider?.start_time
-                ? new Date(user?.service_provider.start_time).toLocaleString()
-                : "N/A"}
-            </span>
-          </div>
+            <div className="flex justify-between border-b border-gray-300 pb-1">
+              <span className="font-medium">Service Category:</span>
+              <span className="text-gray-600">{user?.service_provider?.service_category?.name || "N/A"}</span>
+            </div>
 
-          <div className="flex justify-between">
-            <span className="font-medium">Stop Time:</span>
-            <span className="text-gray-600">
-              {user?.service_provider?.stop_time
-                ? new Date(user?.service_provider.stop_time).toLocaleString()
-                : "N/A"}
-            </span>
-          </div>
+            <div className="flex justify-between border-b border-gray-300 pb-1">
+              <span className="font-medium">Start Time:</span>
+              <span className="text-gray-600">
+                {user?.service_provider?.start_time
+                  ? new Date(user?.service_provider.start_time).toLocaleString()
+                  : "N/A"}
+              </span>
+            </div>
 
-          <div className="flex justify-between">
-            <span className="font-medium">Active Service:</span>
-            <span className={
-              user?.service_provider?.stop_time && new Date(user?.service_provider.stop_time) > new Date()
-                ? "text-green-500"
-                : "text-red-500"
-            }>
-              {user?.service_provider?.stop_time && new Date(user?.service_provider.stop_time) > new Date()
-                ? "Active"
-                : "Expired"}
-            </span>
+            <div className="flex justify-between border-b border-gray-300 pb-1">
+              <span className="font-medium">Stop Time:</span>
+              <span className="text-gray-600">
+                {user?.service_provider?.stop_time
+                  ? new Date(user?.service_provider.stop_time).toLocaleString()
+                  : "N/A"}
+              </span>
+            </div>
+
+            <div className="flex justify-between border-b border-gray-300 pb-1">
+              <span className="font-medium">Active Service:</span>
+              <span className={
+                user?.service_provider?.stop_time && new Date(user?.service_provider.stop_time) > new Date()
+                  ? "text-green-500 font-semibold"
+                  : "text-red-500 font-semibold"
+              }>
+                {user?.service_provider?.stop_time && new Date(user?.service_provider.stop_time) > new Date()
+                  ? "Active"
+                  : "Expired"}
+              </span>
+            </div>
           </div>
         </div>
 
 
-        <div className="shadow-lg bg-white p-4 rounded-lg flex flex-wrap gap-2">
-          {["profile", "projects", "services", "contacts", "password", "statics"].map((tab) => (
+
+        <div className="flex flex-wrap gap-2 bg-white p-3 rounded-lg shadow mb-6">
+          {[
+            { id: "profile", label: "Profile", icon: FiUser },
+            { id: "projects", label: "Projects", icon: FiFolder },
+            { id: "services", label: "Services", icon: FiBriefcase },
+            { id: "contacts", label: "Contacts", icon: FiFileText },
+            { id: "password", label: "Password", icon: FiLock },
+            { id: "statics", label: "Statistics", icon: FiBarChart2 },
+          ].map((tab) => (
             <button
-              key={tab}
-              className={`flex items-center gap-1 py-2 px-4 text-sm font-medium cursor-pointer ${activeTab === tab
-                ? "border-b-2 border-blue-600 text-blue-600"
-                : "text-gray-600"
-                }`}
-              onClick={() => setActiveTab(tab)}
+              key={tab.id}
+              className={`flex items-center gap-1 py-2 px-3 rounded transition 
+        ${activeTab === tab.id
+                  ? "bg-blue-50 text-blue-600 font-medium border border-blue-200"
+                  : "text-gray-600 hover:bg-gray-100"}`
+              }
+              onClick={() => setActiveTab(tab.id)}
             >
-              {tab === "profile" && (
-                <>
-                  <FiUser className="text-base" />
-                  Business Profile
-                </>
-              )}
-              {tab === "projects" && (
-                <>
-                  <FiFolder className="text-base" />
-                  Projects
-                </>
-              )}
-              {tab === "services" && <><FiBriefcase className="text-base" /> Services</>}
-              {tab === "contacts" && <><FiFileText className="text-base" /> Contacts</>}
-              {tab === "password" && (
-                <>
-                  <FiLock className="text-base" />
-                  Password
-                </>
-              )}
-
-              {tab === "statics" && (
-                <>
-                  <FiBarChart2 className="text-base" />
-                  Statics
-                </>
-              )}
-
+              <tab.icon className="text-base" />
+              {tab.label}
             </button>
           ))}
         </div>
+
 
         {errors.length > 0 && (
           <div className="bg-red-100 border border-red-400 text-red-700 p-2 rounded mb-2 mt-4">
