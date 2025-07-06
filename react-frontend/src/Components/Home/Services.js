@@ -27,8 +27,8 @@ export default function Service() {
         setProviders(response.data.service_providers);
         setPagination(response.data.pagination);
         setServiceCategories(response.data.service_provider_categories)
-        setFilters(response.data)
-        if (paramsObj.category_alias || paramsObj.term || paramsObj.city_alias) {
+        setFilters(response.data.filters)
+        if (paramsObj) {
           setViewMode('list');
         } else {
           setViewMode('grid');
@@ -45,13 +45,32 @@ export default function Service() {
 
   const handleSearch = (filters) => {
     const newParams = new URLSearchParams();
-    if (filters.city) newParams.set('city_alias', filters.city);
-    if (filters.category) newParams.set('category_alias', filters.category);
-    if (filters.service_category) newParams.set('service_category_alias', filters.service_category);
-    if (filters.term) newParams.set('term', filters.term);
+    
+    if (filters.city && filters.city.length > 0) {
+      const cities = filters.city.map(c => c.value).join(',');
+      newParams.set('city_alias', cities);
+    }
+
+    if (filters.category) {
+      newParams.set('category_alias', filters.category.value || filters.category);
+    }
+
+    if (filters.service_category) {
+      newParams.set('service_category_alias', filters.service_category.value || filters.service_category);
+    }
+
+    if (filters.term) {
+      newParams.set('term', filters.term);
+    }
+
+    if(filters.sort) {
+      newParams.set('sort',filters.sort);
+    }
+
     newParams.set('page', 1);
-    setSearchParams(newParams);
+    setSearchParams(newParams);    
   };
+
 
   const handlePageChange = (pageNum) => {
     const newParams = new URLSearchParams(searchParams);
@@ -71,8 +90,8 @@ export default function Service() {
         serviceCategories={serviceCategories}
         onSearch={handleSearch}
         filters={{
-          city: searchParams.get('city_id') || '',
-          category: searchParams.get('category_id') || '',
+          city: searchParams.get('city_alias') || '',
+          category: searchParams.get('category_alias') || '',
           service_category: searchParams.get('service_category_id') || '',
           term: searchParams.get('term') || ''
         }}
@@ -90,11 +109,11 @@ export default function Service() {
         </>
       ) : (
         <List
-           providers={providers} 
-           filters={filters}
-           pagination={pagination} 
-           onPageChange={handlePageChange}
-           serviceCategories = {serviceCategories} 
+          providers={providers}
+          filters={filters}
+          pagination={pagination}
+          onPageChange={handlePageChange}
+          serviceCategories={serviceCategories}
         />
       )}
     </div>
