@@ -87,18 +87,18 @@ export default function ServiceProviderCard({ provider }) {
 
           <div className="flex justify-between text-xs text-gray-500">
             <div className="flex items-center">
-              <FiEye className="mr-1" />  ({provider.views ?? 100 } Views)
+              <FiEye className="mr-1" />  ({provider.views ?? 100} Views)
             </div>
           </div>
 
           <div className="flex justify-between text-xs text-gray-500">
             <div className="flex items-center space-x-2">
               <div className="flex items-center">
-                <FiThumbsUp className="mr-1 text-green-500" />
+                <span className="text-green-500 font-semibold mr-1">👍</span>
                 <span>{provider.likes_count ?? 0}</span>
               </div>
               <div className="flex items-center">
-                <FiThumbsDown className="mr-1 text-red-500" />
+                <span className="text-red-500 font-semibold mr-1">👎</span>
                 <span>{provider.dislikes_count ?? 0}</span>
               </div>
             </div>
@@ -106,7 +106,7 @@ export default function ServiceProviderCard({ provider }) {
 
           <div className="flex justify-center space-x-4 pt-2 border-t border-gray-100 dark:border-gray-700 mt-2">
             <button
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
               onClick={(e) => {
                 e.preventDefault();
                 dislike();
@@ -117,7 +117,7 @@ export default function ServiceProviderCard({ provider }) {
             </button>
 
             <button
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
               onClick={(e) => {
                 e.preventDefault();
                 like();
@@ -128,7 +128,7 @@ export default function ServiceProviderCard({ provider }) {
             </button>
 
             <button
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
               onClick={(e) => {
                 e.preventDefault();
                 toggleFavourite();
