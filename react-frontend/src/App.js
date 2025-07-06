@@ -42,29 +42,3 @@ export default function App() {
     </AuthProvider>
   );
 }
-
-
-
-
-// import { useAuth } from "@/contexts/AuthContext";
-
-// export default function SomeComponent() {
-//   const { user, authChecked, logout } = useAuth();
-
-//   if (!authChecked) {
-//     return <p>Loading...</p>;
-//   }
-
-//   return (
-//     <div>
-//       {user ? (
-//         <div>
-//           <p>Welcome {user.name}</p>
-//           <button onClick={logout}>Logout</button>
-//         </div>
-//       ) : (
-//         <p>You are not logged in</p>
-//       )}
-//     </div>
-//   );
-// }
