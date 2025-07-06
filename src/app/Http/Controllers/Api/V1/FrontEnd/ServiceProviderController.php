@@ -42,6 +42,28 @@ class ServiceProviderController extends Controller
                     'reviews'
                 ]);
 
+        if ($request->has('sort')) {
+            switch ($request->get('sort')) {
+                case 'promoted':
+                    $query->orderBy('is_promoted', 'desc');
+                    break;
+                case 'reviews_desc':
+                    $query->orderBy('reviews_count', 'desc');
+                    break;
+                case 'reviews_asc':
+                    $query->orderBy('reviews_count', 'asc');
+                    break;
+                case 'views_desc':
+                    $query->orderBy('views', 'desc');
+                    break;
+                case 'views_asc':
+                    $query->orderBy('views', 'asc');
+                    break;
+                default:
+                    break;
+            }
+        }
+
         // Resolve names for applied filters
         $categoryName = null;
         $serviceCategoryName = null;
@@ -62,8 +84,8 @@ class ServiceProviderController extends Controller
                 $q->whereIn('alias', $aliases);
             });
         }
-        
-        
+
+
         if ($serviceCategoryId = $request->get('service_category_id')) {
             $query->where('service_category_id', $serviceCategoryId);
             $serviceCategoryName = ServiceCategory::find($serviceCategoryId)?->name;
@@ -116,7 +138,7 @@ class ServiceProviderController extends Controller
         $categories = Category::select('id', 'name', 'alias')
             ->withCount('serviceProviders')  // assuming relation name is serviceProviders
             ->get();
-        $cities = City::select('id', 'name','alias')->get();
+        $cities = City::select('id', 'name', 'alias')->get();
 
         return response()->json([
             'categories' => $categories,

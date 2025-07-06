@@ -22,9 +22,6 @@ return new class extends Migration
                 $table->dateTime('start_time')->nullable();
                 $table->dateTime('stop_time')->nullable();
                 $table->string('alias')->unique();
-                $table->unsignedInteger('likes_count')->default(0);
-                $table->unsignedInteger('dislikes_count')->default(0);
-                $table->unsignedInteger('favourites_count')->default(0);
                 $table->unsignedInteger('views')->default(0);
                 $table->unsignedBigInteger('contact_id')->nullable()->unique();
                 $table->unsignedInteger('views')->default(0);

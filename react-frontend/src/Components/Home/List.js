@@ -4,7 +4,6 @@ import { FaStar, FaRegStar, FaStarHalfAlt } from 'react-icons/fa';
 
 export default function List({ providers, filters, pagination, onPageChange }) {
   const totalPages = Math.ceil(pagination.total / pagination.per_page);
-  console.log(filters);
   return (
     <div className="mt-6">
       <h2 className="text-xl font-bold mb-2">Search Results</h2>

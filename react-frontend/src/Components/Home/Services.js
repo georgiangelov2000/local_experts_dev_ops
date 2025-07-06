@@ -22,7 +22,6 @@ export default function Service() {
     setLoading(true);
     apiService.getAds({ params: paramsObj })
       .then((response) => {
-        // console.log(response);
         setCategories(response.data.categories);
         setCities(response.data.cities);
         setProviders(response.data.service_providers);

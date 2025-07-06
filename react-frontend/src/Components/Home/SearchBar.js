@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FiMapPin, FiLayers, FiList, FiSearch, FiFilter } from 'react-icons/fi';
-import Select from 'react-select';
+import { FiMapPin, FiLayers, FiList, FiSearch, FiFilter, FiX } from 'react-icons/fi';
 
 export default function SearchBar({ categories, cities, serviceCategories, onSearch, filters }) {
   const [localFilters, setLocalFilters] = useState(filters);
@@ -20,9 +19,25 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
     onSearch(localFilters);
   };
 
+  const handleClear = () => {
+    const cleared = {
+      city: '',
+      category: '',
+      service_category: '',
+      term: '',
+      sort: ''
+    };
+    setLocalFilters(cleared);
+    onSearch(cleared);
+  };
+
+  // Check if any filter is active
+  const hasActiveFilters = Object.values(localFilters).some(value => value !== '');
+
   return (
     <div className="mb-6">
-      <div className="flex flex-col md:flex-row overflow-hidden rounded-lg bg-gray-100">
+      <div className="flex flex-col md:flex-row overflow-hidden rounded-lg bg-gray-100 gap-2 md:gap-0">
+        {/* City */}
         <div className="relative w-full md:w-auto">
           <FiMapPin className="ml-2 absolute left-2 top-1/2 -translate-y-1/2 text-gray-500" />
           <select
@@ -38,6 +53,7 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
           </select>
         </div>
 
+        {/* Category */}
         <div className="relative w-full md:w-auto">
           <FiLayers className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500" />
           <select
@@ -53,6 +69,7 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
           </select>
         </div>
 
+        {/* Service Category */}
         <div className="relative w-full md:w-auto">
           <FiList className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500" />
           <select
@@ -61,12 +78,7 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
             onChange={handleChange}
             className="cursor-pointer pl-8 text-sm text-gray-900 bg-gray-100 w-full border-0 md:border-r md:border-r-white focus:outline-none pb-5 pt-5"
           >
-            {serviceCategories.length > 0 && (
-              <option value="">All</option>
-            )}
-            {serviceCategories.length === 0 && (
-              <option value="">Not Available</option>
-            )}
+            <option value="">Select Service</option>
             {serviceCategories.map((service) => (
               <option key={service.id} value={service.id}>
                 {service.name}
@@ -75,6 +87,7 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
           </select>
         </div>
 
+        {/* Search term */}
         <input
           type="text"
           name="term"
@@ -84,6 +97,7 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
           className="text-sm text-gray-900 bg-gray-100 flex-1 border-0 focus:outline-none p-3"
         />
 
+        {/* Sort */}
         <div className="relative w-full md:w-auto">
           <FiFilter className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500" />
           <select
@@ -96,11 +110,12 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
             <option value="promoted">Promoted First</option>
             <option value="reviews_desc">Reviews: High to Low</option>
             <option value="reviews_asc">Reviews: Low to High</option>
-            <option value="price_desc">Price: High to Low</option>
-            <option value="price_asc">Price: Low to High</option>
+            <option value="views_desc">Views: High to Low</option>
+            <option value="views_asc">Views: Low to High</option>
           </select>
         </div>
 
+        {/* Search button */}
         <button
           onClick={handleSearch}
           className="bg-blue-700 text-white text-sm font-medium px-4 py-2 hover:bg-blue-800 focus:outline-none inline-flex items-center space-x-2 cursor-pointer"
@@ -108,6 +123,17 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
           <FiSearch className="text-white" />
           <span>Search</span>
         </button>
+
+        {/* Conditionally show Clear Filters */}
+        {hasActiveFilters && (
+          <button
+            onClick={handleClear}
+            className="bg-gray-300 text-gray-700 text-sm font-medium px-4 py-2 hover:bg-gray-400 focus:outline-none inline-flex items-center space-x-2 cursor-pointer"
+          >
+            <FiX className="text-gray-700" />
+            <span>Clear</span>
+          </button>
+        )}
       </div>
     </div>
   );
