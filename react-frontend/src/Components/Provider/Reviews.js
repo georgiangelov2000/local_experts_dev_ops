@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FiStar } from 'react-icons/fi';
+import { FaStar, FaRegStar } from 'react-icons/fa';
 import apiService from '../../Services/apiService';
 import { useReviewForm } from '../../Models/useReviewForm';
 
@@ -40,32 +40,37 @@ export default function Reviews({ reviews = [], serviceProviderId, onReviewAdded
     <div className="space-y-6">
       <div className="space-y-4">
         {reviews.length > 0 ? (
-          reviews.map((review) => (
-            <div
-              key={review.id}
-              className="bg-white border border-gray-200 p-4 rounded-lg shadow-sm hover:shadow-md transition"
-            >
-              <div className="flex justify-between items-center mb-2">
-                <div className="flex items-center gap-1">
-                  {[...Array(review.rating)].map((_, i) => (
-                    <FiStar key={i} className="text-yellow-400" />
-                  ))}
-                  {[...Array(5 - review.rating)].map((_, i) => (
-                    <FiStar key={i} className="text-yellow-400 opacity-30" />
-                  ))}
+          reviews.map((review, idx) => {
+            const ratingValue = Math.min(Number(review.rating) || 0, 5);
+
+            return (
+              <div
+                key={idx}
+                className="bg-white border border-gray-200 p-4 rounded-lg shadow-sm hover:shadow-md transition"
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <div className="flex items-center gap-0.5">
+                    {Array.from({ length: ratingValue }).map((_, i) => (
+                      <FaStar key={`filled-${i}`} className="text-yellow-400" />
+                    ))}
+                    {Array.from({ length: 5 - ratingValue }).map((_, i) => (
+                      <FaRegStar key={`empty-${i}`} className="text-yellow-400" />
+                    ))}
+                  </div>
+                  <span className="text-xs text-gray-400">
+                    {review.created_at ? new Date(review.created_at).toLocaleDateString() : ""}
+                  </span>
                 </div>
-                <span className="text-xs text-gray-400">
-                  {new Date(review.created_at).toLocaleDateString()}
-                </span>
+                <p className="text-sm text-gray-700 leading-relaxed italic">
+                  "{review.review_text}"
+                </p>
+                {review.consumer_email && (
+                  <p className="text-xs text-gray-500 mt-1">By {review.consumer_email}</p>
+                )}
               </div>
-              <p className="text-sm text-gray-700 leading-relaxed italic">
-                "{review.review_text}"
-              </p>
-              {review.user && (
-                <p className="text-xs text-gray-500 mt-1">By {review.user.name}</p>
-              )}
-            </div>
-          ))
+            );
+          })
+
         ) : (
           <div className="text-sm text-gray-500">No reviews yet.</div>
         )}

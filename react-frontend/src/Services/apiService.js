@@ -22,7 +22,7 @@ apiClient.interceptors.request.use(config => {
 
 const apiService = {
   getAds: (config = {}) => apiClient.get('/services', config),
-  getAdById: (id) => apiClient.get(`/services/${id}`),
+  getAdById: (alias) => apiClient.get(`/services/${alias}`),
   getCategories: () => apiClient.get('/categories'),
   getCategoryById: (id) => apiClient.get(`/categories/${id}/service-categories`),
   register: (data) => apiClient.post('/register', data),

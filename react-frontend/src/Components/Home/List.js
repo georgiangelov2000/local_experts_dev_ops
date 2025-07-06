@@ -35,7 +35,7 @@ export default function List({ providers, filters, pagination, onPageChange }) {
             {providers.map((provider, index) => (
               <li key={provider.id} className="relative">
                 <Link
-                  to={`/providers/${provider.id}`}
+                  to={`/providers/${provider.alias}`}
                   className="flex items-start bg-gray-100 transition group mb-2 rounded-lg"
                 >
                   {/* Promoted badge */}

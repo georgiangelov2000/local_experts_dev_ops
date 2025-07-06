@@ -19,17 +19,20 @@ class ServiceProviderController extends Controller
      */
     public function index(Request $request)
     {
-        $query = ServiceProvider::with(['user', 'serviceCategory', 'media']);
+        $query = ServiceProvider::with(['user:id', 'serviceCategory', 'media']);
 
         // Resolve names for applied filters
         $categoryName = null;
         $serviceCategoryName = null;
         $serviceProviderCategories = collect();
 
-        if ($categoryId = $request->get('category_id')) {
-            $query->where('category_id', $categoryId);
-            $categoryName = Category::find($categoryId)?->name;
-            $serviceProviderCategories = ServiceCategory::where('category_id', $categoryId)->get();
+        if ($categoryAlias = $request->get('alias')) {
+            $category = Category::where('alias', $categoryAlias)->first();
+            $query->where('category_id', $category->id);
+            if ($category) {
+                $categoryName = $category->name;
+                $serviceProviderCategories = ServiceCategory::where('category_id', $category->id)->get();
+            }
         }
 
         if ($serviceCategoryId = $request->get('service_category_id')) {
@@ -60,7 +63,7 @@ class ServiceProviderController extends Controller
         // Fetch data
         $serviceProviders = $query->limit($perPage)->offset($offset)->get();
 
-        $categories = Category::select('id', 'name')
+        $categories = Category::select('id', 'name', 'alias')
             ->withCount('serviceProviders')  // assuming relation name is serviceProviders
             ->get();
         $cities = City::select('id', 'name')->get();
@@ -86,36 +89,105 @@ class ServiceProviderController extends Controller
     /**
      * Show a specific service provider + related providers + reviews.
      */
-    public function show($id)
+    public function show(string $alias)
     {
         $provider = ServiceProvider::with([
-            'user',
-            'serviceCategory',
+            'user:id,email',
+            'serviceCategory:id,category_id,alias,name',
             'media',
-            'category',
-            'reviews',
-            'projects'
-        ])
-            ->find($id);
+            'category:id,name,alias',
+            'reviews.serviceProvider:id,business_name', // load serviceProvider with limited fields
+            'reviews.consumer:id,email',
+            'projects',
+            'workspaces.city:id,name',
+            'certifications'
+        ])->where('alias', $alias)->first();
 
         if (!$provider) {
             return response()->json([
                 'error' => 'Service provider not found',
             ], 404);
         }
+        // Map reviews
+        $provider->reviews = $provider->reviews->map(function ($reviewItem) {
+            return [
+                'review_text' => $reviewItem->review_text,
+                'created_at' => $reviewItem->created_at,
+                'updated_at' => $reviewItem->updated_at,
+                'service_provider_name' => $reviewItem->serviceProvider?->business_name,
+                'consumer_email' => $reviewItem->consumer?->email,
+                'rating' => $reviewItem->rating
+            ];
+        });
 
-        // Fetch related providers in the same category
+        // Map media URLs
+        $provider->media = $provider->media->map(function ($mediaItem) {
+            return [
+                'url' => config('app.url') . '/' . 'storage/' . ltrim($mediaItem->file_path, '/'),
+            ];
+        });
+
+        // Map projects
+        $provider->projects = $provider->projects->map(function ($projectItem) {
+            return [
+                'project_name' => $projectItem->project_name,
+                'description' => $projectItem->description,
+                'date_start' => $projectItem->date_start,
+                'date_end' => $projectItem->date_end,
+            ];
+        });
+
+        // Map services
+        $provider->services = $provider->services->map(function ($serviceItem) {
+            return [
+                'price' => $serviceItem->price,
+                'description' => $serviceItem->description,
+            ];
+        });
+
+        // Map services
+        $provider->workspaces = $provider->workspaces->map(function ($workSpace) {
+            return [
+                'name' => $workSpace->city->name,
+            ];
+        });
+
+        // Fetch related providers
         $relatedProviders = ServiceProvider::with(['user', 'serviceCategory', 'media'])
             ->where('category_id', $provider->category_id)
             ->where('id', '!=', $provider->id)
             ->limit(5)
             ->get();
 
+        $finalGrade = null;
+        if ($provider->reviews->count() > 0) {
+            $finalGrade = round(
+                $provider->reviews->avg('rating'),
+                2
+            );
+        }
+
         return response()->json([
-            'service_provider' => $provider,
+            'service_provider' => [
+                'business_name' => $provider->business_name,
+                'description' => $provider->description,
+                'service_category' => $provider->serviceCategory?->name,
+                'start_time' => $provider->start_time,
+                'stop_time' => $provider->stop_time,
+                'alias' => $provider->alias,
+                'email' => $provider->user->email,
+                'media' => $provider->media,
+                'projects' => $provider->projects,
+                'services' => $provider->services,
+                'reviews' => $provider->reviews,
+                'final_grade' => $finalGrade,
+                'workspaces' => $provider->workspaces,
+                'certifications' => $provider->certifications
+            ],
             'related_providers' => $relatedProviders,
         ], 200);
     }
+
 
     /**
      * Create a review for a service provider
@@ -212,7 +284,7 @@ class ServiceProviderController extends Controller
 
         // Ако вече е харесал, не правим нищо
         if ($request->user()->likes()->where('service_provider_id', $providerId)->exists()) {
-            return response()->json(['message' => 'Already liked.'],200);
+            return response()->json(['message' => 'Already liked.'], 200);
         }
 
         // Премахваме дислайк ако има
@@ -237,7 +309,7 @@ class ServiceProviderController extends Controller
         $provider = ServiceProvider::findOrFail($providerId);
 
         if ($request->user()->dislikes()->where('service_provider_id', $providerId)->exists()) {
-            return response()->json(['message' => 'Already disliked.'],200);
+            return response()->json(['message' => 'Already disliked.'], 200);
         }
 
         $request->user()->likes()->where('service_provider_id', $providerId)->delete();

@@ -29,7 +29,7 @@ export default function Service() {
         setPagination(response.data.pagination);
         setServiceCategories(response.data.service_provider_categories)
         setFilters(response.data)
-        if (paramsObj.category_id || paramsObj.term) {
+        if (paramsObj.alias || paramsObj.term) {
           setViewMode('list');
         } else {
           setViewMode('grid');

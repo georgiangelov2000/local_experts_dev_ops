@@ -5,7 +5,7 @@ export default function Categories({ categories }) {
 
   const handleCategoryClick = (categoryId) => {
     const newParams = new URLSearchParams(searchParams);
-    newParams.set('category_id', categoryId);
+    newParams.set('alias', categoryId);
     newParams.set('page', 1);
     setSearchParams(newParams);
   };
@@ -17,8 +17,8 @@ export default function Categories({ categories }) {
       <div className="flex flex-wrap justify-center gap-6">
         {categories.map((cat) => (
           <div
-            key={cat.id}
-            onClick={() => handleCategoryClick(cat.id)}
+            key={cat.alias}
+            onClick={() => handleCategoryClick(cat.alias)}
             className="flex flex-col items-center cursor-pointer group"
           >
             <div

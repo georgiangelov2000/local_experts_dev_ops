@@ -15,7 +15,7 @@ export default function ServiceProviderCard({ provider }) {
 
   return (
     <Link
-      to={`/providers/${provider.id}`}
+      to={`/providers/${provider.alias}`}
       className="block hover:no-underline"
     >
       <div className="relative bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl hover:ring-2 hover:ring-blue-200 transition-transform transform hover:-translate-y-1 duration-300 dark:bg-gray-800 dark:border-gray-700">

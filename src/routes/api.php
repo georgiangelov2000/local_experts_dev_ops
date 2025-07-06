@@ -27,7 +27,7 @@ Route::prefix('v1')->group(function () {
     })->middleware(['throttle:6,1'])->name('verification.send');
 
     Route::get('services', [ServiceProviderController::class, 'index']);
-    Route::get('services/{id}', [ServiceProviderController::class, 'show']);
+    Route::get('services/{alias}', [ServiceProviderController::class, 'show']);
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/categories/{category}/service-categories', [CategoryController::class, 'serviceCategories']);
 

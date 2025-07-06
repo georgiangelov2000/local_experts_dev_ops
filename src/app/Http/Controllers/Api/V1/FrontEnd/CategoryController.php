@@ -11,7 +11,7 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         if ($request->has('id')) {
-            $category = Category::select('id', 'name')
+            $category = Category::select('id', 'name', 'alias')
                 ->withCount('serviceProviders')
                 ->find($request->get('id'));
 

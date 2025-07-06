@@ -71,4 +71,8 @@ class ServiceProvider extends Model
         return $this->hasMany(Certification::class);
     }
     
+    public function workspaces(): HasMany
+    {
+        return $this->hasMany(Workspace::class);
+    }
 }

@@ -21,7 +21,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/favourites" element={<Favourites />} />
-            <Route path="/providers/:id" element={<Provider />} />
+            <Route path="/providers/:alias" element={<Provider />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

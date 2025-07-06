@@ -3,13 +3,14 @@ import { useParams } from 'react-router-dom';
 import apiService from '../Services/apiService';
 import RelatedProviders from '../Components/Provider/RelatedProviders';
 import { FiPhone, FiMail, FiGlobe, FiStar } from 'react-icons/fi';
+import { FaStar, FaRegStar } from 'react-icons/fa';
 import ProfileTab from '../Components/Provider/Tabs/ProfileTab';
 import ProjectsTab from '../Components/Provider/Tabs/ProjectsTab';
 import VideosTab from '../Components/Provider/Tabs/VideosTab';
 import Reviews from '../Components/Provider/Reviews';
 
 export default function Provider() {
-  const { id } = useParams();
+  const { alias } = useParams();
   const [provider, setProvider] = useState(null);
   const [related, setRelated] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +21,7 @@ export default function Provider() {
 
   useEffect(() => {
     setLoading(true);
-    apiService.getAdById(id)
+    apiService.getAdById(alias)
       .then((response) => {
         setProvider(response.data.service_provider);
         setRelated(response.data.related_providers);
@@ -29,7 +30,7 @@ export default function Provider() {
         console.error('Error loading provider:', err);
       })
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [alias]);
 
   if (loading) {
     return <div className="text-center p-6">Loading provider details...</div>;
@@ -57,42 +58,44 @@ export default function Provider() {
             />
             <div>
               <h2 className="text-2xl font-bold text-gray-900">{provider.business_name}</h2>
-              <p className="text-gray-600">{provider.service_category?.name || 'Service Provider'}</p>
+              <p className="text-gray-600">{provider.service_category || 'Service Provider'}</p>
               <div className="flex items-center mt-1">
-                {[...Array(4)].map((_, i) => (
-                  <FiStar key={i} className="text-yellow-400 mr-1" />
+                {Array.from({ length: Math.floor(provider.final_grade || 0) }).map((_, i) => (
+                  <FaStar key={`filled-${i}`} className="text-yellow-400 mr-1" />
                 ))}
-                <FiStar className="text-yellow-400 mr-1 opacity-50" />
+                {Array.from({ length: 5 - Math.floor(provider.final_grade || 0) }).map((_, i) => (
+                  <FaRegStar key={`empty-${i}`} className="text-yellow-400 mr-1 opacity-50" />
+                ))}
                 <span className="text-sm text-gray-600 ml-2">
                   {provider.reviews?.length || 0} reviews
                 </span>
               </div>
               <div className="flex flex-wrap gap-2 mt-2">
                 {/* {provider.phone && ( */}
-                  <a
-                    // href={`tel:${provider.phone}`}
-                    className="flex items-center text-blue-600 hover:underline text-sm"
-                  >
-                    <FiPhone className="mr-1" /> Call
-                  </a>
+                <a
+                  // href={`tel:${provider.phone}`}
+                  className="flex items-center text-blue-600 hover:underline text-sm"
+                >
+                  <FiPhone className="mr-1" /> Call
+                </a>
                 {/* )} */}
                 {/* {provider.email && ( */}
-                  <a
-                    // href={`mailto:${provider.email}`}
-                    className="flex items-center text-blue-600 hover:underline text-sm"
-                  >
-                    <FiMail className="mr-1" /> Email
-                  </a>
+                <a
+                  // href={`mailto:${provider.email}`}
+                  className="flex items-center text-blue-600 hover:underline text-sm"
+                >
+                  <FiMail className="mr-1" /> Email
+                </a>
                 {/* )} */}
                 {/* {provider.website && ( */}
-                  <a
-                    // href={provider.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center text-blue-600 hover:underline text-sm"
-                  >
-                    <FiGlobe className="mr-1" /> Website
-                  </a>
+                <a
+                  // href={provider.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center text-blue-600 hover:underline text-sm"
+                >
+                  <FiGlobe className="mr-1" /> Website
+                </a>
                 {/* )} */}
               </div>
             </div>
@@ -123,7 +126,7 @@ export default function Provider() {
 
         {/* Tab Content */}
         {activeTab === 'Profile' && <ProfileTab provider={provider} />}
-        {activeTab === 'Projects' && <ProjectsTab projects={provider.user_projects} />}
+        {activeTab === 'Projects' && <ProjectsTab projects={provider.projects} />}
         {activeTab === 'Videos' && <VideosTab videos={provider.videos || ['https://www.youtube.com/embed/dQw4w9WgXcQ']} />}
 
         {/* Contact modal */}
