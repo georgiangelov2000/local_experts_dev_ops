@@ -5,7 +5,7 @@ export default function Categories({ categories }) {
 
   const handleCategoryClick = (categoryId) => {
     const newParams = new URLSearchParams(searchParams);
-    newParams.set('alias', categoryId);
+    newParams.set('category_alias', categoryId);
     newParams.set('page', 1);
     setSearchParams(newParams);
   };
