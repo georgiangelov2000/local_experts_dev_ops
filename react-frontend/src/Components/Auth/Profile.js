@@ -80,6 +80,12 @@ export default function Profile({ user }) {
   }, []);
 
   useEffect(() => {
+    if (user?.service_provider?.category_id) {
+      setSelectedCategoryId(user.service_provider.category_id);
+    }
+  }, [user]);
+
+  useEffect(() => {
     if (selectedCategoryId) {
       apiService.getCategoryById(selectedCategoryId)
         .then((res) => {
@@ -169,8 +175,6 @@ export default function Profile({ user }) {
           </div>
         </div>
 
-
-
         <div className="flex flex-wrap gap-2 bg-white p-3 rounded-lg shadow mb-6">
           {[
             { id: "profile", label: "Profile", icon: FiUser },
@@ -182,7 +186,7 @@ export default function Profile({ user }) {
           ].map((tab) => (
             <button
               key={tab.id}
-              className={`flex items-center gap-1 py-2 px-3 rounded transition 
+              className={`flex items-center gap-1 py-2 px-3 rounded transition cursor-pointer
         ${activeTab === tab.id
                   ? "bg-blue-50 text-blue-600 font-medium border border-blue-200"
                   : "text-gray-600 hover:bg-gray-100"}`
