@@ -97,7 +97,7 @@ export default function Profile({ user }) {
 
   return (
     <>
-      {user?.email_verified_at === null ? (
+      {/* {user?.email_verified_at === null ? (
         <div className="flex items-center p-4 mb-4 text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
           <svg className="flex-shrink-0 w-5 h-5 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
             <path d="M8.257 3.099c.366-.446.957-.53 1.414-.184l.094.083 7 7c.39.39.39 1.024 0 1.414l-7 7c-.39.39-1.024.39-1.414 0l-7-7c-.39-.39-.39-1.024 0-1.414l7-7zm1.414 1.414L4.828 9.356l4.243 4.243 4.243-4.243-4.243-4.243z" />
@@ -108,7 +108,7 @@ export default function Profile({ user }) {
           </div>
         </div>
 
-      ) : (
+      ) : ( */}
       <>
         {apiMessage && (
           <div className="bg-green-100 border border-green-400 text-green-700 p-2 rounded mt-2">
@@ -117,31 +117,52 @@ export default function Profile({ user }) {
         )}
         <div className="text-sm text-gray-700 bg-white p-6 rounded-lg shadow-lg mb-5 space-y-2">
           <div className="flex justify-between">
-            <span className="font-medium">Username:</span>
-            <span className="text-gray-600">{user?.username || "N/A"}</span>
+            <span className="font-medium">Business Name:</span>
+            <span className="text-gray-600">{user?.service_provider?.business_name || "N/A"}</span>
           </div>
 
           <div className="flex justify-between">
-            <span className="font-medium">Created At:</span>
+            <span className="font-medium">Category:</span>
+            <span className="text-gray-600">{user?.service_provider?.category?.name || "N/A"}</span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="font-medium">Service Category:</span>
+            <span className="text-gray-600">{user?.service_provider?.service_category?.name || "N/A"}</span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="font-medium">Start Time:</span>
             <span className="text-gray-600">
-              {user?.created_at
-                ? new Date(user.created_at).toLocaleString()
+              {user?.service_provider?.start_time
+                ? new Date(user?.service_provider.start_time).toLocaleString()
                 : "N/A"}
             </span>
           </div>
 
           <div className="flex justify-between">
-            <span className="font-medium">Expired Service:</span>
-            <span className={user?.service_expired ? "text-red-500" : "text-green-500"}>
-              {user?.service_expired ? "Yes" : "No"}
+            <span className="font-medium">Stop Time:</span>
+            <span className="text-gray-600">
+              {user?.service_provider?.stop_time
+                ? new Date(user?.service_provider.stop_time).toLocaleString()
+                : "N/A"}
             </span>
           </div>
 
           <div className="flex justify-between">
-            <span className="font-medium">Category:</span>
-            <span className="text-gray-600">{user?.category || "N/A"}</span>
+            <span className="font-medium">Active Service:</span>
+            <span className={
+              user?.service_provider?.stop_time && new Date(user?.service_provider.stop_time) > new Date()
+                ? "text-green-500"
+                : "text-red-500"
+            }>
+              {user?.service_provider?.stop_time && new Date(user?.service_provider.stop_time) > new Date()
+                ? "Active"
+                : "Expired"}
+            </span>
           </div>
         </div>
+
 
         <div className="shadow-lg bg-white p-4 rounded-lg flex flex-wrap gap-2">
           {["profile", "projects", "services", "contacts", "password", "statics"].map((tab) => (
@@ -239,7 +260,7 @@ export default function Profile({ user }) {
           </div>
         </form>
       </>
-      )} 
+      {/* )}  */}
     </>
   );
 }
