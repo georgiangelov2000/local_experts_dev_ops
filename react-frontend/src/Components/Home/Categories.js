@@ -34,7 +34,7 @@ export default function Categories({ categories }) {
               />
             </div>
             <span className="text-sm text-center font-medium text-gray-700 group-hover:text-blue-600">
-              {cat.name}
+              {cat.name} ({cat.service_providers_count})
             </span>
           </div>
         ))}

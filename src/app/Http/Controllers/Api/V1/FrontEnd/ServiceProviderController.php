@@ -19,7 +19,26 @@ class ServiceProviderController extends Controller
      */
     public function index(Request $request)
     {
-        $query = ServiceProvider::with(['user:id', 'serviceCategory', 'media']);
+        $query = ServiceProvider::select([
+            'id',
+            'user_id',
+            'business_name',
+            'category_id',
+            'service_category_id',
+            'start_time',
+            'stop_time',
+            'description',
+            'alias'
+        ])->with([
+            'user:id', 
+            'serviceCategory', 
+            'media',
+            'workspaces.city:id,name',
+        ])->withCount([
+            'likes',
+            'dislikes',
+            'reviews'
+        ]);
 
         // Resolve names for applied filters
         $categoryName = null;
@@ -62,6 +81,27 @@ class ServiceProviderController extends Controller
 
         // Fetch data
         $serviceProviders = $query->limit($perPage)->offset($offset)->get();
+
+        $serviceProviders = $serviceProviders->map(function($provider) {
+            $locations = $provider->workspaces->map(function ($workspace) {
+                return $workspace->city?->name;
+            })->filter()->values(); // remove nulls and reset indexes
+            
+            return [
+                'business_name' => $provider->business_name,
+                'start_time' => $provider->start_time,
+                'stop_time' => $provider->stop_time,
+                'alias' => $provider->alias,
+                'service_category' => $provider->serviceCategory->name,
+                'description' => $provider->description,
+                'media' => $provider->media->first() ?? [],
+                'likes_count' => $provider->likes_count,
+                'dislikes_count' => $provider->dislikes_count,
+                'reviews_count' => $provider->reviews_count,
+                'final_grade' => $provider->rating(),
+                'locations' => $locations
+            ]; 
+        });
 
         $categories = Category::select('id', 'name', 'alias')
             ->withCount('serviceProviders')  // assuming relation name is serviceProviders

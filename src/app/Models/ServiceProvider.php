@@ -8,6 +8,8 @@ use App\Models\Category;
 use App\Models\ServiceCategory;
 use App\Models\Review;
 use App\Models\Project;
+use App\Models\Like;
+use App\Models\Dislike;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -74,5 +76,26 @@ class ServiceProvider extends Model
     public function workspaces(): HasMany
     {
         return $this->hasMany(Workspace::class);
+    }
+
+    public function likes(): HasMany
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function dislikes(): HasMany
+    {
+        return $this->hasMany(Dislike::class);
+    }
+
+    public function rating(){
+        $finalGrade = 0;
+        if($this->reviews->count() > 0) {
+            $finalGrade = round(
+                $this->reviews->avg('rating'),
+                2
+            );
+        }
+        return $finalGrade;
     }
 }

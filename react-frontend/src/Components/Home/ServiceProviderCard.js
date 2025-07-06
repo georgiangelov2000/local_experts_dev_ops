@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { FiHeart, FiThumbsUp, FiThumbsDown, FiEye, FiMapPin } from "react-icons/fi";
+import { FaStar, FaRegStar, FaStarHalfAlt } from 'react-icons/fa';
 import useProviderActions from "../../Hooks/useProviderActions";
 
 export default function ServiceProviderCard({ provider }) {
@@ -36,9 +37,9 @@ export default function ServiceProviderCard({ provider }) {
         />
 
         <div className="p-4 space-y-2">
-          {provider.service_category?.name && (
+          {provider.service_category && (
             <span className="inline-block text-xs font-semibold bg-blue-600 text-white rounded-full px-3 py-0.5">
-              {provider.service_category.name}
+              {provider.service_category}
             </span>
           )}
 
@@ -51,16 +52,42 @@ export default function ServiceProviderCard({ provider }) {
           </p>
 
           <div className="flex items-center text-xs text-gray-500">
-            <FiMapPin className="mr-1" />
-            {provider.location ?? "Plovdiv"}
+            <span className="flex items-center flex-wrap gap-1">
+              {provider.locations?.length > 0 ? (
+                provider.locations.map((city, idx) => (
+                  <span key={idx} className="flex items-center bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded-full">
+                    <FiMapPin className="mr-1" /> {city}
+                  </span>
+                ))
+              ) : (
+                <span className="text-xs text-gray-500"></span>
+              )}
+            </span>
+          </div>
+
+          <div className="flex items-center text-xs text-gray-500 space-x-1">
+            {(() => {
+              const fullStars = Math.floor(provider.final_grade || 0);
+              const halfStar = (provider.final_grade || 0) - fullStars >= 0.5;
+              const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+              return (
+                <>
+                  {Array.from({ length: fullStars }).map((_, i) => (
+                    <FaStar key={`star-filled-${i}`} className="text-yellow-400" />
+                  ))}
+                  {halfStar && <FaStarHalfAlt className="text-yellow-400" />}
+                  {Array.from({ length: emptyStars }).map((_, i) => (
+                    <FaRegStar key={`star-empty-${i}`} className="text-yellow-400" />
+                  ))}
+                </>
+              );
+            })()}
+            <span className="ml-2">({provider.reviews_count ?? 0} reviews)</span>
           </div>
 
           <div className="flex justify-between text-xs text-gray-500">
-            <div>
-              <span className="font-semibold">{provider.price ?? 10} BGN</span>
-            </div>
             <div className="flex items-center">
-              <FiEye className="mr-1" /> {provider.views ?? 100}
+              <FiEye className="mr-1" />  ({provider.views ?? 100 } Views)
             </div>
           </div>
 
@@ -75,7 +102,6 @@ export default function ServiceProviderCard({ provider }) {
                 <span>{provider.dislikes_count ?? 0}</span>
               </div>
             </div>
-            <div>Reviews: <span className="font-semibold">{provider.reviews_count ?? 12}</span></div>
           </div>
 
           <div className="flex justify-center space-x-4 pt-2 border-t border-gray-100 dark:border-gray-700 mt-2">
