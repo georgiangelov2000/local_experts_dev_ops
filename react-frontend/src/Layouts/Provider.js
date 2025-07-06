@@ -45,7 +45,7 @@ export default function Provider() {
       <div className="bg-white rounded-lg p-6">
         {/* Header */}
 
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 cursor-pointer">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
           <div className="flex items-center">
             <img
               src={
@@ -104,16 +104,26 @@ export default function Provider() {
                   </a>
                 )}
               </div>
-
-
             </div>
           </div>
-          <button
-            onClick={() => setShowContact(true)}
-            className="mt-4 sm:mt-0 text-white bg-blue-700 hover:bg-blue-800 font-medium text-sm px-5 py-2.5 cursor-pointer"
-          >
-            Contact
-          </button>
+          <div >
+            <div className="flex items-center mb-3">
+              <img
+                src="https://randomuser.me/api/portraits/men/75.jpg"
+                alt="John Doe"
+                className="w-12 h-12 rounded-full object-cover mr-3"
+              />
+              <div>
+                <p className="text-sm font-semibold text-gray-800">John Doe</p>
+                <p className="text-xs text-gray-500">john.doe@example.com</p>
+              </div>
+            </div>
+            <div className="text-xs text-gray-600">
+              Logged in with:
+              <span className="ml-1 font-medium text-blue-600">Facebook</span>
+            </div>
+          </div>
+
         </div>
 
         {/* Tabs */}
