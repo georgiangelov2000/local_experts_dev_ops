@@ -69,9 +69,9 @@ export function useProfileForm(user = {}) {
     control,
   } = useForm({
     defaultValues: {
-      business_name: user.business_name || "",
+      business_name: user.service_provider.business_name || "",
       email: user.email || "",
-      description: user.description || "",
+      description: user.service_provider.description || "",
       password: "",
       projects: user.projects?.length > 0
         ? user.projects

@@ -2,7 +2,6 @@ import { useState } from "react";
 
 export default function ProfileTab({ user, register, errors, categories = [], subcategories = [], onCategoryChange }) {
   const [preview, setPreview] = useState(null);
-
   return (
     <>
       <p className="mb-4 bg-gray-400 p-2 text-white">
@@ -13,7 +12,7 @@ export default function ProfileTab({ user, register, errors, categories = [], su
         <label className="block mb-1 font-medium text-sm">Name</label>
         <input
           type="text"
-          defaultValue={user?.name}
+          defaultValue={user.service_provider.business_name}
           {...register("business_name")}
           className="w-full border border-gray-300 p-2 text-sm"
         />
