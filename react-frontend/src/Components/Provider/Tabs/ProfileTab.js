@@ -1,4 +1,4 @@
-import { FiPhone, FiMapPin } from 'react-icons/fi';
+import { FiPhone, FiMapPin, FiMail, FiGlobe } from 'react-icons/fi';
 
 export default function ProfileTab({ provider }) {
   return (
@@ -8,41 +8,55 @@ export default function ProfileTab({ provider }) {
         <p className="text-sm text-gray-700">{provider.description}</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-        <div>
-          <h4 className="font-semibold mb-1">Contact Information</h4>
-          <div className="flex items-center text-sm text-gray-700">
-            <FiPhone className="mr-2" /> {provider.phone || '(example) +359 888 123 456'}
-          </div>
-        </div>
-        <div>
-          <h4 className="font-semibold mb-1">Address</h4>
-          <div className="flex items-center text-sm text-gray-700">
-            <FiMapPin className="mr-2" /> {provider.address || 'No address set'}
-          </div>
-        </div>
-        <div className="mb-4">
-          <h4 class="font-semibold mb-1">Cities Served</h4>
-          {provider.workspaces?.length > 0 ? (
-            <ul className="flex flex-wrap gap-2">
-              {provider.workspaces.map((workspace, idx) => (
-                <li
-                  key={idx}
-                  className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full"
-                >
-                  {workspace.name}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-gray-500">No cities specified.</p>
+      <div>
+        <h4 className="font-semibold mb-1">Contact Information</h4>
+        <div className="space-y-1 text-sm text-gray-700">
+          {provider.contact?.phone && (
+            <div className="flex items-center">
+              <FiPhone className="mr-2" /> {provider.contact.phone}
+            </div>
+          )}
+          {provider.contact?.email && (
+            <div className="flex items-center">
+              <FiMail className="mr-2" /> {provider.contact.email}
+            </div>
+          )}
+          {provider.contact?.website && (
+            <div className="flex items-center">
+              <FiGlobe className="mr-2" />
+              <a href={provider.contact.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                {provider.contact.website}
+              </a>
+            </div>
+          )}
+          {provider.contact?.address && (
+            <div className="flex items-center">
+              <FiMapPin className="mr-2" /> {provider.contact.address}
+            </div>
+          )}
+          {provider.contact?.facebook && (
+            <div className="flex items-center">
+              <span className="mr-2">📘</span>
+              <a href={provider.contact.facebook} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                Facebook
+              </a>
+            </div>
+          )}
+          {provider.contact?.instagram && (
+            <div className="flex items-center">
+              <span className="mr-2">📸</span>
+              <a href={provider.contact.instagram} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                Instagram
+              </a>
+            </div>
           )}
         </div>
       </div>
 
-      <div className="mb-6 p-4 rounded-lg shadow-sm bg-white border border-gray-200">
-        <h4 className="text-lg font-bold text-gray-800 mb-3 border-b border-gray-200 pb-2">Certifications</h4>
-        {provider.certifications?.length > 0 ? (
+
+      {provider.certifications?.length > 0 && (
+        <div className="mb-6 mt-4">
+          <h4 className="text-lg font-bold text-gray-800 mb-3 border-b border-gray-200 pb-2">Certifications</h4>
           <ul className="space-y-3">
             {provider.certifications.map((cert, idx) => (
               <li key={idx} className="bg-gray-50 rounded p-3 hover:bg-gray-100">
@@ -61,25 +75,25 @@ export default function ProfileTab({ provider }) {
               </li>
             ))}
           </ul>
-        ) : (
-          <p className="text-sm text-gray-500">No certifications listed.</p>
-        )}
-      </div>
+        </div>
+      )}
 
-      <div className="mb-6 p-4 rounded-lg shadow-sm bg-white border border-gray-200">
-        <h4 className="text-lg font-bold text-gray-800 mb-3 border-b border-gray-200 pb-2">Services Offered</h4>
-        <ul className="space-y-2">
-          {(provider.services || []).map((service, idx) => (
-            <li
-              key={idx}
-              className="flex justify-between items-center bg-gray-50 rounded px-3 py-2 hover:bg-gray-100"
-            >
-              <span className="text-sm text-gray-700">{service.description}</span>
-              <span className="text-sm font-medium text-gray-900">{service.price} лв</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {provider.services?.length > 0 && (
+        <div className="mb-6 mt-4">
+          <h4 className="text-lg font-bold text-gray-800 mb-3 border-b border-gray-200 pb-2">Services Offered</h4>
+          <ul className="space-y-2">
+            {provider.services.map((service, idx) => (
+              <li
+                key={idx}
+                className="flex justify-between items-center bg-gray-50 rounded px-3 py-2 hover:bg-gray-100"
+              >
+                <span className="text-sm text-gray-700">{service.description}</span>
+                <span className="text-sm font-medium text-gray-900">{service.price} лв</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </>
   );
 }

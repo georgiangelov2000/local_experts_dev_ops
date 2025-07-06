@@ -72,7 +72,7 @@ class ServiceProvider extends Model
     {
         return $this->hasMany(Certification::class);
     }
-    
+
     public function workspaces(): HasMany
     {
         return $this->hasMany(Workspace::class);
@@ -88,9 +88,10 @@ class ServiceProvider extends Model
         return $this->hasMany(Dislike::class);
     }
 
-    public function rating(){
+    public function rating()
+    {
         $finalGrade = 0;
-        if($this->reviews->count() > 0) {
+        if ($this->reviews->count() > 0) {
             $finalGrade = round(
                 $this->reviews->avg('rating'),
                 2
@@ -98,4 +99,10 @@ class ServiceProvider extends Model
         }
         return $finalGrade;
     }
+
+    public function contact(): BelongsTo
+    {
+        return $this->belongsTo(Contact::class);
+    }
+
 }

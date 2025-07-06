@@ -26,6 +26,8 @@ return new class extends Migration
                 $table->unsignedInteger('dislikes_count')->default(0);
                 $table->unsignedInteger('favourites_count')->default(0);
                 $table->unsignedInteger('views')->default(0);
+                $table->unsignedBigInteger('contact_id')->nullable()->unique();
+                $table->unsignedInteger('views')->default(0);
                 $table->timestamps();
             });
         }

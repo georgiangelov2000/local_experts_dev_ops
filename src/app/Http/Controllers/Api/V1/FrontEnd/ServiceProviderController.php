@@ -28,17 +28,19 @@ class ServiceProviderController extends Controller
             'start_time',
             'stop_time',
             'description',
-            'alias'
+            'alias',
+            'contact_id',
         ])->with([
-            'user:id', 
-            'serviceCategory', 
-            'media',
-            'workspaces.city:id,name',
-        ])->withCount([
-            'likes',
-            'dislikes',
-            'reviews'
-        ]);
+                    'user:id',
+                    'serviceCategory',
+                    'media',
+                    'workspaces.city:id,name',
+                    'contact'
+                ])->withCount([
+                    'likes',
+                    'dislikes',
+                    'reviews'
+                ]);
 
         // Resolve names for applied filters
         $categoryName = null;
@@ -82,11 +84,11 @@ class ServiceProviderController extends Controller
         // Fetch data
         $serviceProviders = $query->limit($perPage)->offset($offset)->get();
 
-        $serviceProviders = $serviceProviders->map(function($provider) {
+        $serviceProviders = $serviceProviders->map(function ($provider) {
             $locations = $provider->workspaces->map(function ($workspace) {
                 return $workspace->city?->name;
             })->filter()->values(); // remove nulls and reset indexes
-            
+
             return [
                 'business_name' => $provider->business_name,
                 'start_time' => $provider->start_time,
@@ -100,7 +102,7 @@ class ServiceProviderController extends Controller
                 'reviews_count' => $provider->reviews_count,
                 'final_grade' => $provider->rating(),
                 'locations' => $locations
-            ]; 
+            ];
         });
 
         $categories = Category::select('id', 'name', 'alias')
@@ -140,7 +142,8 @@ class ServiceProviderController extends Controller
             'reviews.consumer:id,email',
             'projects',
             'workspaces.city:id,name',
-            'certifications'
+            'certifications',
+            'contact'
         ])->where('alias', $alias)->first();
 
         if (!$provider) {
@@ -148,6 +151,17 @@ class ServiceProviderController extends Controller
                 'error' => 'Service provider not found',
             ], 404);
         }
+
+        // Map contact
+        $provider->contact = $provider->contact ? [
+            'website' => $provider->contact->website,
+            'phone' => $provider->contact->phone,
+            'email' => $provider->contact->email,
+            'address' => $provider->contact->address,
+            'facebook' => $provider->contact->facebook,
+            'instagram' => $provider->contact->instagram,
+        ] : [];
+
         // Map reviews
         $provider->reviews = $provider->reviews->map(function ($reviewItem) {
             return [
@@ -185,12 +199,12 @@ class ServiceProviderController extends Controller
             ];
         });
 
-        // Map services
-        $provider->workspaces = $provider->workspaces->map(function ($workSpace) {
+        // Map workspaces (only if exists and has city)
+        $provider->workspaces = $provider->workspaces?->map(function ($workSpace) {
             return [
-                'name' => $workSpace->city->name,
+                'name' => $workSpace->city?->name
             ];
-        });
+        })->filter()->values() ?? collect();
 
         // Fetch related providers
         $relatedProviders = ServiceProvider::with(['user', 'serviceCategory', 'media'])
@@ -222,7 +236,8 @@ class ServiceProviderController extends Controller
                 'reviews' => $provider->reviews,
                 'final_grade' => $finalGrade,
                 'workspaces' => $provider->workspaces,
-                'certifications' => $provider->certifications
+                'certifications' => $provider->certifications,
+                'contact' => $provider->contact
             ],
             'related_providers' => $relatedProviders,
         ], 200);

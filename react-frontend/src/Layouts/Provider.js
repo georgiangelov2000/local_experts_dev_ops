@@ -70,34 +70,42 @@ export default function Provider() {
                   {provider.reviews?.length || 0} reviews
                 </span>
               </div>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {/* {provider.phone && ( */}
-                <a
-                  // href={`tel:${provider.phone}`}
-                  className="flex items-center text-blue-600 hover:underline text-sm"
-                >
-                  <FiPhone className="mr-1" /> Call
-                </a>
-                {/* )} */}
-                {/* {provider.email && ( */}
-                <a
-                  // href={`mailto:${provider.email}`}
-                  className="flex items-center text-blue-600 hover:underline text-sm"
-                >
-                  <FiMail className="mr-1" /> Email
-                </a>
-                {/* )} */}
-                {/* {provider.website && ( */}
-                <a
-                  // href={provider.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center text-blue-600 hover:underline text-sm"
-                >
-                  <FiGlobe className="mr-1" /> Website
-                </a>
-                {/* )} */}
+              {/* Likes / Dislikes / Views */}
+              <div className="flex items-center gap-4 text-sm text-gray-700 mt-2">
+                <div className="flex items-center">
+                  <span className="text-green-500 font-semibold mr-1">👍</span>
+                  {provider.likes_count ?? 0} Likes
+                </div>
+                <div className="flex items-center">
+                  <span className="text-red-500 font-semibold mr-1">👎</span>
+                  {provider.dislikes_count ?? 0} Dislikes
+                </div>
+                <div className="flex items-center">
+                  <span className="text-blue-500 font-semibold mr-1">👁</span>
+                  {provider.views ?? 0} Views
+                </div>
               </div>
+
+
+              <div className="flex flex-wrap gap-2 mt-2">
+                {provider.contact?.phone && (
+                  <a href={`tel:${provider.contact.phone}`} className="flex items-center text-blue-600 hover:underline text-sm">
+                    <FiPhone className="mr-1" /> {provider.contact.phone}
+                  </a>
+                )}
+                {provider.contact?.email && (
+                  <a href={`mailto:${provider.contact.email}`} className="flex items-center text-blue-600 hover:underline text-sm">
+                    <FiMail className="mr-1" /> {provider.contact.email}
+                  </a>
+                )}
+                {provider.contact?.website && (
+                  <a href={provider.contact.website} target="_blank" rel="noopener noreferrer" className="flex items-center text-blue-600 hover:underline text-sm">
+                    <FiGlobe className="mr-1" /> Website
+                  </a>
+                )}
+              </div>
+
+
             </div>
           </div>
           <button
