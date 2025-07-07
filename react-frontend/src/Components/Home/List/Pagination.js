@@ -25,7 +25,7 @@ export default function Pagination({ pagination, onPageChange }) {
                 className={`flex items-center justify-center px-4 h-10 ml-1 mr-1 ${
                   pagination.current_page === page
                     ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                    : 'bg-gray-200 hover:bg-gray-300 text-gray-700 cursor-pointer '
                 }`}
               >
                 {page}

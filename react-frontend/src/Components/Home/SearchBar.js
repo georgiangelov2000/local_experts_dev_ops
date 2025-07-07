@@ -1,12 +1,11 @@
 import Select from 'react-select';
 import { FiMapPin, FiLayers, FiList, FiSearch, FiX } from 'react-icons/fi';
 
-export default function SearchBar({ state, dispatch, setSearchParams, searchParams }) {
+export default function SearchBar({ state, dispatch, setSearchParams }) {
 
-  // Options
   const cityOptions = state.cities.map(c => ({ value: c.alias, label: c.name }));
   const categoryOptions = state.categories.map(c => ({ value: c.alias, label: c.name }));
-  const serviceOptions = state.serviceCategories.map(s => ({ value: s.id, label: s.name }));
+  const serviceOptions = state.serviceCategories.map(s => ({ value: s.alias, label: s.name }));
 
   const customSelectStyles = {
     control: (provided, state) => ({
@@ -51,17 +50,20 @@ export default function SearchBar({ state, dispatch, setSearchParams, searchPara
     }),
   };
 
-  const handleSearch = () => {
-    dispatch({
-      type: "APPLY_FILTERS",
-      payload: {
-        city_alias: state.filters.city_alias,
-        category_alias: state.filters.category_alias,
-        service_category_alias: state.filters.service_category_alias,
-        term: state.filters.term,
-        sort: state.filters.sort
-      }
-    });
+  const applyFiltersToURL = () => {
+    const params = new URLSearchParams();
+    if (state.filters.city_alias) params.set('city_alias', state.filters.city_alias);
+    if (state.filters.category_alias) params.set('category_alias', state.filters.category_alias);
+    if (state.filters.service_category_alias) params.set('service_category_alias', state.filters.service_category_alias);
+    if (state.filters.term) params.set('term', state.filters.term);
+    if (state.filters.sort) params.set('sort', state.filters.sort);
+
+    setSearchParams(params);
+  };
+
+  const clearFilters = () => {
+    dispatch({ type: "CLEAR_FILTERS" });
+    setSearchParams({});
   };
 
   return (
@@ -72,8 +74,8 @@ export default function SearchBar({ state, dispatch, setSearchParams, searchPara
           value={
             state.filters.city_alias
               ? state.filters.city_alias.split(",").map(alias =>
-                cityOptions.find(opt => opt.value === alias)
-              ).filter(Boolean)
+                  cityOptions.find(opt => opt.value === alias)
+                ).filter(Boolean)
               : []
           }
           onChange={(option) => {
@@ -100,7 +102,7 @@ export default function SearchBar({ state, dispatch, setSearchParams, searchPara
           value={categoryOptions.find(opt => opt.value === state.filters.category_alias) || null}
           onChange={(option) => {
             dispatch({
-              type: "UPDATE_FILTER", 
+              type: "UPDATE_FILTER",
               payload: { category_alias: option ? option.value : "" }
             });
           }}
@@ -117,7 +119,7 @@ export default function SearchBar({ state, dispatch, setSearchParams, searchPara
         <Select
           options={serviceOptions}
           value={serviceOptions.find(opt => opt.value === state.filters.service_category_alias) || null}
-          onChange={option => {
+          onChange={(option) => {
             dispatch({
               type: "UPDATE_FILTER",
               payload: { service_category_alias: option ? option.value : "" }
@@ -134,12 +136,12 @@ export default function SearchBar({ state, dispatch, setSearchParams, searchPara
           styles={customSelectStyles}
         />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
         <input
           type="text"
-          name="term"
-          value={state.filters.term ?? ""}
-          onChange={e => {
+          value={state.filters.term || ""}
+          onChange={(e) => {
             dispatch({
               type: "UPDATE_FILTER",
               payload: { term: e.target.value }
@@ -147,11 +149,11 @@ export default function SearchBar({ state, dispatch, setSearchParams, searchPara
           }}
           placeholder="Search term..."
           className="w-full border border-gray-300 bg-gray-300 rounded p-2 text-sm"
-          styles={customSelectStyles}
         />
+
         <Select
           options={state.sortOptions}
-          value={state.sortOptions.find(option => option.value === state.filters.sort) || null}
+          value={state.sortOptions.find(opt => opt.value === state.filters.sort) || null}
           onChange={(option) => {
             dispatch({
               type: "UPDATE_FILTER",
@@ -160,34 +162,29 @@ export default function SearchBar({ state, dispatch, setSearchParams, searchPara
           }}
           placeholder="Sort By"
           isClearable
-          className="text-sm"
           styles={customSelectStyles}
         />
 
         <div className="flex gap-2">
           <button
-            onClick={handleSearch}
-            className="bg-blue-600 text-sm text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center space-x-1 cursor-pointer"
+            onClick={applyFiltersToURL}
+            className="bg-blue-600 text-sm text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center space-x-1"
           >
             <FiSearch />
             <span>Search</span>
           </button>
 
-          {searchParams.size > 0 && (
+          {(state.filters.city_alias || state.filters.category_alias || state.filters.service_category_alias || state.filters.term || state.filters.sort) && (
             <button
-              onClick={() => {
-                dispatch({ type: "CLEAR_FILTERS" });
-                setSearchParams({});
-              }}
-              className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 flex items-center space-x-1 cursor-pointer"
+              onClick={clearFilters}
+              className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 flex items-center space-x-1"
             >
               <FiX />
               <span>Clear</span>
             </button>
           )}
         </div>
-
       </div>
-    </div >
+    </div>
   );
 }

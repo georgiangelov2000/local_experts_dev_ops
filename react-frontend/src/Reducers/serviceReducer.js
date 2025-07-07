@@ -41,7 +41,10 @@ export function serviceReducer(state, action) {
                 pagination: action.payload.pagination,
                 serviceCategories: action.payload.serviceCategories,
                 filtered: action.payload.filtered,
-                filters: action.payload.filters,
+                filters: {
+                    ...action.payload.filters,
+                    ...action.payload.paramsObj
+                },
                 viewMode: action.payload.viewMode,
                 loading: false
             };

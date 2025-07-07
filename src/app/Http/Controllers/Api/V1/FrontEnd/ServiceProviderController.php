@@ -89,12 +89,13 @@ class ServiceProviderController extends Controller
 
         if ($serviceCategoryAlias = $request->get('service_category_alias')) {
             $serviceProviderCategory = ServiceCategory::where('alias',$serviceCategoryAlias)->first();
-            $filtered['service_category'] = $serviceProviderCategory;
+            $filtered['service_category'] = $serviceProviderCategory->name;
             $query->where('alias', $serviceCategoryAlias);
         }
 
         if ($request->has('term')) {
             $term = $request->term;
+            $filtered['term'] = $term;
             $query->where(function ($q) use ($term) {
                 $q->where('business_name', 'LIKE', "%{$term}%")
                     ->orWhere('description', 'LIKE', "%{$term}%");
@@ -145,11 +146,11 @@ class ServiceProviderController extends Controller
             'service_provider_categories' => $serviceProviderCategories,
             'filtered' => $filtered,
             'filters' => [
-                'city_alias' => $request->get('city_alias'),
-                'category_alias' => $request->get('category_alias'),
-                'service_category_alias' => $request->get('service_category_alias'),
-                'term' => $request->get('term'),
-                'sort' => $request->get('sort')
+                'city_alias' => $request->get('city_alias') ?? "",
+                'category_alias' => $request->get('category_alias') ?? "",
+                'service_category_alias' => $request->get('service_category_alias') ?? "",
+                'term' => $request->get('term') ?? "",
+                'sort' => $request->get('sort') ?? ""
             ],
             "pagination" => [
                 'current_page' => $page,
