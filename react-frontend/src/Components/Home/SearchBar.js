@@ -1,71 +1,12 @@
-import { useEffect, useState } from 'react';
 import Select from 'react-select';
-import { FiSearch, FiX, FiMapPin, FiLayers, FiList } from 'react-icons/fi';
+import { FiMapPin, FiLayers, FiList, FiSearch, FiX } from 'react-icons/fi';
 
-export default function SearchBar({ categories, cities, serviceCategories, onSearch, filters }) {
-  const [localFilters, setLocalFilters] = useState(filters);
-
-  useEffect(() => {
-    setLocalFilters(filters);
-  }, [filters]);
-
-  const handleChange = (name, value) => {
-    setLocalFilters(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSearch = () => {
-    onSearch({
-      ...localFilters,
-      city_alias: localFilters.city ? localFilters.city.map(c => c.value).join(',') : '',
-      category_alias: localFilters.category?.value || '',
-      service_category_id: localFilters.service_category?.value || '',
-      sort: localFilters.sort?.value || '',
-      term: localFilters.term || ''
-    });
-  };
-
-
-  const handleClear = () => {
-    const cleared = {
-      city: [],
-      category: null,
-      service_category: null,
-      term: '',
-      sort: null
-    };
-    setLocalFilters(cleared);
-    onSearch({
-      city_alias: '',
-      category: '',
-      service_category: '',
-      term: '',
-      sort: ''
-    });
-  };
-
-  const hasActiveFilters =
-    localFilters.term ||
-    (localFilters.city && localFilters.city.length > 0) ||
-    localFilters.category ||
-    localFilters.service_category ||
-    localFilters.sort;
+export default function SearchBar({ state, dispatch, setSearchParams, searchParams }) {
 
   // Options
-  const cityOptions = cities.map(c => ({ value: c.alias, label: c.name }));
-  const categoryOptions = categories.map(c => ({ value: c.alias, label: c.name }));
-  const serviceOptions = serviceCategories.map(s => ({ value: s.id, label: s.name }));
-  const sortOptions = [
-    { value: 'promoted', label: 'Promoted First' },
-    { value: 'reviews_desc', label: 'Reviews: High to Low' },
-    { value: 'reviews_asc', label: 'Reviews: Low to High' },
-    { value: 'views_desc', label: 'Views: High to Low' },
-    { value: 'views_asc', label: 'Views: Low to High' },
-    { value: 'likes_desc', label: 'Likes: High to Low' },
-    { value: 'likes_asc', label: 'Likes: Low to High' }
-  ];
+  const cityOptions = state.cities.map(c => ({ value: c.alias, label: c.name }));
+  const categoryOptions = state.categories.map(c => ({ value: c.alias, label: c.name }));
+  const serviceOptions = state.serviceCategories.map(s => ({ value: s.id, label: s.name }));
 
   const customSelectStyles = {
     control: (provided, state) => ({
@@ -110,14 +51,39 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
     }),
   };
 
+  const handleSearch = () => {
+    dispatch({
+      type: "APPLY_FILTERS",
+      payload: {
+        city_alias: state.filters.city_alias,
+        category_alias: state.filters.category_alias,
+        service_category_alias: state.filters.service_category_alias,
+        term: state.filters.term,
+        sort: state.filters.sort
+      }
+    });
+  };
 
   return (
-    <div className="bg-gray-100 p-4 rounded-lg space-y-3">
+    <div className="bg-gray-100 p-4 rounded-lg space-y-3 mb-3">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         <Select
           options={cityOptions}
-          value={localFilters.city}
-          onChange={(option) => handleChange('city', option)}
+          value={
+            state.filters.city_alias
+              ? state.filters.city_alias.split(",").map(alias =>
+                cityOptions.find(opt => opt.value === alias)
+              ).filter(Boolean)
+              : []
+          }
+          onChange={(option) => {
+            dispatch({
+              type: "UPDATE_FILTER",
+              payload: {
+                city_alias: option ? option.map(o => o.value).join(",") : ""
+              }
+            });
+          }}
           placeholder="Select City(s)"
           isClearable
           isMulti
@@ -131,8 +97,13 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
         />
         <Select
           options={categoryOptions}
-          value={localFilters.category}
-          onChange={(option) => handleChange('category', option)}
+          value={categoryOptions.find(opt => opt.value === state.filters.category_alias) || null}
+          onChange={(option) => {
+            dispatch({
+              type: "UPDATE_FILTER", 
+              payload: { category_alias: option ? option.value : "" }
+            });
+          }}
           placeholder="Select Category"
           isClearable
           formatOptionLabel={(data) => (
@@ -143,11 +114,15 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
           )}
           styles={customSelectStyles}
         />
-
         <Select
           options={serviceOptions}
-          value={localFilters.service_category}
-          onChange={(option) => handleChange('service_category', option)}
+          value={serviceOptions.find(opt => opt.value === state.filters.service_category_alias) || null}
+          onChange={option => {
+            dispatch({
+              type: "UPDATE_FILTER",
+              payload: { service_category_alias: option ? option.value : "" }
+            });
+          }}
           placeholder="Select Service"
           isClearable
           formatOptionLabel={(data) => (
@@ -159,28 +134,34 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
           styles={customSelectStyles}
         />
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         <input
           type="text"
           name="term"
-          value={localFilters.term || ''}
-          onChange={(e) => handleChange('term', e.target.value)}
+          value={state.filters.term ?? ""}
+          onChange={e => {
+            dispatch({
+              type: "UPDATE_FILTER",
+              payload: { term: e.target.value }
+            });
+          }}
           placeholder="Search term..."
           className="w-full border border-gray-300 bg-gray-300 rounded p-2 text-sm"
           styles={customSelectStyles}
-
         />
-
         <Select
-          options={sortOptions}
-          value={localFilters.sort}
-          onChange={(option) => handleChange('sort', option)}
+          options={state.sortOptions}
+          value={state.sortOptions.find(option => option.value === state.filters.sort) || null}
+          onChange={(option) => {
+            dispatch({
+              type: "UPDATE_FILTER",
+              payload: { sort: option ? option.value : "" }
+            });
+          }}
           placeholder="Sort By"
           isClearable
           className="text-sm"
           styles={customSelectStyles}
-
         />
 
         <div className="flex gap-2">
@@ -192,9 +173,12 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
             <span>Search</span>
           </button>
 
-          {hasActiveFilters && (
+          {searchParams.size > 0 && (
             <button
-              onClick={handleClear}
+              onClick={() => {
+                dispatch({ type: "CLEAR_FILTERS" });
+                setSearchParams({});
+              }}
               className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 flex items-center space-x-1 cursor-pointer"
             >
               <FiX />
@@ -202,7 +186,8 @@ export default function SearchBar({ categories, cities, serviceCategories, onSea
             </button>
           )}
         </div>
+
       </div>
-    </div>
+    </div >
   );
 }

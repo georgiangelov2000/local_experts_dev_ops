@@ -42,6 +42,8 @@ class ServiceProviderController extends Controller
                     'reviews'
                 ]);
 
+        $filtered = [];
+
         if ($request->has('sort')) {
             switch ($request->get('sort')) {
                 case 'promoted':
@@ -65,34 +67,30 @@ class ServiceProviderController extends Controller
         }
 
         // Resolve names for applied filters
-        $categoryName = null;
-        $serviceCategoryName = null;
         $serviceProviderCategories = collect();
 
         if ($categoryAlias = $request->get('category_alias')) {
             $category = Category::where('alias', $categoryAlias)->first();
             $query->where('category_id', $category->id);
             if ($category) {
-                $categoryName = $category->name;
                 $serviceProviderCategories = ServiceCategory::where('category_id', $category->id)->get();
+                $filtered['category'] = $category->name;
             }
         }
 
         if ($request->has('city_alias')) {
             $aliases = explode(',', $request->get('city_alias'));
+            $cities = City::whereIn('alias',$aliases)->pluck('name')->toArray();
+            $filtered['cities'] = implode(',',$cities);
             $query->whereHas('workspaces.city', function ($q) use ($aliases) {
                 $q->whereIn('alias', $aliases);
             });
         }
 
-
-        if ($serviceCategoryId = $request->get('service_category_id')) {
-            $query->where('service_category_id', $serviceCategoryId);
-            $serviceCategoryName = ServiceCategory::find($serviceCategoryId)?->name;
-        }
-
-        if ($request->has('service_category_id')) {
-            $query->where('service_category_id', $request->service_category_id);
+        if ($serviceCategoryAlias = $request->get('service_category_alias')) {
+            $serviceProviderCategory = ServiceCategory::where('alias',$serviceCategoryAlias)->first();
+            $filtered['service_category'] = $serviceProviderCategory;
+            $query->where('alias', $serviceCategoryAlias);
         }
 
         if ($request->has('term')) {
@@ -145,15 +143,13 @@ class ServiceProviderController extends Controller
             'cities' => $cities,
             'service_providers' => $serviceProviders,
             'service_provider_categories' => $serviceProviderCategories,
+            'filtered' => $filtered,
             'filters' => [
-                'category_alias' => $request->get('alias'),
-                'category_name' => $categoryName,
-                'service_category_id' => $request->get('service_category_id'),
-                'service_category_name' => $serviceCategoryName,
-                'term' => $request->get('term'),
                 'city_alias' => $request->get('city_alias'),
-                'per_page' => $perPage,
-                'page' => $page,
+                'category_alias' => $request->get('category_alias'),
+                'service_category_alias' => $request->get('service_category_alias'),
+                'term' => $request->get('term'),
+                'sort' => $request->get('sort')
             ],
             "pagination" => [
                 'current_page' => $page,

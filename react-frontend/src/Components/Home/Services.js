@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { serviceReducer, initialServiceState } from '../../Reducers/serviceReducer';
 import apiService from '../../Services/apiService';
 import ServiceProviderCard from './ServiceProviderCard';
 import SearchBar from './SearchBar';
@@ -7,115 +8,85 @@ import List from './List';
 import Categories from './Categories';
 
 export default function Service() {
-  const [categories, setCategories] = useState([]);
-  const [cities, setCities] = useState([]);
-  const [providers, setProviders] = useState([]);
-  const [pagination, setPagination] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState('grid');
-  const [serviceCategories, setServiceCategories] = useState([]);
-  const [filters, setFilters] = useState([]);
-
   const [searchParams, setSearchParams] = useSearchParams();
+  const [state, dispatch] = useReducer(serviceReducer, initialServiceState);
 
-  const fetchProviders = (paramsObj) => {
-    setLoading(true);
-    apiService.getAds({ params: paramsObj })
-      .then((response) => {
-        setCategories(response.data.categories);
-        setCities(response.data.cities);
-        setProviders(response.data.service_providers);
-        setPagination(response.data.pagination);
-        setServiceCategories(response.data.service_provider_categories)
-        setFilters(response.data.filters)
-        console.log();
-        if (paramsObj.sort || paramsObj.category_alias || paramsObj.city_alias) {
-          setViewMode('list');
-        } else {
-          setViewMode('grid');
-        }
-      })
-      .catch((err) => console.error('Error loading data:', err))
-      .finally(() => setLoading(false));
-  };
+  // Update URL params when filters are applied
+  useEffect(() => {
+    if (Object.keys(state.appliedFilters).length > 0) {
+      const params = new URLSearchParams();
+      if (state.appliedFilters.city_alias) params.set('city_alias', state.appliedFilters.city_alias);
+      if (state.appliedFilters.category_alias) params.set('category_alias', state.appliedFilters.category_alias);
+      if (state.appliedFilters.service_category_alias) params.set('service_category_alias', state.appliedFilters.service_category_alias);
+      if (state.appliedFilters.term) params.set('term', state.appliedFilters.term);
+      if (state.appliedFilters.sort) params.set('sort', state.appliedFilters.sort);
+
+      setSearchParams(params);
+    }
+  }, [state.appliedFilters, setSearchParams]);
 
   useEffect(() => {
-    const paramsObj = Object.fromEntries(searchParams.entries());
-    fetchProviders(paramsObj);
-  }, [searchParams]);
+    const fetchData = async () => {
+      dispatch({ type: "FETCH_START" });
 
-  const handleSearch = (filters) => {
-    const newParams = new URLSearchParams();
-    
-    if (filters.city && filters.city.length > 0) {
-      const cities = filters.city.map(c => c.value).join(',');
-      newParams.set('city_alias', cities);
-    }
+      const paramsObj = Object.fromEntries(searchParams.entries());
+      
+      try {
+        const response = await apiService.getAds({ params: paramsObj });
 
-    if (filters.category) {
-      newParams.set('category_alias', filters.category.value || filters.category);
-    }
+        dispatch({
+          type: "FETCH_SUCCESS",
+          payload: {
+            categories: response.data.categories,
+            cities: response.data.cities,
+            providers: response.data.service_providers,
+            pagination: response.data.pagination,
+            serviceCategories: response.data.service_provider_categories,
+            filtered: response.data.filtered,
+            filters: response.data.filters,
+            viewMode: (paramsObj.sort || paramsObj.category_alias || paramsObj.city_alias)
+              ? 'list'
+              : 'grid'
+          }
+        });
+      } catch (err) {
+        console.error("Error loading data:", err);
+        dispatch({ type: "FETCH_ERROR" });
+      }
+      console.log(state.filters);
 
-    if (filters.service_category) {
-      newParams.set('service_category_alias', filters.service_category.value || filters.service_category);
-    }
+    };
 
-    if (filters.term) {
-      newParams.set('term', filters.term);
-    }
+    fetchData();
 
-    if(filters.sort) {
-      newParams.set('sort',filters.sort);
-    }
-
-    newParams.set('page', 1);
-    setSearchParams(newParams);    
-  };
+  }, [searchParams, dispatch]);
 
 
-  const handlePageChange = (pageNum) => {
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set('page', pageNum);
-    setSearchParams(newParams);
-  };
-
-  if (loading) {
+  if (state.loading) {
     return <div className="p-6 text-center">Loading service providers...</div>;
   }
 
   return (
     <div className="p-6 bg-white rounded-t-lg">
-      <SearchBar
-        categories={categories}
-        cities={cities}
-        serviceCategories={serviceCategories}
-        onSearch={handleSearch}
-        filters={{
-          city: searchParams.get('city_alias') || '',
-          category: searchParams.get('category_alias') || '',
-          service_category: searchParams.get('service_category_id') || '',
-          term: searchParams.get('term') || ''
-        }}
+      <SearchBar 
+        state={state} 
+        dispatch={dispatch} 
+        setSearchParams={setSearchParams}
+        searchParams={searchParams}
       />
 
-      {viewMode === 'grid' ? (
+      {state.viewMode === 'grid' ? (
         <>
-          <Categories categories={categories} />
+          <Categories categories={state.categories} />
           <h2 className="text-xl font-semibold mb-4">Providers</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
-            {providers.map((provider) => (
-              <ServiceProviderCard key={provider.id} provider={provider} />
+            {state.providers.map((provider, index) => (
+              <ServiceProviderCard key={index} provider={provider} />
             ))}
           </div>
         </>
       ) : (
-        <List
-          providers={providers}
-          filters={filters}
-          pagination={pagination}
-          onPageChange={handlePageChange}
-          serviceCategories={serviceCategories}
-        />
+        <List state={state} dispatch={dispatch} />
       )}
     </div>
   );
