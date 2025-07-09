@@ -1,9 +1,15 @@
 import { Link } from "react-router-dom";
 import { FiHeart, FiThumbsUp, FiThumbsDown, FiEye, FiMapPin } from "react-icons/fi";
-import { FaStar, FaRegStar, FaStarHalfAlt } from 'react-icons/fa';
+import { FaStar, FaRegStar, FaStarHalfAlt, FaHeart, FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import useProviderActions from "../../Hooks/useProviderActions";
+import { useAuth } from "../../Context/AuthContext";
 
-export default function ServiceProviderCard({ provider }) {
+export default function ServiceProviderCard({
+  provider,
+  likes,
+  dislikes,
+  favourites,
+}) {
   const {
     isFavourite,
     isLiked,
@@ -12,7 +18,7 @@ export default function ServiceProviderCard({ provider }) {
     like,
     dislike
   } = useProviderActions(provider.id);
-
+  const { user } = useAuth();
 
   return (
     <Link
@@ -24,7 +30,6 @@ export default function ServiceProviderCard({ provider }) {
         <div className="absolute top-0 left-2 bg-yellow-500 text-yellow-900 text-xs font-semibold px-2 py-0.5">
           Promoted
         </div>
-
         {/* Image */}
         <img
           className="w-full h-48 object-cover"
@@ -35,22 +40,18 @@ export default function ServiceProviderCard({ provider }) {
           }
           alt={provider.business_name}
         />
-
         <div className="p-4 space-y-2">
           {provider.service_category && (
             <span className="inline-block text-xs font-semibold bg-blue-600 text-white rounded-full px-3 py-0.5">
               {provider.service_category}
             </span>
           )}
-
           <h3 className="text-lg font-bold text-gray-800 dark:text-white">
             {provider.business_name}
           </h3>
-
           <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
             {provider.description || "No description provided."}
           </p>
-
           <div className="flex items-center text-xs text-gray-500">
             <span className="flex items-center flex-wrap gap-1">
               {provider.locations?.length > 0 ? (
@@ -64,7 +65,6 @@ export default function ServiceProviderCard({ provider }) {
               )}
             </span>
           </div>
-
           <div className="flex items-center text-xs text-gray-500 space-x-1">
             {(() => {
               const fullStars = Math.floor(provider.final_grade || 0);
@@ -84,13 +84,11 @@ export default function ServiceProviderCard({ provider }) {
             })()}
             <span className="ml-2">({provider.reviews_count ?? 0} reviews)</span>
           </div>
-
           <div className="flex justify-between text-xs text-gray-500">
             <div className="flex items-center">
-              <FiEye className="mr-1" />  ({provider.views ?? 100} Views)
+              <FiEye className="mr-1" />  ({provider.views_count} Views)
             </div>
           </div>
-
           <div className="flex justify-between text-xs text-gray-500">
             <div className="flex items-center space-x-2">
               <div className="flex items-center">
@@ -103,30 +101,39 @@ export default function ServiceProviderCard({ provider }) {
               </div>
             </div>
           </div>
-
           <div className="flex justify-center space-x-4 pt-2 border-t border-gray-100 dark:border-gray-700 mt-2">
-            <button
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
-              onClick={(e) => {
-                e.preventDefault();
-                dislike();
-              }}
-              title="Dislike"
-            >
-              <FiThumbsDown className={isDisliked ? "text-red-500" : "text-gray-500 hover:text-red-500"} />
-            </button>
-
-            <button
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
-              onClick={(e) => {
-                e.preventDefault();
-                like();
-              }}
-              title="Like"
-            >
-              <FiThumbsUp className={isLiked ? "text-green-500" : "text-gray-500 hover:text-green-500"} />
-            </button>
-
+            {user && (
+              <>
+                <button
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    dislike();
+                  }}
+                  title="Dislike"
+                >
+                  {dislikes?.includes(provider.id) ? (
+                    <FaThumbsDown className="text-red-500" />
+                  ) : (
+                    <FiThumbsDown className="text-gray-500 hover:text-red-500" />
+                  )}
+                </button>
+                <button
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    like();
+                  }}
+                  title="Like"
+                >
+                  {likes?.includes(provider.id) ? (
+                    <FaThumbsUp className="text-green-500" />
+                  ) : (
+                    <FiThumbsUp className="text-gray-500 hover:text-green-500" />
+                  )}
+                </button>
+              </>
+            )}
             <button
               className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
               onClick={(e) => {
@@ -135,12 +142,15 @@ export default function ServiceProviderCard({ provider }) {
               }}
               title="Favorite"
             >
-              <FiHeart className={isFavourite ? "text-yellow-500" : "text-gray-500 hover:text-yellow-500"} />
+              {favourites?.includes(provider.id) ? (
+                <FaHeart className="text-yellow-500" />
+              ) : (
+                <FiHeart className="text-gray-500 hover:text-yellow-500" />
+              )}
             </button>
           </div>
         </div>
       </div>
-
     </Link>
   );
 }
