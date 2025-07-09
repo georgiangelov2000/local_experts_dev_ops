@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from 'react';
+
 import apiService from '../Services/apiService';
 import { FiMail, FiLock, FiKey } from 'react-icons/fi';
 import { useRegisterForm } from "../Models/useRegisterForm";
@@ -91,6 +92,21 @@ export default function Register() {
             {errors.confirm_password && <p className="text-red-500 text-xs mt-1">{errors.confirm_password.message}</p>}
           </div>
 
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-900">Type</label>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><FiKey /></span>
+              <select
+                {...register("type")}
+                className="pl-10 border border-gray-300 text-gray-900 text-sm block w-full p-2.5"
+              >
+                <option value="" disabled>Select user type</option>
+                <option value="2">Expert</option>
+                <option value="3">User</option>
+              </select>
+            </div>
+            {errors.type && <p className="text-red-500 text-xs mt-1">{errors.type.message}</p>}
+          </div>
           <button
             type="submit"
             className="w-full bg-blue-700 text-white p-2.5 hover:bg-blue-800 cursor-pointer"
