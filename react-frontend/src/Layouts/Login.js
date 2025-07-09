@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FiMail, FiLock } from 'react-icons/fi';
+import { FcGoogle } from 'react-icons/fc';
+import { FaFacebook } from 'react-icons/fa';
 import { useAuth } from "../Context/AuthContext";
 import { useLoginForm } from "../Models/useLoginForm";
 
@@ -78,6 +80,28 @@ export default function Login() {
         </div>
         <div className="mt-4 text-center">
           <Link to="/forgot-password" className="text-blue-600 hover:underline text-sm">← Forgot password</Link>
+        </div>
+
+        <div className="mt-6">
+          <hr className="my-4" />
+          <p className="text-center text-sm text-gray-500 mb-3">Or sign in with</p>
+
+          <div className="flex flex-col gap-2">
+            <a
+              href="http://localhost:8000/api/v1/auth/google/redirect"
+              className="flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 py-2 rounded hover:bg-gray-100"
+            >
+              <FcGoogle className="text-xl" />
+              Continue with Google
+            </a>
+            <a
+              href="http://localhost:8000/api/v1/auth/facebook/redirect"              
+              className="flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+            >
+              <FaFacebook className="text-xl" />
+              Continue with Facebook
+            </a>
+          </div>
         </div>
       </div>
     </div>

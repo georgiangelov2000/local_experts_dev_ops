@@ -18,7 +18,9 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
 
     CONST ADMIN = 1;
-    CONST CUSTOMER = 2;
+    CONST SERVICE_PROVIDER = 2;
+    CONST USER = 3;
+
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -91,6 +93,20 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     public function favourites()
     {
         return $this->hasMany(Favourite::class);
+    }
+
+    public function likes(): HasMany
+    {
+        return $this->hasMany(Like::class, 'user_id', 'id');
+    }
+    public function dislikes(): HasMany
+    {
+        return $this->hasMany(Dislike::class, 'user_id', 'id');
+    }
+
+    public function contacts(): HasMany
+    {
+        return $this->hasMany(Contact::class, 'model_id', 'id');
     }
     
 }

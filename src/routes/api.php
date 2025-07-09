@@ -14,7 +14,9 @@ Route::prefix('v1')->group(function () {
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthController::class, 'resetPassword']);
-    
+    Route::get('/auth/{provider}', [AuthController::class, 'redirectToProvider']);
+    Route::get('/auth/{provider}/callback', [AuthController::class, 'handleProviderCallback']);
+
     Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
         $request->fulfill();
         return response()->json(['message' => 'Email verified successfully.']);
@@ -28,6 +30,8 @@ Route::prefix('v1')->group(function () {
 
     Route::get('services', [ServiceProviderController::class, 'index']);
     Route::get('services/{alias}', [ServiceProviderController::class, 'show']);
+    Route::post('services/{alias}/views', [ServiceProviderController::class, 'incrementViews']);
+    
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/categories/{category}/service-categories', [CategoryController::class, 'serviceCategories']);
 

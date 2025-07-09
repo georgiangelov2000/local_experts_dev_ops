@@ -24,7 +24,6 @@ return new class extends Migration
                 $table->string('alias')->unique();
                 $table->unsignedInteger('views')->default(0);
                 $table->unsignedBigInteger('contact_id')->nullable()->unique();
-                $table->unsignedInteger('views')->default(0);
                 $table->timestamps();
             });
         }

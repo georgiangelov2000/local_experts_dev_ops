@@ -46,14 +46,16 @@ export default function Header() {
             Home
           </Link>
 
-          <Link
-            to="/favourites"
-            className="flex items-center px-3 py-1 text-sm font-medium rounded hover:bg-white hover:text-blue-600 transition"
-            onClick={() => setMenuOpen(false)}
-          >
-            <FiHeart className="mr-1" />
-            Favourites
-          </Link>
+          {!user && (
+            <Link
+              to="/favourites"
+              className="flex items-center px-3 py-1 text-sm font-medium rounded hover:bg-white hover:text-blue-600 transition"
+              onClick={() => setMenuOpen(false)}
+            >
+              <FiHeart className="mr-1" />
+              Favourites
+            </Link>
+          )}
 
           {user ? (
             <>
@@ -94,6 +96,7 @@ export default function Header() {
             </>
           )}
         </nav>
+
       </div>
     </header>
   );

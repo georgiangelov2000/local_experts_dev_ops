@@ -6,6 +6,9 @@ export const initialServiceState = {
     loading: true,
     viewMode: 'grid',
     serviceCategories: [],
+    likes: [],
+    dislikes: [],
+    favourites: [],
     sortOptions: [
         { value: 'promoted', label: 'Promoted First' },
         { value: 'reviews_desc', label: 'Reviews: High to Low' },
@@ -52,6 +55,13 @@ export function serviceReducer(state, action) {
         case 'FETCH_ERROR':
             return { ...state, loading: false };
 
+        case 'SET_USER_ACTIONS':
+            return {
+                ...state,
+                likes: action.payload.likes || [],
+                dislikes: action.payload.dislikes || [],
+                favourites: action.payload.favourites || []
+            };
         case 'UPDATE_FILTER':
             return {
                 ...state,

@@ -30,6 +30,7 @@ class ServiceProviderController extends Controller
             'description',
             'alias',
             'contact_id',
+            'views'
         ])->with([
                     'user:id',
                     'serviceCategory',
@@ -119,6 +120,7 @@ class ServiceProviderController extends Controller
             })->filter()->values(); // remove nulls and reset indexes
 
             return [
+                'id' => $provider->id,
                 'business_name' => $provider->business_name,
                 'start_time' => $provider->start_time,
                 'stop_time' => $provider->stop_time,
@@ -129,6 +131,7 @@ class ServiceProviderController extends Controller
                 'likes_count' => $provider->likes_count,
                 'dislikes_count' => $provider->dislikes_count,
                 'reviews_count' => $provider->reviews_count,
+                'views_count' => $provider->views,
                 'final_grade' => $provider->rating(),
                 'locations' => $locations
             ];
@@ -177,7 +180,13 @@ class ServiceProviderController extends Controller
             'workspaces.city:id,name',
             'certifications',
             'contact'
-        ])->where('alias', $alias)->first();
+        ])
+        ->withCount([
+            'likes',
+            'dislikes',
+            'reviews',
+        ])
+        ->where('alias', $alias)->first();
 
         if (!$provider) {
             return response()->json([
@@ -270,7 +279,11 @@ class ServiceProviderController extends Controller
                 'final_grade' => $finalGrade,
                 'workspaces' => $provider->workspaces,
                 'certifications' => $provider->certifications,
-                'contact' => $provider->contact
+                'contact' => $provider->contact,
+                'likes_count' => $provider->likes_count,
+                'dislikes_count' => $provider->dislikes_count,
+                'reviews_count' => $provider->reviews_count,
+                'views_count' => $provider->views,
             ],
             'related_providers' => $relatedProviders,
         ], 200);
@@ -411,4 +424,13 @@ class ServiceProviderController extends Controller
         return response()->json(['message' => 'Disliked successfully.'], 200);
     }
 
+    /**
+     * Increment views for a service provider.
+     */
+    public function incrementViews(Request $request, $alias)
+    {
+        $provider = ServiceProvider::where('alias', $alias)->firstOrFail();
+        $provider->increment('views');
+        return response()->json(['message' => 'Views incremented successfully.'], 200);
+    }
 }

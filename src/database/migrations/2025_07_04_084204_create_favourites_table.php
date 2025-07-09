@@ -15,7 +15,6 @@ return new class extends Migration {
                 $table->id();
                 $table->unsignedBigInteger('user_id')->index();
                 $table->unsignedBigInteger('service_provider_id')->index();
-                $table->timestamps();
             });
         }
     }
