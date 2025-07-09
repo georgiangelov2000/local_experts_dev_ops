@@ -10,6 +10,7 @@ const registerSchema = yup.object({
   confirm_password: yup.string()
     .required("Please confirm your password")
     .oneOf([yup.ref("password")], "Passwords do not match"),
+  type: yup.string().required("Type is required") // Добавяне на поле за тип
 });
 
 export function useRegisterForm() {
@@ -24,7 +25,8 @@ export function useRegisterForm() {
       username: "",
       email: "",
       password: "",
-      confirm_password: ""
+      confirm_password: "",
+      type: "" // Default type, can be changed based on your requirements
     },
     resolver: yupResolver(registerSchema),
   });
