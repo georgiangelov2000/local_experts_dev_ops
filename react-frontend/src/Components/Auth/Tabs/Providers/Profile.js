@@ -156,7 +156,7 @@ export default function Profile({ data }) {
           <div className="shrink-0">
             <img
               className="h-16 w-16 object-cover rounded-full border border-gray-200"
-              src={avatarPreview || data.avatar_url || 'https://flowbite.com/docs/images/people/profile-picture-5.jpg'}
+              src={avatarPreview || data.image || 'https://flowbite.com/docs/images/people/profile-picture-5.jpg'}
               alt="Current avatar"
             />
           </div>

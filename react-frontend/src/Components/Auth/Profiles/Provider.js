@@ -35,7 +35,7 @@ export default function Provider({ user }) {
         setError(null);
         if (state.activeTab === 'preview') {
             // Fetch full profile for preview
-            apiService.getFullProfile()
+            apiService.getProfilePreview()
                 .then(res => setFullProfile(res.data))
                 .catch(err => setError(err.response?.data?.error || 'Failed to load profile preview.'))
                 .finally(() => setLoading(false));

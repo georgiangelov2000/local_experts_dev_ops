@@ -12,10 +12,10 @@ const basicProfileSchema = yup.object().shape({
         .required("Category is required")
         .integer("Category must be an integer"),
     service_category_id: yup
-        .array()
-        .of(yup.number())
-        .min(1, "At least one service type is required")
-        .required("Service types are required"),
+        .number()
+        .typeError("Service type is required")
+        .required("Service type is required")
+        .integer("Service type must be an integer"),
     image: yup.mixed().nullable(), // avatar image, optional
 });
 
@@ -32,7 +32,7 @@ export function useBasicProfileForm({tabData = {}}) {
             email: tabData.email || "",
             description: tabData.description || "",
             category_id: tabData.category_id || "",
-            service_category_id: tabData.service_category_id || [],
+            service_category_id: tabData.service_category_id || "",
             image: null,
         },
         resolver: yupResolver(basicProfileSchema),

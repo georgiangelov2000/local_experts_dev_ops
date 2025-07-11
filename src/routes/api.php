@@ -53,5 +53,6 @@ Route::prefix('v1')->group(function () {
 
         // Single tab-specific profile route
         Route::get('profile/tab/{tab}', [ProfileController::class, 'tabData']);
+        Route::get('profile/preview', [ProfileController::class, 'preview']);
     });
 });

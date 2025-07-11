@@ -148,6 +148,9 @@ class ProfileController extends Controller
                     'service_categories' => ServiceCategory::where('category_id',$provider->category_id)->get(),
                     'service_category_id' => $provider->service_category_id,
                     'cities' => City::all(),
+                    'image' => $provider->media->first()
+                        ? (config('app.url') . '/storage/' . ltrim($provider->media->first()->file_path, '/'))
+                        : null,
                     'workspaces' => $provider->workspaces->map(function ($item) {
                         return $item->city->id;
                     })->toArray(),
@@ -170,6 +173,55 @@ class ProfileController extends Controller
             default:
                 return response()->json(['error' => 'Invalid tab'], 400);
         }
+    }
+
+    public function preview()
+    {
+        $user = auth()->user();
+        $provider = $user->serviceProvider;
+        if (!$provider) {
+            return response()->json(['error' => 'No provider profile found.'], 404);
+        }
+        return response()->json([
+            'id' => $provider->id,
+            'business_name' => $provider->business_name,
+            'description' => $provider->description,
+            'category_id' => $provider->category_id,
+            'category' => $provider->category?->name,
+            'service_category_id' => $provider->service_category_id,
+            'service_category' => $provider->serviceCategory?->name,
+            'image' => $provider->media->first()
+                ? (config('app.url') . '/storage/' . ltrim($provider->media->first()->file_path, '/'))
+                : null,
+            'services' => $provider->services->map(function ($service) {
+                return [
+                    'id' => $service->id,
+                    'description' => $service->description,
+                    'price' => $service->price,
+                ];
+            }),
+            'projects' => $provider->projects->map(function ($project) {
+                return [
+                    'id' => $project->id,
+                    'project_name' => $project->project_name,
+                    'description' => $project->description,
+                    'date_start' => $project->date_start,
+                    'date_end' => $project->date_end,
+                    'status' => $project->status,
+                ];
+            }),
+            'certifications' => $provider->certifications->map(function ($cert) {
+                return [
+                    'id' => $cert->id,
+                    'name' => $cert->name,
+                    'description' => $cert->description,
+                ];
+            }),
+            'contacts' => $provider->contact,
+            'workspaces' => $provider->workspaces->map(function ($item) {
+                return $item->city->id;
+            })->toArray(),
+        ], 200);
     }
 
     private function replaceBusinessImage(ServiceProvider $serviceProvider, $file)
