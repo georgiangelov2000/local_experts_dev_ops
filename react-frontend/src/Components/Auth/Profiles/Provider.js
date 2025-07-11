@@ -7,10 +7,10 @@ import Contacts from "../Tabs/Providers/Contacts";
 import Projects from "../Tabs/Providers/Projects";
 import Services from "../Tabs/Providers/Services";
 import Preview from "../Tabs/Providers/Preview";
-
 import Certifications from "../Tabs/Providers/Certifications";
 import { FiUser, FiFolder, FiBriefcase, FiPhone, FiAward, FiLock, FiEye } from 'react-icons/fi';
 import SocialProfile from '../Shared/SocialProfile';
+import { useNavigate } from 'react-router-dom';
 
 export default function Provider({ user }) {
     console.log(user);
@@ -29,6 +29,8 @@ export default function Provider({ user }) {
         { id: "password", name: "Change Password", icon: <FiLock /> },
         { id: "preview", name: "Preview", icon: <FiEye /> },
     ];
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         setLoading(true);
@@ -82,7 +84,7 @@ export default function Provider({ user }) {
             <div className="flex flex-wrap gap-2 bg-gray-50 border-0">
                 <SocialProfile user={user} />
             </div>
-            <div className='flex flex-wrap gap-2 bg-gray-50 p-5 border-0'>
+            <div className='flex flex-wrap gap-2 bg-gray-50 p-5 border-0 items-center'>
             {providerTabs.map(tab => (
                     <button
                         key={tab.id}
@@ -94,6 +96,16 @@ export default function Provider({ user }) {
                         <span>{tab.name}</span>
                     </button>
                 ))}
+                {/* View Public Profile Button */}
+                {user?.alias && (
+                  <button
+                    className="ml-auto bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded shadow transition"
+                    onClick={() => navigate(`/providers/${user.alias}`)}
+                    type="button"
+                  >
+                    View Public Profile
+                  </button>
+                )}
             </div>
 
             <div className="bg-white p-4 min-h-720">

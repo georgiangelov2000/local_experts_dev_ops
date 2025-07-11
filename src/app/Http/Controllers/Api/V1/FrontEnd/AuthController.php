@@ -76,14 +76,18 @@ class AuthController extends Controller
     {
         $user = auth()->user();
         $type = ($user->role_id === User::SERVICE_PROVIDER) ? 'provider' : 'user';
-        return response()->json([
+        $response = [
             'id' => $user->id,
             'email' => $user->email,
             'type' => $type,
             'provider' => 'facebook',
             'provider_id' => '32',
             'social_name' => 'Georgi Angelov',
-        ], 200);
+        ];
+        if ($type === 'provider' && $user->serviceProvider) {
+            $response['alias'] = $user->serviceProvider->alias;
+        }
+        return response()->json($response, 200);
     }
 
     public function forgotPassword(Request $request)
