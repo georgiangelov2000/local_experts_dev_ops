@@ -35,15 +35,11 @@ class ProfileController extends Controller
                 $serviceProvider->business_name = $validated['business_name'];
                 $serviceProvider->description = $validated['description'];
                 $serviceProvider->category_id = (int) $validated['category_id'];
+                $serviceProvider->service_category_id = (int) $validated['service_category_id'];
                 $serviceProvider->start_time = Carbon::now();
                 $serviceProvider->stop_time = Carbon::now()->addMonth();
                 $serviceProvider->alias = $this->generateSeoAlias($validated['business_name'], $user->id);
                 $serviceProvider->save();
-
-                // Sync service categories (many-to-many)
-                if (!empty($validated['service_provovider_categories'])) {
-                    $serviceProvider->serviceCategory()->sync($validated['service_provovider_categories']);
-                }
 
                 if ($request->hasFile('image')) {
                     $this->replaceBusinessImage($serviceProvider, $request->file('image'));
@@ -150,7 +146,7 @@ class ProfileController extends Controller
                     'categories' => Category::select('id','name')->get(),
                     'category_id' => $provider->category_id,
                     'service_categories' => ServiceCategory::where('category_id',$provider->category_id)->get(),
-                    'service_provovider_categories' => $provider->serviceCategory()->pluck('id'),
+                    'service_category_id' => $provider->service_category_id,
                     'cities' => City::all(),
                     'workspaces' => $provider->workspaces->map(function ($item) {
                         return $item->city->id;

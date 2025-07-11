@@ -29,8 +29,7 @@ class ProfileRequest extends FormRequest
                     'email' => 'required|email|max:255',
                     'description' => 'nullable|string|max:500',
                     'category_id' => 'required|integer|exists:categories,id',
-                    'service_provovider_categories' => 'required|array|min:1',
-                    'service_provovider_categories.*' => 'integer|exists:service_categories,id',
+                    'service_category_id' => 'required|integer|exists:service_categories,id',
                     'image' => 'nullable|image|max:2048',
                 ];
             case 'projects':

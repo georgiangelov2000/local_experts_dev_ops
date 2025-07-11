@@ -11,7 +11,7 @@ const basicProfileSchema = yup.object().shape({
         .typeError("Category is required")
         .required("Category is required")
         .integer("Category must be an integer"),
-    service_provovider_categories: yup
+    service_category_id: yup
         .array()
         .of(yup.number())
         .min(1, "At least one service type is required")
@@ -32,7 +32,7 @@ export function useBasicProfileForm({tabData = {}}) {
             email: tabData.email || "",
             description: tabData.description || "",
             category_id: tabData.category_id || "",
-            service_provovider_categories: tabData.service_provovider_categories || [],
+            service_category_id: tabData.service_category_id || [],
             image: null,
         },
         resolver: yupResolver(basicProfileSchema),

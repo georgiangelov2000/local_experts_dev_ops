@@ -3,10 +3,22 @@ import Select from "react-select";
 import { Controller } from "react-hook-form";
 import apiService from "../../../../Services/apiService";
 import { useState } from "react";
+import { useRef } from "react";
 
 export default function Profile({ data }) {
   const { register, handleSubmit, errors, control } = useBasicProfileForm({ tabData: data });
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  const fileInputRef = useRef();
+
+  const onAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAvatarPreview(URL.createObjectURL(file));
+    } else {
+      setAvatarPreview(null);
+    }
+  };
 
   const onSubmit = async (formData) => {
     setSubmitStatus(null);
@@ -24,12 +36,22 @@ export default function Profile({ data }) {
   const categoryOptions = (data.categories || []).map(cat => ({ value: cat.id, label: cat.name }));
   const serviceCategoryOptions = (data.service_categories || []).map(sub => ({ value: sub.id, label: sub.name }));
   const cityOptions = (data.cities || []).map(city => ({ value: city.id, label: city.name }));
+  // Map already selected cities (workspaces) to city IDs for Select
+  const selectedCityIds = Array.isArray(data.workspaces) ? data.workspaces : [];
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {submitStatus && (
-        <div className={`mb-2 text-sm ${submitStatus.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
-          {submitStatus.message}
+        <div className={`flex items-center p-4 mb-4 text-sm rounded-lg ${submitStatus.type === 'success' ? 'text-green-800 bg-green-50 border border-green-200' : 'text-red-800 bg-red-50 border border-red-200'}`} role="alert">
+          {submitStatus.type === 'success' ? (
+            <svg aria-hidden="true" className="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 00-1.414 0L9 11.586 6.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l7-7a1 1 0 000-1.414z" clipRule="evenodd"></path></svg>
+          ) : (
+            <svg aria-hidden="true" className="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 13a1 1 0 01-1 1H3a1 1 0 010-2h14a1 1 0 011 1zm-7-7a1 1 0 00-1 1v4a1 1 0 002 0V7a1 1 0 00-1-1zm0 8a1 1 0 100 2 1 1 0 000-2z" clipRule="evenodd"></path></svg>
+          )}
+          <span className="sr-only">{submitStatus.type === 'success' ? 'Success' : 'Error'}</span>
+          <div>
+            {submitStatus.message}
+          </div>
         </div>
       )}
       <div className="mt-2">
@@ -75,23 +97,23 @@ export default function Profile({ data }) {
         )}
       </div>
       <div className="mt-2">
-        <label className="block mb-1 font-medium text-xs text-gray-500">Offered Service Types</label>
+        <label className="block mb-1 font-medium text-xs text-gray-500">Offered Service Type</label>
         <Controller
-          name="service_provovider_categories"
+          name="service_category_id"
           control={control}
           render={({ field }) => (
             <Select
               {...field}
               options={serviceCategoryOptions}
-              value={serviceCategoryOptions.filter(option => (field.value || []).includes(option.value))}
-              onChange={selected => field.onChange(selected ? selected.map(opt => opt.value) : [])}
-              isMulti
-              placeholder="Select Service Types"
+              value={serviceCategoryOptions.find(option => option.value === field.value) || null}
+              onChange={option => field.onChange(option ? option.value : null)}
+              isClearable
+              placeholder="Select Service Type"
             />
           )}
         />
-        {errors.service_provovider_categories && (
-          <p className="text-red-500 text-xs mt-1">{errors.service_provovider_categories.message}</p>
+        {errors.service_category_id && (
+          <p className="text-red-500 text-xs mt-1">{errors.service_category_id.message}</p>
         )}
       </div>
       <div className="mt-2">
@@ -99,6 +121,7 @@ export default function Profile({ data }) {
         <Controller
           name="cities"
           control={control}
+          defaultValue={selectedCityIds}
           render={({ field }) => (
             <Select
               {...field}
@@ -125,6 +148,28 @@ export default function Profile({ data }) {
         {errors.description && (
           <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>
         )}
+      </div>
+      {/* Avatar Upload - Flowbite style */}
+      <div className="mt-4">
+        <label className="block mb-1 font-medium text-xs text-gray-500">Avatar Image</label>
+        <div className="flex items-center gap-4">
+          <div className="shrink-0">
+            <img
+              className="h-16 w-16 object-cover rounded-full border border-gray-200"
+              src={avatarPreview || data.avatar_url || 'https://flowbite.com/docs/images/people/profile-picture-5.jpg'}
+              alt="Current avatar"
+            />
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+            style={{ maxWidth: 220 }}
+            onChange={onAvatarChange}
+            ref={fileInputRef}
+          />
+        </div>
+        <p className="mt-1 text-xs text-gray-500">PNG, JPG, JPEG up to 2MB.</p>
       </div>
       <button
         type="submit"
