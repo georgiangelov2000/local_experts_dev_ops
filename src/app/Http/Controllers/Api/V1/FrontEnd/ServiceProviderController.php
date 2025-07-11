@@ -133,7 +133,13 @@ class ServiceProviderController extends Controller
                 'reviews_count' => $provider->reviews_count,
                 'views_count' => $provider->views,
                 'final_grade' => $provider->rating(),
-                'locations' => $locations
+                'locations' => $locations,
+                'services' => $provider->services->map(function ($service) {
+                    return [
+                        'description' => $service->description,
+                        'price' => $service->price,
+                    ];
+                }),
             ];
         });
 
