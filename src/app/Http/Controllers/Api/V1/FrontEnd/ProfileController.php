@@ -152,6 +152,9 @@ class ProfileController extends Controller
                     'service_categories' => ServiceCategory::where('category_id',$provider->category_id)->get(),
                     'service_provovider_categories' => $provider->serviceCategory()->pluck('id'),
                     'cities' => City::all(),
+                    'workspaces' => $provider->workspaces->map(function ($item) {
+                        return $item->city->id;
+                    })->toArray(),
                 ],200);
             case 'projects':
                 $projects = $provider->projects()->select('id', 'project_name', 'description', 'date_start', 'date_end', 'status')->get();

@@ -16,6 +16,7 @@ const basicProfileSchema = yup.object().shape({
         .of(yup.number())
         .min(1, "At least one service type is required")
         .required("Service types are required"),
+    image: yup.mixed().nullable(), // avatar image, optional
 });
 
 export function useBasicProfileForm({tabData = {}}) {
@@ -32,6 +33,7 @@ export function useBasicProfileForm({tabData = {}}) {
             description: tabData.description || "",
             category_id: tabData.category_id || "",
             service_provovider_categories: tabData.service_provovider_categories || [],
+            image: null,
         },
         resolver: yupResolver(basicProfileSchema),
       });
