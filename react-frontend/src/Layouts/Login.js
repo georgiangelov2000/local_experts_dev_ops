@@ -1,3 +1,4 @@
+import SEO from '../Components/Auth/Shared/SEO';
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FiMail, FiLock } from 'react-icons/fi';
@@ -35,6 +36,12 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
+      <SEO
+        title="Login - Local Experts"
+        description="Sign in to your Local Experts account to manage your profile and connect with providers."
+        url="https://yourdomain.com/login"
+        image="https://yourdomain.com/og-image.jpg"
+      />
       <div className="bg-white p-6 w-full max-w-sm rounded shadow">
         <h2 className="text-2xl font-bold text-center mb-2">Sign In</h2>
         <p className="text-center text-gray-600 mb-6">Sign in to your account</p>

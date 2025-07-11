@@ -1,3 +1,4 @@
+import SEO from '../Components/Auth/Shared/SEO';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import apiService from '../Services/apiService';
@@ -38,6 +39,12 @@ export default function ResetPassword() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
+      <SEO
+        title="Reset Password - Local Experts"
+        description="Set a new password for your Local Experts account."
+        url="https://yourdomain.com/reset-password"
+        image="https://yourdomain.com/og-image.jpg"
+      />
       <div className="bg-white p-6 w-full max-w-sm rounded shadow">
         <h2 className="text-2xl font-bold text-center mb-4">Reset Password</h2>
         <form onSubmit={handleSubmit}>

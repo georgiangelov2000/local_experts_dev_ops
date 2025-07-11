@@ -1,3 +1,4 @@
+import SEO from '../Components/Auth/Shared/SEO';
 import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from 'react';
 import apiService from '../Services/apiService';
@@ -126,6 +127,12 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex justify-center items-center p-4 bg-gradient-to-br from-blue-50 via-white to-indigo-100 animate-fadein">
+      <SEO
+        title="Register - Local Experts"
+        description="Create your account to find and connect with trusted local service providers."
+        url="https://yourdomain.com/register"
+        image="https://yourdomain.com/og-image.jpg"
+      />
       <div className="bg-white p-8 w-full max-w-4xl rounded-2xl shadow-xl border border-gray-200 transition-all duration-300">
         <h2 className="text-3xl font-extrabold mb-2 text-center text-gray-800">Register</h2>
         <p className="text-center text-gray-500 mb-6 text-lg">Create your account to get started</p>

@@ -1,3 +1,4 @@
+import SEO from '../Components/Auth/Shared/SEO';
 import { useState, useEffect } from 'react';
 import { useForgotPasswordForm } from "../Models/useForgotPasswordForm";
 import { useAuth } from "../Context/AuthContext";
@@ -31,6 +32,12 @@ export default function ForgotPassword() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
+      <SEO
+        title="Forgot Password - Local Experts"
+        description="Reset your Local Experts account password. Enter your email to receive a reset link."
+        url="https://yourdomain.com/forgot-password"
+        image="https://yourdomain.com/og-image.jpg"
+      />
       <div className="bg-white p-6 w-full max-w-sm rounded shadow">
         <h2 className="text-2xl font-bold text-center mb-2">Forgot Password</h2>
         <p className="text-center text-gray-600 mb-6">Enter your email to reset your password</p>
