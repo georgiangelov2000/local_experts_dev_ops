@@ -7,9 +7,12 @@ import SearchBar from './SearchBar';
 import List from './List';
 import Categories from './Categories';
 import { useAuth } from '../../Context/AuthContext';
+import SEO from '../Auth/Shared/SEO';
+import { useLocation } from 'react-router-dom';
 
 export default function Service() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   const [state, dispatch] = useReducer(serviceReducer, initialServiceState);
   const { user, authChecked } = useAuth();
 
@@ -58,42 +61,66 @@ export default function Service() {
     fetchData();
   }, [searchParams]);
 
+  // Dynamic SEO logic
+  const filters = [];
+  for (const [key, value] of searchParams.entries()) {
+    if (value) filters.push(`${key}: ${value}`);
+  }
+  const title = filters.length
+    ? `Providers matching ${filters.join(', ')} | Local Experts`
+    : 'Find Service Providers | Local Experts';
+  const description = filters.length
+    ? `Browse service providers filtered by ${filters.join(', ')}.`
+    : 'Browse and find the best service providers in your area.';
+  const canonicalUrl = typeof window !== 'undefined'
+    ? window.location.origin + location.pathname + location.search
+    : location.pathname + location.search;
+  const image = 'https://yourdomain.com/og-image.jpg'; // Replace with your real OG image
+
   if (state.loading) {
     return <div className="p-6 text-center">Loading service providers...</div>;
   }
 
   return (
-    <div className="p-6 bg-white rounded-t-lg">
-      <SearchBar 
-        state={state} 
-        dispatch={dispatch}
-        setSearchParams={setSearchParams}
+    <>
+      <SEO
+        title={title}
+        description={description}
+        url={canonicalUrl}
+        image={image}
       />
-
-      {state.viewMode === 'grid' ? (
-        <>
-          <Categories categories={state.categories} />
-          <h2 className="text-xl font-semibold mb-4">Providers</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
-            {state.providers.map((provider) => (
-              <ServiceProviderCard 
-                key={provider.id} 
-                provider={provider}
-                likes={state.likes}
-                dislikes={state.dislikes}
-                favourites={state.favourites}
-              />
-            ))}
-          </div>
-        </>
-      ) : (
-        <List 
+      <div className="p-6 bg-white rounded-t-lg">
+        <SearchBar 
           state={state} 
           dispatch={dispatch}
           setSearchParams={setSearchParams}
-          searchParams={searchParams} 
         />
-      )}
-    </div>
+
+        {state.viewMode === 'grid' ? (
+          <>
+            <Categories categories={state.categories} />
+            <h2 className="text-xl font-semibold mb-4">Providers</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
+              {state.providers.map((provider) => (
+                <ServiceProviderCard 
+                  key={provider.id} 
+                  provider={provider}
+                  likes={state.likes}
+                  dislikes={state.dislikes}
+                  favourites={state.favourites}
+                />
+              ))}
+            </div>
+          </>
+        ) : (
+          <List 
+            state={state} 
+            dispatch={dispatch}
+            setSearchParams={setSearchParams}
+            searchParams={searchParams} 
+          />
+        )}
+      </div>
+    </>
   );
 }
