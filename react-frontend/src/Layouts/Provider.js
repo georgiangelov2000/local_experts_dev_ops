@@ -7,7 +7,7 @@ import ProjectsTab from '../Components/Provider/Tabs/ProjectsTab';
 import VideosTab from '../Components/Provider/Tabs/VideosTab';
 import Reviews from '../Components/Provider/Reviews';
 import { providerReducer, initialState } from '../Reducers/providerReducer';
-import { FiPhone, FiMail, FiGlobe, FiStar } from 'react-icons/fi';
+import { FiPhone, FiMail, FiGlobe } from 'react-icons/fi';
 import { FaStar, FaRegStar } from 'react-icons/fa';
 import SEO from '../Components/Auth/Shared/SEO';
 

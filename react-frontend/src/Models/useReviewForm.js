@@ -9,7 +9,7 @@ const schema = yup.object({
   service_provider_id: yup.number().required("Service provider is required."),
 });
 
-export function useReviewForm(user = {}) {
+export function useReviewForm(user = {}, serviceProviderId = null) {
     const consumerId = user && user.id ? user.id : null;
 
   const {
@@ -23,7 +23,7 @@ export function useReviewForm(user = {}) {
       review_text: "",
       rating: 5,
       consumer_id: consumerId,
-      service_provider_id: null,
+      service_provider_id: serviceProviderId,
     },
     resolver: yupResolver(schema),
   });

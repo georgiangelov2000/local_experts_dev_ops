@@ -1,23 +1,14 @@
-import { useState, useEffect } from 'react';
 import { FaStar, FaRegStar } from 'react-icons/fa';
 import apiService from '../../Services/apiService';
 import { useReviewForm } from '../../Models/useReviewForm';
+import { useAuth } from '../../Context/AuthContext';
 
 export default function Reviews({ reviews = [], serviceProviderId, onReviewAdded }) {
-  const [user, setUser] = useState(null);
-  const { register, handleSubmit, errors, reset } = useReviewForm(user);
-
-  useEffect(() => {
-    apiService.auth()
-      .then((res) => {
-        setUser(res.data);
-      })
-      .catch(() => {
-        setUser(null);
-      });
-  }, []);
+  const { user } = useAuth();
+  const { register, handleSubmit, errors, reset } = useReviewForm(user, serviceProviderId);
 
   const submitHandler = async (data) => {
+    console.log(1);
     const payload = {
       ...data,
       consumer_id: user ? user.id : null,
@@ -76,40 +67,46 @@ export default function Reviews({ reviews = [], serviceProviderId, onReviewAdded
         )}
       </div>
 
-      <form onSubmit={handleSubmit(submitHandler)} className="border-t border-gray-100 pt-4 space-y-3">
-        <h4 className="text-sm font-medium text-gray-700">Add a review</h4>
-        <textarea
-          {...register("review_text")}
-          placeholder="Write your comment..."
-          className="w-full border border-gray-300 rounded p-2 text-sm"
-          rows="3"
-        />
-        {errors.review_text && (
-          <p className="text-xs text-red-500">{errors.review_text.message}</p>
-        )}
+      {user ? (
+        <form onSubmit={handleSubmit(submitHandler)} className="border-t border-gray-100 pt-4 space-y-3">
+          <h4 className="text-sm font-medium text-gray-700">Add a review</h4>
+          <textarea
+            {...register("review_text")}
+            placeholder="Write your comment..."
+            className="w-full border border-gray-300 rounded p-2 text-sm"
+            rows="3"
+          />
+          {errors.review_text && (
+            <p className="text-xs text-red-500">{errors.review_text.message}</p>
+          )}
 
-        <div className="flex items-center gap-2">
-          <label className="text-xs text-gray-500">Rating:</label>
-          <select
-            {...register("rating")}
-            className="border border-gray-300 rounded p-1 text-sm"
-          >
-            {[5, 4, 3, 2, 1].map((val) => (
-              <option key={val} value={val}>
-                {val}
-              </option>
-            ))}
-          </select>
+          <div className="flex items-center gap-2">
+            <label className="text-xs text-gray-500">Rating:</label>
+            <select
+              {...register("rating")}
+              className="border border-gray-300 rounded p-1 text-sm"
+            >
+              {[5, 4, 3, 2, 1].map((val) => (
+                <option key={val} value={val}>
+                  {val}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {errors.rating && (
+            <p className="text-xs text-red-500">{errors.rating.message}</p>
+          )}
+
+          <button type="submit" className="bg-blue-600 text-white py-1.5 px-3 text-sm hover:bg-blue-700 cursor-pointer">
+            Submit Review
+          </button>
+        </form>
+      ) : (
+        <div className="border-t border-gray-100 pt-4 text-sm text-gray-500">
+          Please log in to add a review.
         </div>
-
-        {errors.rating && (
-          <p className="text-xs text-red-500">{errors.rating.message}</p>
-        )}
-
-        <button type="submit" className="bg-blue-600 text-white py-1.5 px-3 text-sm hover:bg-blue-700">
-          Submit Review
-        </button>
-      </form>
+      )}
     </div>
   );
 }

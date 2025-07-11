@@ -52,6 +52,16 @@ export default function ServiceProviderCard({
           <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
             {provider.description || "No description provided."}
           </p>
+          {provider.services && provider.services.length > 0 && (
+            <ul className="mt-2 mb-2 text-xs text-gray-700">
+              {provider.services.map((service, idx) => (
+                <li key={idx} className="flex justify-between border-b border-gray-100 py-1 last:border-b-0">
+                  <span>{service.description}</span>
+                  <span className="font-semibold text-blue-700">${service.price}</span>
+                </li>
+              ))}
+            </ul>
+          )}
           <div className="flex items-center text-xs text-gray-500">
             <span className="flex items-center flex-wrap gap-1">
               {provider.locations?.length > 0 ? (
