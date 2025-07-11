@@ -1,13 +1,55 @@
-import React from "react";
+import React, { useState } from "react";
+import { useProjectsForm } from "../../../../Models/Provider/useProjectsForm";
+import apiService from "../../../../Services/apiService";
 
-export default function ProjectsTab({ fields, register, remove, append }) {
+export default function Projects({ data }) {
+  const {
+    register,
+    handleSubmit,
+    errors,
+    control,
+    fields,
+    append,
+    remove,
+    reset,
+  } = useProjectsForm(data);
+
+  const [submitStatus, setSubmitStatus] = useState(null);
+  const [previews, setPreviews] = useState({}); // { [index]: { image: url, video: url } }
+
+  const onFileChange = (e, index, type) => {
+    const file = e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPreviews(prev => ({
+        ...prev,
+        [index]: {
+          ...prev[index],
+          [type]: url,
+        },
+      }));
+    }
+  };
+
+  const onSubmit = async (formData) => {
+    setSubmitStatus(null);
+    try {
+      const response = await apiService.saveProfileTab('projects', formData);
+      setSubmitStatus({ type: 'success', message: response.data.message });
+    } catch (error) {
+      setSubmitStatus({ type: 'error', message: error.response?.data?.error || 'Failed to save projects.' });
+    }
+  };
+
   return (
-    <div className="space-y-4">
-      <p className="mb-4 bg-gray-400 p-2 text-white">
-        Добавете до 3 проекта, с които да демонстрирате опита си.
-      </p>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      {submitStatus && (
+        <div className={`mb-2 text-sm ${submitStatus.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+          {submitStatus.message}
+        </div>
+      )}
       {fields.map((proj, index) => (
-        <div key={proj.id} className="border rounded p-3 space-y-2">
+        <div key={proj.id || index} className="border rounded p-3 space-y-2">
           <input
             type="text"
             {...register(`projects.${index}.project_name`, { required: "Project name is required" })}
@@ -46,14 +88,30 @@ export default function ProjectsTab({ fields, register, remove, append }) {
                 type="file"
                 accept="image/*"
                 {...register(`projects.${index}.image`)}
+                onChange={e => onFileChange(e, index, 'image')}
               />
+              {previews[index]?.image && (
+                <img
+                  src={previews[index].image}
+                  alt="Preview"
+                  className="mt-2 w-32 h-32 object-cover rounded border"
+                />
+              )}
             </div>
             <div className="flex-1">
               <input
                 type="file"
                 accept="video/*"
                 {...register(`projects.${index}.video`)}
+                onChange={e => onFileChange(e, index, 'video')}
               />
+              {previews[index]?.video && (
+                <video
+                  src={previews[index].video}
+                  controls
+                  className="mt-2 w-32 h-32 object-cover rounded border"
+                />
+              )}
             </div>
           </div>
           <button
@@ -79,11 +137,17 @@ export default function ProjectsTab({ fields, register, remove, append }) {
               video: null,
             })
           }
-          className="bg-green-600 text-white p-3 hover:bg-green-700 cursor-pointer"
+          className="bg-gray-800 text-white px-4 py-2 mr-2"
         >
           Add Project
         </button>
       )}
-    </div>
+      <button
+        type="submit"
+        className="bg-gray-800 text-white px-4 py-2 cursor-pointer"
+      >
+        Save Projects
+      </button>
+    </form>
   );
 }

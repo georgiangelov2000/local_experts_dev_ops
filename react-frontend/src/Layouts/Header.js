@@ -14,7 +14,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-gray-800 text-white p-4 mb-10">
+    <header className="bg-gray-800 text-white p-5">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-3">
         {/* LOGO + BURGER */}
         <div className="w-full flex justify-between items-center">

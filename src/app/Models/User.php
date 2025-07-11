@@ -80,16 +80,6 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         return $this->hasOne(ServiceProvider::class);
     }
     
-    public function projects(): HasMany
-    {
-        return $this->hasMany(Project::class);
-    }
-
-    public function services():HasManyThrough
-    {
-        return $this->hasManyThrough(Service::class, ServiceProvider::class, 'user_id', 'service_provider_id', 'id', 'id');
-    }
-
     public function favourites()
     {
         return $this->hasMany(Favourite::class);

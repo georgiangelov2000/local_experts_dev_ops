@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-const forgotPasswordSchema = yup.object({
+const changePasswordSchema = yup.object().shape({
   currentPassword: yup.string().required("Current password is required"),
   newPassword: yup.string().required("New password is required").min(8, "Password must be at least 8 characters"),
   confirmPassword: yup.string()
@@ -10,11 +10,8 @@ const forgotPasswordSchema = yup.object({
     .required("Please confirm your new password"),
 });
 
-export function useForgotPasswordForm() {
+export function useChangePasswordForm() {
   return useForm({
-    resolver: yupResolver(forgotPasswordSchema),
-    defaultValues: {
-      email: "",
-    },
+    resolver: yupResolver(changePasswordSchema),
   });
-}
+} 

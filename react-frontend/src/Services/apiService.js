@@ -28,9 +28,13 @@ const apiService = {
   refresh: () => apiClient.post('/refresh'),
   auth: () => apiClient.get('/me'),
   logout: () => apiClient.post('/logout'),
+  changePassword: (data) => apiClient.post('/change-password', data),
 
   // 👤 Profile
   profile: (data) => apiClient.put('/profile', data),
+
+  // Save profile tab data
+  saveProfileTab: (tab, data) => apiClient.post('/profile', { ...data, tab }),
 
   // 📦 Services (Ads)
   getAds: (config = {}) => apiClient.get('/services', config),
@@ -48,6 +52,10 @@ const apiService = {
   likeProvider: (id) => apiClient.post(`/providers/${id}/like`),
   dislikeProvider: (id) => apiClient.post(`/providers/${id}/dislike`),
   toggleFavourite: (id) => apiClient.post(`/providers/${id}/favourite`),
+
+  toggleTab: (tab) => apiClient.get(`/profile/tab/${tab}`),
+  // Fetch full provider profile for preview
+  getFullProfile: () => apiClient.get('/profile/preview'),
 };
 
 export default apiService;

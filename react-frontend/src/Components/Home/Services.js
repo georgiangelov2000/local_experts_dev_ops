@@ -6,10 +6,26 @@ import ServiceProviderCard from './ServiceProviderCard';
 import SearchBar from './SearchBar';
 import List from './List';
 import Categories from './Categories';
+import { useAuth } from '../../Context/AuthContext';
 
 export default function Service() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [state, dispatch] = useReducer(serviceReducer, initialServiceState);
+  const { user, authChecked } = useAuth();
+
+  // likes ,dislikes, favourites for auth users
+  useEffect(() => {
+    if (authChecked && user) {
+      dispatch({
+        type: 'SET_USER_ACTIONS',
+        payload: {
+          likes: user.like_ids,
+          dislikes: user.dislike_ids,
+          favourites: user.favourite_ids
+        }
+      });
+    }
+  }, [user, authChecked]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,7 +76,13 @@ export default function Service() {
           <h2 className="text-xl font-semibold mb-4">Providers</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
             {state.providers.map((provider) => (
-              <ServiceProviderCard key={provider.id} provider={provider} />
+              <ServiceProviderCard 
+                key={provider.id} 
+                provider={provider}
+                likes={state.likes}
+                dislikes={state.dislikes}
+                favourites={state.favourites}
+              />
             ))}
           </div>
         </>

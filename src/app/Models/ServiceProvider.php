@@ -105,4 +105,42 @@ class ServiceProvider extends Model
         return $this->belongsTo(Contact::class);
     }
 
+    public function mapProvider() {
+        return [
+            'business_name' => $this->business_name,
+            'alias' => $this->alias,
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
+            'category' => $this->serviceCategory->name,
+            'projects' => $this->projects->map(function ($project) {
+                return [
+                    'id' => $project->id,
+                    'name' => $project->project_name,
+                    'description' => $project->description,
+                ];
+            }),
+            'services' => $this->services->map(function ($service) {
+                return [
+                    'id' => $service->id,
+                    'description' => $service->description,
+                    'price' => $service->price,
+                ];
+            }),
+            'certifications' => $this->certifications->map(function ($certification) {
+                return [
+                    'id' => $certification->id,
+                    'name' => $certification->name,
+                    'description' => $certification->description,
+                ];
+            }),
+            'workspaces' => $this->workspaces->map(function ($workspace) {
+                return [
+                    'id' => $workspace->id,
+                    'name' => $workspace->city->name,
+                ];
+            }),
+            
+        ];
+    }
+
 }

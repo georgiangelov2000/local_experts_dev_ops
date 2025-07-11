@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\FrontEnd;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Models\User;
 use Password;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -75,143 +76,14 @@ class AuthController extends Controller
     {
         $user = auth()->user();
         $type = ($user->role_id === User::SERVICE_PROVIDER) ? 'provider' : 'user';
-        $mappedUser = [
+        return response()->json([
             'id' => $user->id,
             'email' => $user->email,
             'type' => $type,
-        ];
-
-        
-
-        if ($type === 'provider') {
-            $provider = $user->serviceProvider()->with([
-                'projects',
-                'services',
-                'reviews',
-                'serviceCategory'
-            ])->first();
-
-            if ($provider) {
-                $mappedUser['service_provider'] = [
-                    'business_name' => $provider->business_name ?? null,
-                    'alias' => $provider->alias ?? null,
-                    'start_date' => $provider->start_time ?? null,
-                    'end_date' => $provider->stop_time ?? null,
-                    'category' => $provider->serviceCategory->name ?? null,
-                    'projects' => $provider->projects->pluck('name'),
-                    'services' => $provider->services->pluck('name'),
-                    'reviews' => $provider->reviews->map(function ($review) {
-                        return [
-                            'rating' => $review->rating,
-                            'comment' => $review->comment,
-                        ];
-                    }),
-                ];
-            } else {
-                $mappedUser['service_provider'] = null;
-            }
-        } else {
-            $user->loadMissing([
-                'favourites.serviceProvider.user',
-                'contacts',
-                'likes',
-                'dislikes',
-            ]);
-
-            $favouriteIds = [];
-            $likeIds = [];
-            $dislikeIds = [];
-
-            $mappedUser['favourites'] = $user->favourites->map(function ($favourite) use (&$favouriteIds) {
-                $provider = $favourite->serviceProvider;
-                $locations = $provider->workspaces->map(function ($workspace) {
-                    return $workspace->city?->name;
-                })->filter()->values(); // remove nulls and reset indexes
-
-                $favouriteIds[] = $provider->id;
-
-                return [
-                    'business_name' => $provider->business_name,
-                    'start_time' => $provider->start_time,
-                    'stop_time' => $provider->stop_time,
-                    'alias' => $provider->alias,
-                    'service_category' => $provider->serviceCategory->name,
-                    'description' => $provider->description,
-                    'media' => $provider->media->first() ?? [],
-                    'likes_count' => $provider->likes_count,
-                    'dislikes_count' => $provider->dislikes_count,
-                    'reviews_count' => $provider->reviews_count,
-                    'final_grade' => $provider->rating(),
-                    'locations' => $locations
-                ];
-            })->toArray();
-
-            $mappedUser['likes'] = $user->likes->map(function ($like) use (&$likeIds) {
-                $provider = $like->serviceProvider;
-                $locations = $provider->workspaces->map(function ($workspace) {
-                    return $workspace->city?->name;
-                })->filter()->values(); // remove nulls and reset indexes
-
-                $likeIds[] = $provider->id;
-
-                return [
-                    'business_name' => $provider->business_name,
-                    'start_time' => $provider->start_time,
-                    'stop_time' => $provider->stop_time,
-                    'alias' => $provider->alias,
-                    'service_category' => $provider->serviceCategory->name,
-                    'description' => $provider->description,
-                    'media' => $provider->media->first() ?? [],
-                    'likes_count' => $provider->likes_count,
-                    'dislikes_count' => $provider->dislikes_count,
-                    'reviews_count' => $provider->reviews_count,
-                    'final_grade' => $provider->rating(),
-                    'locations' => $locations
-                ];
-            })->toArray();
-
-            $mappedUser['dislikes'] = $user->dislikes->map(function ($dislike) use (&$dislikeIds) {
-                $provider = $dislike->serviceProvider;
-                $locations = $provider->workspaces->map(function ($workspace) {
-                    return $workspace->city?->name;
-                })->filter()->values(); // remove nulls and reset indexes
-
-                $dislikeIds[] = $provider->id;
-
-                return [
-                    'business_name' => $provider->business_name,
-                    'start_time' => $provider->start_time,
-                    'stop_time' => $provider->stop_time,
-                    'alias' => $provider->alias,
-                    'service_category' => $provider->serviceCategory->name,
-                    'description' => $provider->description,
-                    'media' => $provider->media->first() ?? [],
-                    'likes_count' => $provider->likes_count,
-                    'dislikes_count' => $provider->dislikes_count,
-                    'reviews_count' => $provider->reviews_count,
-                    'final_grade' => $provider->rating(),
-                    'locations' => $locations
-                ];
-            })->toArray();
-
-
-            $mappedUser['contacts'] = $user->contacts->map(function ($contact) {
-                return [
-                    'phone' => $contact->phone,
-                    'email' => $contact->email,
-                    'facebook' => $contact->facebook,
-                    'instagram' => $contact->instagram,
-                    'website' => $contact->website,
-                ];
-            })->toArray();
-
-            $mappedUser['like_ids'] = $likeIds;
-            $mappedUser['dislike_ids'] = $dislikeIds;
-        }
-
-        $mappedUser['favourite_ids'] = $favouriteIds;
-
-        return response()->json($mappedUser, 200);
+            'provider' => 'facebook',
+            'provider_id' => '32',
+            'social_name' => 'Georgi Angelov',
+        ], 200);
     }
 
     public function forgotPassword(Request $request)
@@ -249,9 +121,22 @@ class AuthController extends Controller
             : response()->json(['message' => __($status)], 400);
     }
 
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        $user = auth()->user();
+        // Check current password
+        if (!\Hash::check($request->currentPassword, $user->password)) {
+            return response()->json(['message' => 'Current password is incorrect.'], 422);
+        }
+        $user->password = \Hash::make($request->newPassword);
+        $user->save();
+        return response()->json(['message' => 'Password changed successfully.'], 200);
+    }
+
     public function redirectToProvider($provider)
     {
-        return Socialite::driver($provider)->stateless()->redirect()->getTargetUrl();
+        // Redirect the user to the provider's OAuth page
+        return Socialite::driver($provider)->stateless()->redirect();
     }
 
     public function handleProviderCallback($provider)
@@ -259,20 +144,50 @@ class AuthController extends Controller
         try {
             $socialUser = Socialite::driver($provider)->user();
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to authenticate with ' . $provider], 500);
+            return $this->socialitePopupResponse([
+                'error' => 'Failed to authenticate with ' . $provider,
+                'email_exists' => null
+            ]);
         }
 
-        $user = User::firstOrCreate(
-            ['email' => $socialUser->getEmail()],
-            ['name' => $socialUser->getName(), 'password' => bcrypt(str_random(16))]
+        $email = $socialUser->getEmail();
+        $existingUser = User::where('email', $email)->first();
+
+        if ($existingUser) {
+            return $this->socialitePopupResponse([
+                'error' => 'Email already registered. Please log in or use another provider.',
+                'email_exists' => true
+            ]);
+        }
+
+        // Return social profile data for pre-filling registration form
+        return $this->socialitePopupResponse([
+            'email_exists' => false,
+            'profile' => [
+                'email' => $email,
+                'name' => $socialUser->getName(),
+                'avatar' => $socialUser->getAvatar(),
+                'provider' => $provider
+            ]
+        ]);
+    }
+
+    private function socialitePopupResponse($data)
+    {
+        $json = json_encode($data);
+        return response()->make(
+            '<!DOCTYPE html><html><head><title>Social Login</title></head><body>' .
+            '<script>' .
+            'if (window.opener) {' .
+            '  window.opener.postMessage(' . $json . ', "' . config('app.url') . '");' .
+            '  window.close();' .
+            '} else {' .
+            '  document.body.innerText = "You can close this window.";' .
+            '}' .
+            '</script>' .
+            '</body></html>',
+            200,
+            ['Content-Type' => 'text/html']
         );
-
-        $token = JWTAuth::fromUser($user);
-
-        return response()->json([
-            'token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60,
-        ], 200);
     }
 }

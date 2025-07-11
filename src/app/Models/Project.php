@@ -10,7 +10,7 @@ class Project extends Model
 {
     use HasFactory;
 
-    protected $table = "user_projects";
+    protected $table = "projects";
 
     protected $fillable = [
         'service_provider_id',
