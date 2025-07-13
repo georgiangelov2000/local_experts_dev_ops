@@ -150,6 +150,12 @@ class ServiceProviderRepository
                 case 'promoted':
                     $query->orderBy('is_promoted', 'desc');
                     break;
+                case 'rating_count_desc':
+                    $query->orderBy('reviews_count', 'desc');
+                    break;
+                case 'rating_count_asc':
+                    $query->orderBy('reviews_count', 'asc');
+                    break;
                 case 'reviews_desc':
                     $query->orderBy('reviews_count', 'desc');
                     break;

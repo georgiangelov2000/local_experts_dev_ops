@@ -99,7 +99,7 @@ export default function Provider({ user }) {
                 {/* View Public Profile Button */}
                 {user?.alias && (
                   <button
-                    className="ml-auto bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded shadow transition"
+                    className="ml-auto bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded shadow transition cursor-pointer"
                     onClick={() => navigate(`/providers/${user.alias}`)}
                     type="button"
                   >

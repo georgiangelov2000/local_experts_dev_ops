@@ -94,8 +94,15 @@ class ServiceProviderService
 
     private function extractSorting(Request $request): array
     {
+        $sort = $request->get('sort');
+        
+        // Default to rating count descending if no sort specified
+        if (empty($sort)) {
+            $sort = 'rating_count_desc';
+        }
+        
         return [
-            'sort' => $request->get('sort'),
+            'sort' => $sort,
         ];
     }
 
