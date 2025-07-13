@@ -1,14 +1,17 @@
 import { FaStar, FaRegStar } from 'react-icons/fa';
-import { FiMessageSquare, FiUser, FiCalendar, FiSend } from 'react-icons/fi';
+import { FiMessageSquare, FiUser, FiCalendar, FiSend, FiCheckCircle, FiX } from 'react-icons/fi';
 import apiService from '../../Services/apiService';
 import { useReviewForm } from '../../Models/useReviewForm';
 import { useAuth } from '../../Context/AuthContext';
 import Pagination from '../Home/List/Pagination';
 import ReviewsSkeleton from './ReviewsSkeleton';
+import { useState } from 'react';
 
 export default function Reviews({ reviews = [], serviceProviderId, onReviewAdded, pagination, onPageChange, reviewsLoading, reviewsError }) {
   const { user } = useAuth();
   const { register, handleSubmit, errors, reset } = useReviewForm(user, serviceProviderId);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
   const submitHandler = async (data) => {
     const payload = {
@@ -23,8 +26,27 @@ export default function Reviews({ reviews = [], serviceProviderId, onReviewAdded
         onReviewAdded(response.data);
       }
       reset();
+      
+      // Show success alert
+      setAlertMessage('Thank you! Your review has been submitted successfully.');
+      setShowAlert(true);
+      
+      // Auto-hide alert after 5 seconds
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 5000);
+      
     } catch (error) {
       console.error("Error submitting review", error);
+      
+      // Show error alert
+      setAlertMessage('Sorry, there was an error submitting your review. Please try again.');
+      setShowAlert(true);
+      
+      // Auto-hide alert after 5 seconds
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 5000);
     }
   };
 
@@ -32,6 +54,25 @@ export default function Reviews({ reviews = [], serviceProviderId, onReviewAdded
   if (reviewsLoading) {
     return (
       <div className="space-y-8">
+        {/* Success Alert */}
+        {showAlert && (
+          <div className="flex items-center p-4 mb-4 text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" role="alert">
+            <FiCheckCircle className="flex-shrink-0 w-4 h-4" />
+            <span className="sr-only">Info</span>
+            <div className="ml-3 text-sm font-medium">
+              {alertMessage}
+            </div>
+            <button
+              type="button"
+              className="ml-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
+              onClick={() => setShowAlert(false)}
+            >
+              <span className="sr-only">Close</span>
+              <FiX className="w-3 h-3" />
+            </button>
+          </div>
+        )}
+
         <ReviewsSkeleton />
         
         {/* Add Review Form - Show even during loading */}
@@ -86,7 +127,7 @@ export default function Reviews({ reviews = [], serviceProviderId, onReviewAdded
                 {/* Submit Button */}
                 <button 
                   type="submit" 
-                  className="inline-flex items-center px-6 py-3 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                  className="inline-flex items-center px-6 py-3 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 cursor-pointer"
                 >
                   <FiSend className="mr-2 text-sm" />
                   Submit Review
@@ -114,6 +155,25 @@ export default function Reviews({ reviews = [], serviceProviderId, onReviewAdded
 
   return (
     <div className="space-y-8">
+      {/* Success Alert */}
+      {showAlert && (
+        <div className="flex items-center p-4 mb-4 text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" role="alert">
+          <FiCheckCircle className="flex-shrink-0 w-4 h-4" />
+          <span className="sr-only">Info</span>
+          <div className="ml-3 text-sm font-medium">
+            {alertMessage}
+          </div>
+          <button
+            type="button"
+            className="ml-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
+            onClick={() => setShowAlert(false)}
+          >
+            <span className="sr-only">Close</span>
+            <FiX className="w-3 h-3" />
+          </button>
+        </div>
+      )}
+
       {/* Reviews List */}
       <div className="space-y-6">
         {reviews.length > 0 ? (
@@ -248,7 +308,7 @@ export default function Reviews({ reviews = [], serviceProviderId, onReviewAdded
               {/* Submit Button */}
               <button 
                 type="submit" 
-                className="inline-flex items-center px-6 py-3 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                className="inline-flex items-center px-6 py-3 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 cursor-pointer"
               >
                 <FiSend className="mr-2 text-sm" />
                 Submit Review

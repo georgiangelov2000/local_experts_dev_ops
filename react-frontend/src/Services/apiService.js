@@ -47,7 +47,7 @@ const apiService = {
   getCategoryById: (id) => apiClient.get(`/categories/${id}/service-categories`),
 
   // 🌟 Reviews
-  reviews: (data) => apiClient.post('/reviews', data),
+  reviews: (data) => apiClient.post('/services/reviews', data),
 
   // ❤️ Interactions
   likeProvider: (id) => apiClient.post(`/providers/${id}/like`),

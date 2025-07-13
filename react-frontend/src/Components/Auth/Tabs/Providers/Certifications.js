@@ -123,7 +123,7 @@ export default function Certifications({ data }) {
       <button
         type="button"
         onClick={() => append({ name: "", description: "", image: null })}
-        className="bg-gray-800 text-white px-4 py-2 mr-2"
+        className="bg-gray-800 text-white px-4 py-2 mr-2 cursor-pointer"
       >
         Add Certification
       </button>

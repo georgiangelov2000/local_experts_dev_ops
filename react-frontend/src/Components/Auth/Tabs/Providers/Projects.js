@@ -137,7 +137,7 @@ export default function Projects({ data }) {
               video: null,
             })
           }
-          className="bg-gray-800 text-white px-4 py-2 mr-2"
+          className="bg-gray-800 text-white px-4 py-2 mr-2 cursor-pointer"
         >
           Add Project
         </button>
