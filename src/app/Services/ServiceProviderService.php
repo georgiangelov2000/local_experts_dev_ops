@@ -127,6 +127,13 @@ class ServiceProviderService
                         'price' => $service->price,
                     ];
                 }),
+                'certifications' => $provider->certifications->map(function ($certification) {
+                    return [
+                        'id' => $certification->id,
+                        'name' => $certification->name,
+                        'description' => $certification->description,
+                    ];
+                }),
             ];
         })->toArray();
     }

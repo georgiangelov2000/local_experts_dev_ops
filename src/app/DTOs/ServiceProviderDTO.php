@@ -44,7 +44,14 @@ class ServiceProviderDTO
             services: self::mapServices($provider->services),
             final_grade: $provider->reviews_count > 0 ? round($provider->reviews()->avg('rating'), 2) : null,
             workspaces: self::mapWorkspaces($provider->workspaces),
-            certifications: $provider->certifications->toArray(),
+            certifications: $provider->certifications->map(function($certification) {
+                return [
+                    'id' => $certification->id,
+                    'name'=> $certification->name,
+                    'description' => $certification->description,
+                    'image' => $certification->media()->first()
+                ];
+            })->toArray(),
             contact: self::mapContact($provider->contact),
             likes_count: $provider->likes_count,
             dislikes_count: $provider->dislikes_count,

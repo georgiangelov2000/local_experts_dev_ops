@@ -34,7 +34,7 @@ export default function ListElement({ provider, likes, dislikes, favourites }) {
   };
 
   return (
-    <li className="mb-4">
+    <li className="mb-4 list-none">
       <Link
         to={`/providers/${provider.alias}`}
         className="block group"
