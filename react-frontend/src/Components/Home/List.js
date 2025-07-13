@@ -28,7 +28,7 @@ export default function List({ state, dispatch, searchParams, setSearchParams })
               <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Active Filters</h3>
               <button
                 onClick={() => setSearchParams({})}
-                className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
               >
                 <FiX className="mr-1" />
                 Clear All
@@ -107,7 +107,7 @@ export default function List({ state, dispatch, searchParams, setSearchParams })
             <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Active Filters</h3>
             <button
               onClick={() => setSearchParams({})}
-              className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
             >
               <FiX className="mr-1" />
               Clear All

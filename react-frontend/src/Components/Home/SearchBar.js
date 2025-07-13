@@ -243,7 +243,7 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
           <div className="flex items-end space-x-3">
             <button
               onClick={applyFiltersToURL}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              className={`flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 ${hasActiveFilters ? 'cursor-pointer' : 'cursor-default'}`}
             >
               <FiSearch className="text-lg" />
               <span>Search</span>
@@ -252,7 +252,7 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 flex items-center space-x-2 font-medium"
+                className="px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 flex items-center space-x-2 font-medium cursor-pointer"
               >
                 <FiX />
                 <span>Clear</span>
@@ -272,7 +272,7 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
             </h3>
             <button
               onClick={clearFilters}
-              className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+              className="text-xs text-blue-600 hover:text-blue-800 font-medium cursor-pointer"
             >
               Clear All
             </button>
