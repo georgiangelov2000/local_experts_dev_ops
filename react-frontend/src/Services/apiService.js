@@ -4,7 +4,8 @@ import axios from 'axios';
 const apiClient = axios.create({
   baseURL: 'http://localhost:8000/api/v1',
   headers: {
-    'Content-Type': 'application/json',
+    // 'Content-Type': 'application/json',
+    'Content-Type': 'multipart/form-data',
   },
 });
 
@@ -38,7 +39,7 @@ const apiService = {
 
   // 📦 Services (Ads)
   getAds: (config = {}) => apiClient.get('/services', config),
-  getAdById: (alias) => apiClient.get(`/services/${alias}`),
+  getAdById: (alias, page) => apiClient.get(`/services/${alias}/${page}`),
   registerView: (alias) => apiClient.post(`/services/${alias}/views`),
 
   // 📂 Categories

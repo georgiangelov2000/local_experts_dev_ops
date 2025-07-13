@@ -30,13 +30,39 @@ export default function Certifications({ data }) {
 
   const onSubmit = async (formData) => {
     setSubmitStatus(null);
+    const fd = new FormData();
+
+    if (formData.certifications.length > 0) {
+      fd.append('certifications[]', '');
+    }
+  
+    formData.certifications.forEach((cert, idx) => {
+      fd.append(`certifications[${idx}][name]`, cert.name);
+      fd.append(`certifications[${idx}][description]`, cert.description);
+  
+      const fileInput = document.querySelector(`input[name='certifications.${idx}.image']`);
+      if (fileInput?.files?.[0]) {
+        fd.append(`certifications[${idx}][image]`, fileInput.files[0]);
+      }
+    });
+  
+    // Debug form data
+    for (let [key, value] of fd.entries()) {
+      console.log(key, value);
+    }
+  
+    console.log(fd);
     try {
-      const response = await apiService.saveProfileTab('certifications', formData);
+      const response = await apiService.saveProfileTab('certifications', fd);
       setSubmitStatus({ type: 'success', message: response.data.message });
     } catch (error) {
-      setSubmitStatus({ type: 'error', message: error.response?.data?.error || 'Failed to save certifications.' });
+      setSubmitStatus({
+        type: 'error',
+        message: error.response?.data?.error || 'Failed to save certifications.'
+      });
     }
   };
+  
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

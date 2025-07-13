@@ -11,13 +11,15 @@ use App\Models\ServiceCategory;
 use App\Models\ServiceProvider;
 use App\Models\Media;
 use App\Models\Project;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 {
-    public function profile(ProfileRequest $request)
+    public function profile(Request $request)
     {
+        return response()->json($request->all());
         $user = auth()->user();
 
         // if (!$user->hasVerifiedEmail()) {

@@ -1,35 +1,33 @@
-import { useEffect, useReducer } from 'react';
 import { useParams } from 'react-router-dom';
-import apiService from '../Services/apiService';
 import RelatedProviders from '../Components/Provider/RelatedProviders';
+import RelatedProvidersSection from '../Components/Provider/RelatedProvidersSection';
 import ProfileTab from '../Components/Provider/Tabs/ProfileTab';
 import ProjectsTab from '../Components/Provider/Tabs/ProjectsTab';
 import VideosTab from '../Components/Provider/Tabs/VideosTab';
-import Reviews from '../Components/Provider/Reviews';
-import { providerReducer, initialState } from '../Reducers/providerReducer';
-import { FiPhone, FiMail, FiGlobe } from 'react-icons/fi';
+import ReviewsSection from '../Components/Provider/ReviewsSection';
+import ProviderStats from '../Components/Provider/ProviderStats';
+import ProviderContact from '../Components/Provider/ProviderContact';
+import { useProvider } from '../Hooks/useProvider';
 import { FaStar, FaRegStar } from 'react-icons/fa';
 import SEO from '../Components/Auth/Shared/SEO';
 
 export default function Provider() {
   const { alias } = useParams();
-  const [state, dispatch] = useReducer(providerReducer, initialState);
-  const { provider, related, loading, activeTab, showContact } = state;
-
+  const {
+    provider,
+    related,
+    relatedCount,
+    reviews,
+    loading,
+    reviewsLoading,
+    reviewsError,
+    activeTab,
+    showContact,
+    onPageChange,
+    setActiveTab,
+    toggleContact
+  } = useProvider(alias);
   const tabs = ['Profile', 'Projects', 'Videos'];
-
-  useEffect(() => {
-    dispatch({ type: 'SET_LOADING', payload: true });
-
-    apiService.getAdById(alias)
-      .then((response) => {
-        dispatch({ type: 'SET_PROVIDER', payload: response.data.service_provider });
-        dispatch({ type: 'SET_RELATED', payload: response.data.related_providers });
-        apiService.registerView(alias); // trigger view count
-      })
-      .catch(err => console.error('Error loading provider:', err))
-      .finally(() => dispatch({ type: 'SET_LOADING', payload: false }));
-  }, [alias]);
 
   if (loading) return <div className="text-center p-6">Loading provider details...</div>;
   if (!provider) return <div className="text-center p-6 text-red-600">Provider not found.</div>;
@@ -55,7 +53,7 @@ export default function Provider() {
         image={seoImage}
       />
       <div className="bg-white rounded-lg p-6">
-        {/* ... header and layout remain the same ... */}
+        {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
           <div className="flex items-center">
             <img
@@ -78,46 +76,15 @@ export default function Provider() {
                   <FaRegStar key={`empty-${i}`} className="text-yellow-400 mr-1 opacity-50" />
                 ))}
                 <span className="text-sm text-gray-600 ml-2">
-                  {provider.reviews?.length || 0} reviews
+                  {provider.reviews_count || 0} reviews
                 </span>
               </div>
-              {/* Likes / Dislikes / Views */}
-              <div className="flex items-center gap-4 text-sm text-gray-700 mt-2">
-                <div className="flex items-center">
-                  <span className="text-green-500 font-semibold mr-1">👍</span>
-                  {provider.likes_count ?? 0} Likes
-                </div>
-                <div className="flex items-center">
-                  <span className="text-red-500 font-semibold mr-1">👎</span>
-                  {provider.dislikes_count ?? 0} Dislikes
-                </div>
-                <div className="flex items-center">
-                  <span className="text-blue-500 font-semibold mr-1">👁</span>
-                  {provider.views_count ?? 0} Views
-                </div>
-              </div>
-
-
-              <div className="flex flex-wrap gap-2 mt-2">
-                {provider.contact?.phone && (
-                  <a href={`tel:${provider.contact.phone}`} className="flex items-center text-blue-600 hover:underline text-sm">
-                    <FiPhone className="mr-1" /> {provider.contact.phone}
-                  </a>
-                )}
-                {provider.contact?.email && (
-                  <a href={`mailto:${provider.contact.email}`} className="flex items-center text-blue-600 hover:underline text-sm">
-                    <FiMail className="mr-1" /> {provider.contact.email}
-                  </a>
-                )}
-                {provider.contact?.website && (
-                  <a href={provider.contact.website} target="_blank" rel="noopener noreferrer" className="flex items-center text-blue-600 hover:underline text-sm">
-                    <FiGlobe className="mr-1" /> Website
-                  </a>
-                )}
-              </div>
+              
+              <ProviderStats provider={provider} />
+              <ProviderContact contact={provider.contact} />
             </div>
           </div>
-          <div >
+          <div>
             <div className="flex items-center mb-3">
               <img
                 src="https://randomuser.me/api/portraits/men/75.jpg"
@@ -134,7 +101,6 @@ export default function Provider() {
               <span className="ml-1 font-medium text-blue-600">Facebook</span>
             </div>
           </div>
-
         </div>
 
         {/* Tabs */}
@@ -142,7 +108,7 @@ export default function Provider() {
           {tabs.map((tab) => (
             <button
               key={tab}
-              onClick={() => dispatch({ type: 'SET_ACTIVE_TAB', payload: tab })}
+              onClick={() => setActiveTab(tab)}
               className={`pb-2 ${activeTab === tab ? 'border-b-2 border-blue-600 text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
             >
               {tab}
@@ -160,26 +126,37 @@ export default function Provider() {
           <div className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-50 backdrop-blur-sm">
             <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
               <button
-                onClick={() => dispatch({ type: 'TOGGLE_CONTACT' })}
+                onClick={toggleContact}
                 className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-lg"
               >
                 ✕
               </button>
-              {/* ...contact form as before... */}
+              {/* Contact form content */}
             </div>
           </div>
         )}
       </div>
 
-
-      <h3 className="text-xl font-bold mt-5 mb-5">Reviews</h3>
-      <div className="mx-auto max-w-7xl bg-white rounded-lg p-5">
-        <Reviews reviews={provider.reviews} />
+      {/* Reviews Section */}
+      <div className="mx-auto max-w-7xl bg-white rounded-lg p-6 mb-3 mt-3">
+        <ReviewsSection
+          reviews={reviews.data}
+          pagination={reviews}
+          onPageChange={onPageChange}
+          serviceProviderId={provider.id}
+          reviewsLoading={reviewsLoading}
+          reviewsError={reviewsError}
+          reviewsCount={provider.reviews_count || 0}
+        />
       </div>
 
-      <h3 className="text-xl font-bold mt-5 mb-5">Related Providers</h3>
-      <div className="mx-auto max-w-7xl bg-white rounded-lg">
-        <RelatedProviders providers={related} />
+      {/* Related Providers Section */}
+      <div className="mx-auto max-w-7xl bg-white rounded-lg p-6">
+        <RelatedProvidersSection 
+          providers={related} 
+          count={relatedCount} 
+          loading={loading}
+        />
       </div>
     </>
   );

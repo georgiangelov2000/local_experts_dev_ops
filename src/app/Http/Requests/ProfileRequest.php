@@ -22,6 +22,7 @@ class ProfileRequest extends FormRequest
     public function rules(): array
     {
         $tab = $this->input('tab');
+        
         switch ($tab) {
             case 'basic':
                 return [
