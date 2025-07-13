@@ -1,102 +1,205 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiLogIn, FiUserPlus, FiHeart, FiHome, FiUser, FiLogOut, FiMenu, FiX } from 'react-icons/fi';
+import { FiLogIn, FiUserPlus, FiHeart, FiHome, FiUser, FiLogOut, FiMenu, FiX, FiSearch, FiBell, FiSettings } from 'react-icons/fi';
 import { useAuth } from "../Context/AuthContext";
 
 export default function Header() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     await logout();
     navigate('/login');
+    setUserMenuOpen(false);
   };
 
   return (
-    <header className="bg-gray-800 text-white p-5">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-3">
-        {/* LOGO + BURGER */}
-        <div className="w-full flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-              alt="Logo"
-              className="w-6 h-6"
-            />
-            <span className="text-xl font-bold">Local Experts</span>
+    <header className="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <div className="flex items-center">
+            <Link to="/" className="flex items-center space-x-3 group">
+              <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl group-hover:from-blue-600 group-hover:to-blue-700 transition-all duration-200">
+                <span className="text-white font-bold text-lg">LE</span>
+              </div>
+              <div className="hidden sm:block">
+                <span className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-200">
+                  Local Experts
+                </span>
+                <p className="text-xs text-gray-500 -mt-1">Find Your Perfect Match</p>
+              </div>
+            </Link>
           </div>
-          <button
-            className="md:hidden p-2"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle Menu"
-          >
-            {menuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
-          </button>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-1">
+            <Link
+              to="/"
+              className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
+            >
+              <FiHome className="mr-2" />
+              Home
+            </Link>
+
+            {!user && (
+              <Link
+                to="/favourites"
+                className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
+              >
+                <FiHeart className="mr-2" />
+                Favourites
+              </Link>
+            )}
+
+            {user && (
+              <Link
+                to="/favourites"
+                className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
+              >
+                <FiHeart className="mr-2" />
+                Favourites
+              </Link>
+            )}
+          </nav>
+
+          {/* User Menu / Auth Buttons */}
+          <div className="flex items-center space-x-3">
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                    <span className="text-white text-sm font-medium">
+                      {user.email ? user.email.charAt(0).toUpperCase() : 'U'}
+                    </span>
+                  </div>
+                  <div className="hidden sm:block text-left">
+                    <p className="text-sm font-medium text-gray-900 truncate max-w-32">
+                      {user.email}
+                    </p>
+                    <p className="text-xs text-gray-500">Welcome back</p>
+                  </div>
+                </button>
+
+                {/* User Dropdown Menu */}
+                {userMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <p className="text-sm font-medium text-gray-900">{user.email}</p>
+                      <p className="text-xs text-gray-500">Signed in</p>
+                    </div>
+                    
+                    <Link
+                      to="/profile"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+                      onClick={() => setUserMenuOpen(false)}
+                    >
+                      <FiUser className="mr-3" />
+                      Profile
+                    </Link>
+                    
+                    <Link
+                      to="/favourites"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+                      onClick={() => setUserMenuOpen(false)}
+                    >
+                      <FiHeart className="mr-3" />
+                      Favourites
+                    </Link>
+                    
+                    <div className="border-t border-gray-100 my-1"></div>
+                    
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200"
+                    >
+                      <FiLogOut className="mr-3" />
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Link
+                  to="/login"
+                  className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
+                >
+                  <FiLogIn className="mr-2" />
+                  Sign In
+                </Link>
+                <Link
+                  to="/register"
+                  className="flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-sm hover:shadow-md"
+                >
+                  <FiUserPlus className="mr-2" />
+                  Sign Up
+                </Link>
+              </div>
+            )}
+
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden p-2 rounded-lg hover:bg-gray-50 transition-all duration-200"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Toggle Menu"
+            >
+              {menuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
+            </button>
+          </div>
         </div>
 
-        {/* NAV */}
-        <nav className={`flex-col md:flex-row md:flex md:items-center gap-2 md:gap-4 ${menuOpen ? 'flex' : 'hidden'} md:flex`}>
-          <Link
-            to="/"
-            className="flex items-center px-3 py-1 text-sm font-medium rounded hover:bg-white hover:text-blue-600 transition"
-            onClick={() => setMenuOpen(false)}
-          >
-            <FiHome className="mr-1" />
-            Home
-          </Link>
-
-          {!user && (
-            <Link
-              to="/favourites"
-              className="flex items-center px-3 py-1 text-sm font-medium rounded hover:bg-white hover:text-blue-600 transition"
-              onClick={() => setMenuOpen(false)}
-            >
-              <FiHeart className="mr-1" />
-              Favourites
-            </Link>
-          )}
-
-          {user ? (
-            <>
+        {/* Mobile Navigation */}
+        {menuOpen && (
+          <div className="md:hidden border-t border-gray-100 py-4">
+            <nav className="flex flex-col space-y-2">
               <Link
-                to="/profile"
-                className="flex items-center px-3 py-1 text-sm font-medium rounded hover:bg-white hover:text-blue-600 transition"
+                to="/"
+                className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
                 onClick={() => setMenuOpen(false)}
               >
-                <FiUser className="mr-1" />
-                {user.email}
+                <FiHome className="mr-3" />
+                Home
               </Link>
-              <button
-                onClick={() => { handleLogout(); setMenuOpen(false); }}
-                className="flex items-center px-3 py-1 text-sm font-medium border border-white rounded hover:bg-white hover:text-blue-600 transition cursor-pointer"
-              >
-                <FiLogOut className="mr-1" />
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="flex items-center px-3 py-1 text-sm font-medium border border-white/50 rounded hover:bg-white/10 transition"
-                onClick={() => setMenuOpen(false)}
-              >
-                <FiLogIn className="mr-1" />
-                Login
-              </Link>
-              <Link
-                to="/register"
-                className="flex items-center px-3 py-1 text-sm font-medium border border-white/50 rounded hover:bg-white/10 transition"
-                onClick={() => setMenuOpen(false)}
-              >
-                <FiUserPlus className="mr-1" />
-                Register
-              </Link>
-            </>
-          )}
-        </nav>
 
+              <Link
+                to="/favourites"
+                className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
+                onClick={() => setMenuOpen(false)}
+              >
+                <FiHeart className="mr-3" />
+                Favourites
+              </Link>
+
+              {!user && (
+                <>
+                  <div className="border-t border-gray-100 my-2"></div>
+                  <Link
+                    to="/login"
+                    className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <FiLogIn className="mr-3" />
+                    Sign In
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <FiUserPlus className="mr-3" />
+                    Sign Up
+                  </Link>
+                </>
+              )}
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   );
