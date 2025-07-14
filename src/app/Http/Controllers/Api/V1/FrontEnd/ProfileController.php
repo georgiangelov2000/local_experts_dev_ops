@@ -28,155 +28,200 @@ class ProfileController extends Controller
         $validated = $request->validated();
         $tab = $request->input('tab');
 
-        // Service provider
-        $serviceProvider = $user->serviceProvider()->first() ?? new ServiceProvider(['user_id' => $user->id]);
+        if ($user->type === 'provider') {
+            // Service provider
+            $serviceProvider = $user->serviceProvider()->first() ?? new ServiceProvider(['user_id' => $user->id]);
 
-        switch ($tab) {
-            case 'basic':
-                $serviceProvider->business_name = $validated['business_name'];
-                // Save description as a file, not in the DB
-                $descriptionPath = storage_path('app/public/descriptions/description_' . ($serviceProvider->id ?? 'new') . '.html');
-                file_put_contents($descriptionPath, $validated['description']);
-                $serviceProvider->category_id = (int) $validated['category_id'];
-                $serviceProvider->service_category_id = (int) $validated['service_category_id'];
-                $serviceProvider->start_time = Carbon::now();
-                $serviceProvider->stop_time = Carbon::now()->addMonth();
-                $serviceProvider->alias = $this->generateSeoAlias($validated['business_name'], $user->id);
-                $serviceProvider->save();
+            switch ($tab) {
+                case 'basic':
+                    $serviceProvider->business_name = $validated['business_name'];
+                    // Save description as a file, not in the DB
+                    $descriptionPath = storage_path('app/public/descriptions/description_' . ($serviceProvider->id ?? 'new') . '.html');
+                    file_put_contents($descriptionPath, $validated['description']);
+                    $serviceProvider->category_id = (int) $validated['category_id'];
+                    $serviceProvider->service_category_id = (int) $validated['service_category_id'];
+                    $serviceProvider->start_time = Carbon::now();
+                    $serviceProvider->stop_time = Carbon::now()->addMonth();
+                    $serviceProvider->alias = $this->generateSeoAlias($validated['business_name'], $user->id);
+                    $serviceProvider->save();
 
-                if ($request->hasFile('image')) {
-                    $this->replaceBusinessImage($serviceProvider, $request->file('image'));
-                }
-
-                return response()->json(['message' => 'Basic profile info saved successfully.'], 200);
-
-            case 'projects':
-                if (!empty($validated['projects'])) {
-                    foreach ($validated['projects'] as $projectData) {
-                        $project = isset($projectData['id'])
-                            ? Project::where('id', $projectData['id'])->where('user_id', $user->id)->firstOrFail()
-                            : new Project(['user_id' => $user->id]);
-
-                        $project->project_name = $projectData['project_name'];
-                        $project->description = $projectData['description'];
-                        $project->status = $projectData['status'];
-                        $project->date_start = Carbon::parse($projectData['date_start'])->toDateTimeString();
-                        $project->date_end = Carbon::parse($projectData['date_end'])->toDateTimeString();
-                        $project->save();
-
-                        if (isset($projectData['image'])) {
-                            $path = $projectData['image']->store('projects/images', 'public');
-                            $this->saveMediaGeneric($project, $path, $projectData['image']->getClientOriginalName(), 'image');
-                        }
-
-                        if (isset($projectData['video'])) {
-                            $path = $projectData['video']->store('projects/videos', 'public');
-                            $this->saveMediaGeneric($project, $path, $projectData['video']->getClientOriginalName(), 'video');
-                        }
+                    if ($request->hasFile('image')) {
+                        $this->replaceBusinessImage($serviceProvider, $request->file('image'));
                     }
-                }
-                return response()->json(['message' => 'Projects saved successfully.'], 200);
 
-            case 'services':
-                if (!empty($validated['services'])) {
-                    foreach ($validated['services'] as $serviceData) {
-                        $service = isset($serviceData['id'])
-                            ? $serviceProvider->services()->where('id', $serviceData['id'])->firstOrFail()
-                            : $serviceProvider->services()->make();
+                    return response()->json(['message' => 'Basic profile info saved successfully.'], 200);
 
-                        $service->price = $serviceData['price'];
-                        $service->description = $serviceData['description'];
-                        $service->save();
-                    }
-                }
-                return response()->json(['message' => 'Services saved successfully.'], 200);
+                case 'projects':
+                    if (!empty($validated['projects'])) {
+                        foreach ($validated['projects'] as $projectData) {
+                            $project = isset($projectData['id'])
+                                ? Project::where('id', $projectData['id'])->where('user_id', $user->id)->firstOrFail()
+                                : new Project(['user_id' => $user->id]);
 
-            case 'certifications':
-                if (!empty($validated['certifications'])) {
-                    foreach ($validated['certifications'] as $certData) {
-                        $cert = isset($certData['id'])
-                            ? $serviceProvider->certifications()->where('id', $certData['id'])->firstOrFail()
-                            : $serviceProvider->certifications()->make();
+                            $project->project_name = $projectData['project_name'];
+                            $project->description = $projectData['description'];
+                            $project->status = $projectData['status'];
+                            $project->date_start = Carbon::parse($projectData['date_start'])->toDateTimeString();
+                            $project->date_end = Carbon::parse($projectData['date_end'])->toDateTimeString();
+                            $project->save();
 
-                        $cert->name = $certData['name'];
-                        $cert->description = $certData['description'];
-                        $cert->save();
+                            if (isset($projectData['image'])) {
+                                $path = $projectData['image']->store('projects/images', 'public');
+                                $this->saveMediaGeneric($project, $path, $projectData['image']->getClientOriginalName(), 'image');
+                            }
 
-                        if (isset($certData['image'])) {
-                            $path = $certData['image']->store('images', 'public');
-                            $this->saveMediaGeneric($cert, $path, $certData['image']->getClientOriginalName(), 'image');
+                            if (isset($projectData['video'])) {
+                                $path = $projectData['video']->store('projects/videos', 'public');
+                                $this->saveMediaGeneric($project, $path, $projectData['video']->getClientOriginalName(), 'video');
+                            }
                         }
                     }
-                }
-                return response()->json(['message' => 'Certifications saved successfully.'], 200);
+                    return response()->json(['message' => 'Projects saved successfully.'], 200);
 
-            case 'contacts':
-                // ServiceProvider and Contact are one-to-one
-                $contactData = [
-                    'phone' => $validated['phone'] ?? null,
-                    'email' => $validated['email'] ?? null,
-                    'facebook' => $validated['facebook'] ?? null,
-                    'instagram' => $validated['instagram'] ?? null,
-                    'website' => $validated['website'] ?? null,
-                    'address' => $validated['address'] ?? null,
-                ];
-                $contact = $serviceProvider->contact()->first();
-                if ($contact) {
-                    $contact->update($contactData);
-                } else {
-                    $serviceProvider->contact()->create($contactData);
-                }
-                return response()->json(['message' => 'Contacts saved successfully.'], 200);
+                case 'services':
+                    if (!empty($validated['services'])) {
+                        foreach ($validated['services'] as $serviceData) {
+                            $service = isset($serviceData['id'])
+                                ? $serviceProvider->services()->where('id', $serviceData['id'])->firstOrFail()
+                                : $serviceProvider->services()->make();
 
-            // Add more cases for other tabs as needed (e.g., contacts)
+                            $service->price = $serviceData['price'];
+                            $service->description = $serviceData['description'];
+                            $service->save();
+                        }
+                    }
+                    return response()->json(['message' => 'Services saved successfully.'], 200);
 
-            default:
-                return response()->json(['error' => 'Invalid tab'], 400);
+                case 'certifications':
+                    if (!empty($validated['certifications'])) {
+                        foreach ($validated['certifications'] as $certData) {
+                            $cert = isset($certData['id'])
+                                ? $serviceProvider->certifications()->where('id', $certData['id'])->firstOrFail()
+                                : $serviceProvider->certifications()->make();
+
+                            $cert->name = $certData['name'];
+                            $cert->description = $certData['description'];
+                            $cert->save();
+
+                            if (isset($certData['image'])) {
+                                $path = $certData['image']->store('images', 'public');
+                                $this->saveMediaGeneric($cert, $path, $certData['image']->getClientOriginalName(), 'image');
+                            }
+                        }
+                    }
+                    return response()->json(['message' => 'Certifications saved successfully.'], 200);
+
+                case 'contacts':
+                    // ServiceProvider and Contact are one-to-one
+                    $contactData = [
+                        'phone' => $validated['phone'] ?? null,
+                        'email' => $validated['email'] ?? null,
+                        'facebook' => $validated['facebook'] ?? null,
+                        'instagram' => $validated['instagram'] ?? null,
+                        'website' => $validated['website'] ?? null,
+                        'address' => $validated['address'] ?? null,
+                    ];
+                    $contact = $serviceProvider->contact()->first();
+                    if ($contact) {
+                        $contact->update($contactData);
+                    } else {
+                        $serviceProvider->contact()->create($contactData);
+                    }
+                    return response()->json(['message' => 'Contacts saved successfully.'], 200);
+
+                // Add more cases for other tabs as needed (e.g., contacts)
+
+                default:
+                    return response()->json(['error' => 'Invalid tab'], 400);
+            }
+        } else {
+            // User logic
+            switch ($tab) {
+                case 'basic':
+                    $user->update([
+                        'name' => $validated['name'],
+                        'avatar' => $validated['avatar'] ?? null,
+                    ]);
+                    return response()->json(['message' => 'Profile updated successfully.'], 200);
+                case 'likes':
+                    return response()->json([
+                        'likes' => $user->likes()->with('serviceProvider')->get(),
+                    ], 200);
+                case 'favourites':
+                    return response()->json([
+                        'favourites' => $user->favourites()->with('serviceProvider')->get(),
+                    ], 200);
+                default:
+                    return response()->json(['error' => 'Invalid tab'], 400);
+            }
         }
     }
 
     public function tabData($tab)
     {
         $user = auth()->user();
-        $provider = $user->serviceProvider;
-        $descriptionFile = storage_path('app/public/descriptions/description_' . $provider->id . '.html');
-        $description = file_exists($descriptionFile) ? file_get_contents($descriptionFile) : null;
-        switch ($tab) {
-            case 'basic':
-                return response()->json([
-                    'id' => $user->id,
-                    'email' => $user->email,
-                    'business_name' => $provider->business_name,
-                    'description' => $description,
-                    'categories' => Category::select('id','name')->get(),
-                    'category_id' => $provider->category_id,
-                    'service_categories' => ServiceCategory::where('category_id',$provider->category_id)->get(),
-                    'service_category_id' => $provider->service_category_id,
-                    'cities' => City::all(),
-                    'image' => $provider->media->first()
-                        ? (config('app.url') . '/storage/' . ltrim($provider->media->first()->file_path, '/'))
-                        : null,
-                    'workspaces' => $provider->workspaces->map(function ($item) {
-                        return $item->city->id;
-                    })->toArray(),
-                ],200);
-            case 'projects':
-                $projects = $provider->projects()->select('id', 'project_name', 'description', 'date_start', 'date_end', 'status')->get();
-                return response()->json($projects,200);
-            case 'services':
-                $services = $provider ? $provider->services()->select('id', 'description', 'price')->get() : [];
-                return response()->json($services,200);
-            case 'reviews':
-                $reviews = $provider ? $provider->reviews()->select('id', 'rating', 'comment', 'created_at')->get() : [];
-                return response()->json($reviews,200);
-            case 'certifications':
-                $certifications = $provider ? $provider->certifications()->select('id', 'name', 'description')->get() : [];
-                return response()->json($certifications, 200);
-            case 'contacts':
-                $contacts = $provider->contact->first();
-                return response()->json($contacts,200);
-            default:
-                return response()->json(['error' => 'Invalid tab'], 400);
+        if ($user->type === 'provider') {
+            $provider = $user->serviceProvider;
+            $descriptionFile = storage_path('app/public/descriptions/description_' . $provider->id . '.html');
+            $description = file_exists($descriptionFile) ? file_get_contents($descriptionFile) : null;
+            switch ($tab) {
+                case 'basic':
+                    return response()->json([
+                        'id' => $user->id,
+                        'email' => $user->email,
+                        'business_name' => $provider->business_name,
+                        'description' => $description,
+                        'categories' => Category::select('id','name')->get(),
+                        'category_id' => $provider->category_id,
+                        'service_categories' => ServiceCategory::where('category_id',$provider->category_id)->get(),
+                        'service_category_id' => $provider->service_category_id,
+                        'cities' => City::all(),
+                        'image' => $provider->media->first()
+                            ? (config('app.url') . '/storage/' . ltrim($provider->media->first()->file_path, '/'))
+                            : null,
+                        'workspaces' => $provider->workspaces->map(function ($item) {
+                            return $item->city->id;
+                        })->toArray(),
+                    ],200);
+                case 'projects':
+                    $projects = $provider->projects()->select('id', 'project_name', 'description', 'date_start', 'date_end', 'status')->get();
+                    return response()->json($projects,200);
+                case 'services':
+                    $services = $provider ? $provider->services()->select('id', 'description', 'price')->get() : [];
+                    return response()->json($services,200);
+                case 'reviews':
+                    $reviews = $provider ? $provider->reviews()->select('id', 'rating', 'comment', 'created_at')->get() : [];
+                    return response()->json($reviews,200);
+                case 'certifications':
+                    $certifications = $provider ? $provider->certifications()->select('id', 'name', 'description')->get() : [];
+                    return response()->json($certifications, 200);
+                case 'contacts':
+                    $contacts = $provider->contact->first();
+                    return response()->json($contacts,200);
+                default:
+                    return response()->json(['error' => 'Invalid tab'], 400);
+            }
+        } else {
+            // User logic
+            switch ($tab) {
+                case 'basic':
+                    return response()->json([
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'email' => $user->email,
+                        'avatar' => $user->avatar,
+                    ], 200);
+                case 'likes':
+                    return response()->json([
+                        'likes' => $user->likes()->with('serviceProvider')->get(),
+                    ], 200);
+                case 'favourites':
+                    return response()->json([
+                        'favourites' => $user->favourites()->with('serviceProvider')->get(),
+                    ], 200);
+                default:
+                    return response()->json(['error' => 'Invalid tab'], 400);
+            }
         }
     }
 
@@ -229,6 +274,21 @@ class ProfileController extends Controller
                 return $item->city->id;
             })->toArray(),
         ], 200);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $user = auth()->user();
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|confirmed|min:6',
+        ]);
+        if (!\Hash::check($request->current_password, $user->password)) {
+            return response()->json(['error' => 'Current password is incorrect.'], 400);
+        }
+        $user->password = bcrypt($request->password);
+        $user->save();
+        return response()->json(['message' => 'Password updated successfully.']);
     }
 
     private function replaceBusinessImage(ServiceProvider $serviceProvider, $file)

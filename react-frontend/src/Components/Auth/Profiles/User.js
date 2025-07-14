@@ -5,6 +5,7 @@ import Password from '../Tabs/Users/Password';
 import Likes from '../Tabs/Users/Likes';
 import Favourites from '../Tabs/Users/Favourites';
 import { FiUser, FiHeart, FiThumbsUp, FiLock } from 'react-icons/fi';
+import apiService from '../../../Services/apiService';
 
 export default function User({ user }) {
     const [state, dispatch] = useReducer(userProfileReducer, initialState);
@@ -20,10 +21,18 @@ export default function User({ user }) {
     ];
 
     useEffect(() => {
-        setLoading(false);
+        setLoading(true);
         setError(null);
-        // If you want to fetch tab data from API, do it here based on state.activeTab
-        // For now, tabs can fetch their own data if needed
+        setTabData(null);
+        if (state.activeTab === 'password') {
+            setLoading(false);
+            setTabData(null);
+            return;
+        }
+        apiService.getProfileTab(state.activeTab)
+            .then(res => setTabData(res.data))
+            .catch(() => setError('Failed to load tab data.'))
+            .finally(() => setLoading(false));
     }, [state.activeTab]);
 
     const renderTabContent = () => {
@@ -31,11 +40,11 @@ export default function User({ user }) {
         if (error) return <div className="text-center text-red-600">{error}</div>;
         switch (state.activeTab) {
             case 'basic':
-                return <Profile user={user} />;
+                return <Profile user={user} data={tabData} />;
             case 'likes':
-                return <Likes user={user} />;
+                return <Likes user={user} data={tabData} />;
             case 'favourites':
-                return <Favourites user={user} />;
+                return <Favourites user={user} data={tabData} />;
             case 'password':
                 return <Password user={user} />;
             default:

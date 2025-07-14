@@ -58,6 +58,7 @@ const apiService = {
   // Fetch full provider profile for preview
   getProfilePreview: () => apiClient.get('/profile/preview'),
   getProvidersByIds: (ids) => apiClient.post('/providers/bulk', { ids }),
+  getProfileTab: (tab) => apiClient.get(`/profile/tab/${tab}`),
 };
 
 export default apiService;

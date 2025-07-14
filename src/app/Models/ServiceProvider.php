@@ -88,6 +88,17 @@ class ServiceProvider extends Model
         return $this->hasMany(Dislike::class);
     }
 
+    // Add dynamic count accessors
+    public function getLikesCountAttribute(): int
+    {
+        return $this->likes()->count();
+    }
+
+    public function getDislikesCountAttribute(): int
+    {
+        return $this->dislikes()->count();
+    }
+
     public function rating()
     {
         $finalGrade = 0;

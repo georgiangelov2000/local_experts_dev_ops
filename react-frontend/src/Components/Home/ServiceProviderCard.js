@@ -171,28 +171,28 @@ export default function ServiceProviderCard({
             {user && (
               <>
                 <button
-                  className="p-2 rounded-full hover:bg-red-50 transition-colors duration-200"
+                  className="p-2 rounded-full hover:bg-red-100 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-300"
                   onClick={(e) => {
                     e.preventDefault();
                     dislike();
                   }}
                   title="Dislike"
                 >
-                  {dislikes?.includes(provider.id) ? (
+                  {isDisliked ? (
                     <FaThumbsDown className="text-red-500 text-sm" />
                   ) : (
                     <FiThumbsDown className="text-gray-400 hover:text-red-500 text-sm" />
                   )}
                 </button>
                 <button
-                  className="p-2 rounded-full hover:bg-green-50 transition-colors duration-200"
+                  className="p-2 rounded-full hover:bg-green-100 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-300"
                   onClick={(e) => {
                     e.preventDefault();
                     like();
                   }}
                   title="Like"
                 >
-                  {likes?.includes(provider.id) ? (
+                  {isLiked ? (
                     <FaThumbsUp className="text-green-500 text-sm" />
                   ) : (
                     <FiThumbsUp className="text-gray-400 hover:text-green-500 text-sm" />
@@ -205,7 +205,7 @@ export default function ServiceProviderCard({
           <button
             aria-label={isFavourited ? 'Remove from favorites' : 'Add to favorites'}
             onClick={() => toggleFavourite(provider.id)}
-            className={`p-2 rounded-full hover:bg-yellow-50 transition-colors duration-200 cursor-pointer ${isFavourited ? 'bg-yellow-100' : ''}`}
+            className={`p-2 rounded-full hover:bg-yellow-100 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-yellow-300 ${isFavourited ? 'bg-yellow-100' : ''}`}
             title={isFavourited ? 'Remove from favorites' : 'Add to favorites'}
           >
             {isFavourited ? (

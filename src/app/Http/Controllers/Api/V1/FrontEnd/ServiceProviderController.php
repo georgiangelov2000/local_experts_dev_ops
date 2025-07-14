@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api\V1\FrontEnd;
 
 use App\Http\Controllers\Controller;
 use App\Models\Favourite;
+use App\Models\ServiceProvider;
+use App\Models\Like;
+use App\Models\Dislike;
 use App\Services\ServiceProviderService;
 use App\Services\ReviewService;
 use Illuminate\Http\Request;
@@ -22,6 +25,11 @@ class ServiceProviderController extends Controller
     public function index(Request $request)
     {
         $data = $this->providerService->getPaginatedProviders($request);
+        // Add liked/disliked provider IDs for authenticated users
+        if ($request->user()) {
+            $data['likes_ids'] = $request->user()->likes()->pluck('service_provider_id')->toArray();
+            $data['dislikes_ids'] = $request->user()->dislikes()->pluck('service_provider_id')->toArray();
+        }
         return response()->json($data, 200);
     }
 
@@ -32,6 +40,11 @@ class ServiceProviderController extends Controller
     {
         try {
             $data = $this->providerService->getProviderDetails($alias, $page);
+            // Add liked/disliked provider IDs for authenticated users
+            if (auth()->check()) {
+                $data['likes_ids'] = auth()->user()->likes()->pluck('service_provider_id')->toArray();
+                $data['dislikes_ids'] = auth()->user()->dislikes()->pluck('service_provider_id')->toArray();
+            }
             return response()->json($data, 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -132,23 +145,18 @@ class ServiceProviderController extends Controller
     {
         $provider = ServiceProvider::findOrFail($providerId);
 
-        // Ако вече е харесал, не правим нищо
         if ($request->user()->likes()->where('service_provider_id', $providerId)->exists()) {
             return response()->json(['message' => 'Already liked.'], 200);
         }
 
-        // Премахваме дислайк ако има
         $request->user()->dislikes()->where('service_provider_id', $providerId)->delete();
+        $request->user()->likes()->create(['service_provider_id' => $providerId]);
 
-        // Добавяме лайк
-        $request->user()->likes()->create([
-            'service_provider_id' => $providerId
-        ]);
-
-        // По избор: увеличи брояча
-        $provider->increment('likes_count');
-
-        return response()->json(['message' => 'Liked successfully.'], 200);
+        return response()->json([
+            'message' => 'Liked successfully.',
+            'likes_count' => $provider->likes()->count(),
+            'dislikes_count' => $provider->dislikes()->count(),
+        ], 200);
     }
 
     /**
@@ -163,14 +171,13 @@ class ServiceProviderController extends Controller
         }
 
         $request->user()->likes()->where('service_provider_id', $providerId)->delete();
+        $request->user()->dislikes()->create(['service_provider_id' => $providerId]);
 
-        $request->user()->dislikes()->create([
-            'service_provider_id' => $providerId
-        ]);
-
-        $provider->increment('dislikes_count');
-
-        return response()->json(['message' => 'Disliked successfully.'], 200);
+        return response()->json([
+            'message' => 'Disliked successfully.',
+            'likes_count' => $provider->likes()->count(),
+            'dislikes_count' => $provider->dislikes()->count(),
+        ], 200);
     }
 
     /**
