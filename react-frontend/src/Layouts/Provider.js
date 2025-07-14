@@ -112,7 +112,7 @@ export default function Provider() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`pb-2 ${activeTab === tab ? 'border-b-2 border-blue-600 text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
+              className={`pb-2 ${activeTab === tab ? 'border-b-2 border-blue-600 text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600 cursor-pointer'}`}
             >
               {tab}
             </button>

@@ -9,15 +9,16 @@ export default function ServiceProviderCard({
   likes,
   dislikes,
   favourites,
-  toggleFavourite,
 }) {
   const {
     isFavourite,
     isLiked,
     isDisliked,
-    toggleFavourite: toggleFavouriteAction,
-    like,
-    dislike
+    toggleFavourite,
+    toggleLike,
+    toggleDislike,
+    loading,
+    error
   } = useProviderActions(provider.id);
   const { user } = useAuth();
 
@@ -41,7 +42,6 @@ export default function ServiceProviderCard({
 
   const isFavourited = favourites && favourites.includes(provider.id);
 
-  console.log(provider);
   return (
     <div className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:border-blue-200 transition-all duration-300 transform hover:-translate-y-1">
       <Link
@@ -175,7 +175,7 @@ export default function ServiceProviderCard({
                   className="p-2 rounded-full hover:bg-red-100 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-300"
                   onClick={(e) => {
                     e.preventDefault();
-                    dislike();
+                    toggleDislike();
                   }}
                   title="Dislike"
                 >
@@ -189,7 +189,7 @@ export default function ServiceProviderCard({
                   className="p-2 rounded-full hover:bg-green-100 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-300"
                   onClick={(e) => {
                     e.preventDefault();
-                    like();
+                    toggleLike();
                   }}
                   title="Like"
                 >
@@ -204,12 +204,12 @@ export default function ServiceProviderCard({
           </div>
           
           <button
-            aria-label={isFavourited ? 'Remove from favorites' : 'Add to favorites'}
-            onClick={() => toggleFavourite(provider.id)}
-            className={`p-2 rounded-full hover:bg-yellow-100 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-yellow-300 ${isFavourited ? 'bg-yellow-100' : ''}`}
-            title={isFavourited ? 'Remove from favorites' : 'Add to favorites'}
+            aria-label={isFavourite ? 'Remove from favorites' : 'Add to favorites'}
+            onClick={toggleFavourite}
+            className={`p-2 rounded-full hover:bg-yellow-100 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-yellow-300 ${isFavourite ? 'bg-yellow-100' : ''}`}
+            title={isFavourite ? 'Remove from favorites' : 'Add to favorites'}
           >
-            {isFavourited ? (
+            {isFavourite ? (
               <FaHeart className="text-yellow-500 text-sm" />
             ) : (
               <FiHeart className="text-gray-400 hover:text-yellow-500 text-sm" />

@@ -10,8 +10,8 @@ export default function ListElement({ provider, likes, dislikes, favourites }) {
     isLiked,
     isDisliked,
     toggleFavourite,
-    like,
-    dislike
+    toggleLike,
+    toggleDislike,
   } = useProviderActions(provider.id);
   const { user } = useAuth();
 
@@ -166,28 +166,28 @@ export default function ListElement({ provider, likes, dislikes, favourites }) {
             {user && (
               <>
                 <button
-                  className="p-2 rounded-full hover:bg-red-50 transition-colors duration-200"
+                  className="p-2 rounded-full hover:bg-red-50 transition-colors duration-200 cursor-pointer"
                   onClick={(e) => {
                     e.preventDefault();
-                    dislike();
+                    toggleDislike();
                   }}
                   title="Dislike"
                 >
-                  {dislikes?.includes(provider.id) ? (
+                  {isDisliked ? (
                     <FaThumbsDown className="text-red-500 text-sm" />
                   ) : (
                     <FiThumbsDown className="text-gray-400 hover:text-red-500 text-sm" />
                   )}
                 </button>
                 <button
-                  className="p-2 rounded-full hover:bg-green-50 transition-colors duration-200"
+                  className="p-2 rounded-full hover:bg-green-50 transition-colors duration-200 cursor-pointer"
                   onClick={(e) => {
                     e.preventDefault();
-                    like();
+                    toggleLike();
                   }}
                   title="Like"
                 >
-                  {likes?.includes(provider.id) ? (
+                  {isLiked ? (
                     <FaThumbsUp className="text-green-500 text-sm" />
                   ) : (
                     <FiThumbsUp className="text-gray-400 hover:text-green-500 text-sm" />
@@ -197,14 +197,14 @@ export default function ListElement({ provider, likes, dislikes, favourites }) {
             )}
             
             <button
-              className="p-2 rounded-full hover:bg-yellow-50 transition-colors duration-200"
+              className="p-2 rounded-full hover:bg-yellow-50 transition-colors duration-200 cursor-pointer"
               onClick={(e) => {
                 e.preventDefault();
                 toggleFavourite();
               }}
               title="Add to Favorites"
             >
-              {favourites?.includes(provider.id) ? (
+              {isFavourite ? (
                 <FaHeart className="text-yellow-500 text-sm" />
               ) : (
                 <FiHeart className="text-gray-400 hover:text-yellow-500 text-sm" />

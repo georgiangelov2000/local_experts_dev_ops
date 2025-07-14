@@ -87,6 +87,11 @@ class AuthController extends Controller
         if ($type === 'provider' && $user->serviceProvider) {
             $response['alias'] = $user->serviceProvider->alias;
         }
+        if ($type === 'user') {
+            $response['likes_ids'] = $user->likes()->pluck('service_provider_id')->toArray();
+            $response['dislikes_ids'] = $user->dislikes()->pluck('service_provider_id')->toArray();
+            $response['favourite_ids'] = $user->favourites()->pluck('service_provider_id')->toArray();
+        }
         return response()->json($response, 200);
     }
 

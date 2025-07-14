@@ -1,101 +1,120 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import apiService from "../Services/apiService";
 import { useAuth } from "../Context/AuthContext";
 
 export default function useProviderActions(providerId) {
   const { user } = useAuth();
+  const isLoggedIn = !!user;
 
   const [isFavourite, setIsFavourite] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const isLoggedIn = !!user;
-
+  // Initialize state from user context or localStorage
   useEffect(() => {
-    const favs = JSON.parse(localStorage.getItem("favourites") || "[]");
-    const likes = JSON.parse(localStorage.getItem("likes") || "[]");
-    const dislikes = JSON.parse(localStorage.getItem("dislikes") || "[]");
-
-    setIsFavourite(favs.includes(providerId));
-    setIsLiked(likes.includes(providerId));
-    setIsDisliked(dislikes.includes(providerId));
-  }, [providerId]);
-
-  const toggleFavourite = () => {
+    if (!providerId) return;
+    setError(null);
     if (isLoggedIn) {
-      apiService.toggleFavourite(providerId)
-        .then(() => setIsFavourite(prev => !prev))
-        .catch(() => {});
+      setIsLiked(user?.likes_ids?.includes(providerId));
+      setIsDisliked(user?.dislikes_ids?.includes(providerId));
+      setIsFavourite(user?.favourite_ids?.includes(providerId));
     } else {
-      const favs = JSON.parse(localStorage.getItem("favourites") || "[]");
-      if (favs.includes(providerId)) {
-        const updated = favs.filter(id => id !== providerId);
-        localStorage.setItem("favourites", JSON.stringify(updated));
-        setIsFavourite(false);
+      const likes = JSON.parse(localStorage.getItem("likes") || "[]");
+      const dislikes = JSON.parse(localStorage.getItem("dislikes") || "[]");
+      const favourites = JSON.parse(localStorage.getItem("guest_favourites") || "[]");
+      setIsLiked(likes.includes(providerId));
+      setIsDisliked(dislikes.includes(providerId));
+      setIsFavourite(favourites.includes(providerId));
+    }
+  }, [providerId, isLoggedIn, user]);
+
+  // Toggle Like
+  const toggleLike = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      if (isLoggedIn) {
+        await apiService.likeProvider(providerId);
+        setIsLiked(true);
+        setIsDisliked(false);
       } else {
-        favs.push(providerId);
-        localStorage.setItem("favourites", JSON.stringify(favs));
-        setIsFavourite(true);
+        let likes = JSON.parse(localStorage.getItem("likes") || "[]");
+        let dislikes = JSON.parse(localStorage.getItem("dislikes") || "[]");
+        if (!likes.includes(providerId)) likes.push(providerId);
+        dislikes = dislikes.filter(id => id !== providerId);
+        localStorage.setItem("likes", JSON.stringify(likes));
+        localStorage.setItem("dislikes", JSON.stringify(dislikes));
+        setIsLiked(true);
+        setIsDisliked(false);
       }
+    } catch (err) {
+      setError("Failed to like provider.");
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [isLoggedIn, providerId]);
 
-  const like = () => {
-    if (isLoggedIn) {
-      apiService.likeProvider(providerId)
-        .then(() => {
-          setIsLiked(true);
-          setIsDisliked(false);
-        })
-        .catch(() => {});
-    } else {
-      const likes = JSON.parse(localStorage.getItem("likes") || "[]");
-      const dislikes = JSON.parse(localStorage.getItem("dislikes") || "[]");
-
-      if (!likes.includes(providerId)) {
-        likes.push(providerId);
+  // Toggle Dislike
+  const toggleDislike = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      if (isLoggedIn) {
+        await apiService.dislikeProvider(providerId);
+        setIsDisliked(true);
+        setIsLiked(false);
+      } else {
+        let dislikes = JSON.parse(localStorage.getItem("dislikes") || "[]");
+        let likes = JSON.parse(localStorage.getItem("likes") || "[]");
+        if (!dislikes.includes(providerId)) dislikes.push(providerId);
+        likes = likes.filter(id => id !== providerId);
+        localStorage.setItem("dislikes", JSON.stringify(dislikes));
+        localStorage.setItem("likes", JSON.stringify(likes));
+        setIsDisliked(true);
+        setIsLiked(false);
       }
-      localStorage.setItem("likes", JSON.stringify(likes));
-
-      const updatedDislikes = dislikes.filter(id => id !== providerId);
-      localStorage.setItem("dislikes", JSON.stringify(updatedDislikes));
-
-      setIsLiked(true);
-      setIsDisliked(false);
+    } catch (err) {
+      setError("Failed to dislike provider.");
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [isLoggedIn, providerId]);
 
-  const dislike = () => {
-    if (isLoggedIn) {
-      apiService.dislikeProvider(providerId)
-        .then(() => {
-          setIsDisliked(true);
-          setIsLiked(false);
-        })
-        .catch(() => {});
-    } else {
-      const dislikes = JSON.parse(localStorage.getItem("dislikes") || "[]");
-      const likes = JSON.parse(localStorage.getItem("likes") || "[]");
-
-      if (!dislikes.includes(providerId)) {
-        dislikes.push(providerId);
+  // Toggle Favourite
+  const toggleFavourite = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      if (isLoggedIn) {
+        await apiService.toggleFavourite(providerId);
+        setIsFavourite(prev => !prev);
+      } else {
+        let favourites = JSON.parse(localStorage.getItem("favourites") || "[]");
+        if (favourites.includes(providerId)) {
+          favourites = favourites.filter(id => id !== providerId);
+        } else {
+          favourites.push(providerId);
+        }
+        localStorage.setItem("favourites", JSON.stringify(favourites));
+        setIsFavourite(favourites.includes(providerId));
       }
-      localStorage.setItem("dislikes", JSON.stringify(dislikes));
-
-      const updatedLikes = likes.filter(id => id !== providerId);
-      localStorage.setItem("likes", JSON.stringify(updatedLikes));
-
-      setIsDisliked(true);
-      setIsLiked(false);
+    } catch (err) {
+      setError("Failed to update favourite.");
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [isLoggedIn, providerId]);
 
   return {
     isFavourite,
     isLiked,
     isDisliked,
     toggleFavourite,
-    like,
-    dislike
+    toggleLike,
+    toggleDislike,
+    loading,
+    error,
   };
 }
