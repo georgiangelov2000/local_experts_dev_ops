@@ -26,10 +26,6 @@ class ServiceProviderController extends Controller
     {
         $data = $this->providerService->getPaginatedProviders($request);
         // Add liked/disliked provider IDs for authenticated users
-        if ($request->user()) {
-            $data['likes_ids'] = $request->user()->likes()->pluck('service_provider_id')->toArray();
-            $data['dislikes_ids'] = $request->user()->dislikes()->pluck('service_provider_id')->toArray();
-        }
         return response()->json($data, 200);
     }
 

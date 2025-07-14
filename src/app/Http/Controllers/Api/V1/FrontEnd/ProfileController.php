@@ -144,12 +144,84 @@ class ProfileController extends Controller
                     ]);
                     return response()->json(['message' => 'Profile updated successfully.'], 200);
                 case 'likes':
+                    $providers = $user->likes()->with(['serviceProvider.workspaces.city', 'serviceProvider.serviceCategory', 'serviceProvider.media', 'serviceProvider.services', 'serviceProvider.certifications'])->get()->map(function($like) {
+                        $provider = $like->serviceProvider;
+                        if (!$provider) return null;
+                        $locations = $provider->workspaces->map(function ($workspace) {
+                            return $workspace->city?->name;
+                        })->filter()->values();
+                        return [
+                            'id' => $provider->id,
+                            'business_name' => $provider->business_name,
+                            'start_time' => $provider->start_time,
+                            'stop_time' => $provider->stop_time,
+                            'alias' => $provider->alias,
+                            'service_category' => $provider->serviceCategory->name,
+                            'description' => $provider->description,
+                            'media' => $provider->media->first() ?? [],
+                            'likes_count' => $provider->likes_count,
+                            'dislikes_count' => $provider->dislikes_count,
+                            'reviews_count' => $provider->reviews_count,
+                            'views_count' => $provider->views,
+                            'final_grade' => $provider->rating(),
+                            'locations' => $locations,
+                            'services' => $provider->services->map(function ($service) {
+                                return [
+                                    'description' => $service->description,
+                                    'price' => $service->price,
+                                ];
+                            }),
+                            'certifications' => $provider->certifications->map(function ($certification) {
+                                return [
+                                    'id' => $certification->id,
+                                    'name' => $certification->name,
+                                    'description' => $certification->description,
+                                ];
+                            }),
+                        ];
+                    })->filter()->values();
                     return response()->json([
-                        'likes' => $user->likes()->with('serviceProvider')->get(),
+                        'providers' => $providers,
                     ], 200);
                 case 'favourites':
+                    $providers = $user->favourites()->with(['serviceProvider.workspaces.city', 'serviceProvider.serviceCategory', 'serviceProvider.media', 'serviceProvider.services', 'serviceProvider.certifications'])->get()->map(function($fav) {
+                        $provider = $fav->serviceProvider;
+                        if (!$provider) return null;
+                        $locations = $provider->workspaces->map(function ($workspace) {
+                            return $workspace->city?->name;
+                        })->filter()->values();
+                        return [
+                            'id' => $provider->id,
+                            'business_name' => $provider->business_name,
+                            'start_time' => $provider->start_time,
+                            'stop_time' => $provider->stop_time,
+                            'alias' => $provider->alias,
+                            'service_category' => $provider->serviceCategory->name,
+                            'description' => $provider->description,
+                            'media' => $provider->media->first() ?? [],
+                            'likes_count' => $provider->likes_count,
+                            'dislikes_count' => $provider->dislikes_count,
+                            'reviews_count' => $provider->reviews_count,
+                            'views_count' => $provider->views,
+                            'final_grade' => $provider->rating(),
+                            'locations' => $locations,
+                            'services' => $provider->services->map(function ($service) {
+                                return [
+                                    'description' => $service->description,
+                                    'price' => $service->price,
+                                ];
+                            }),
+                            'certifications' => $provider->certifications->map(function ($certification) {
+                                return [
+                                    'id' => $certification->id,
+                                    'name' => $certification->name,
+                                    'description' => $certification->description,
+                                ];
+                            }),
+                        ];
+                    })->filter()->values();
                     return response()->json([
-                        'favourites' => $user->favourites()->with('serviceProvider')->get(),
+                        'providers' => $providers,
                     ], 200);
                 default:
                     return response()->json(['error' => 'Invalid tab'], 400);

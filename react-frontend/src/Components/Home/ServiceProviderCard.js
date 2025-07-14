@@ -52,7 +52,7 @@ export default function ServiceProviderCard({
           <img
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             src={
-              provider.media.length > 0
+              Array.isArray(provider.media) && provider.media.length > 0
                 ? provider.media[0].url
                 : "https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
             }
@@ -101,7 +101,7 @@ export default function ServiceProviderCard({
           </p>
 
           {/* Services Preview */}
-          {provider.services && provider.services.length > 0 && (
+          {Array.isArray(provider.services) && provider.services.length > 0 && (
             <div className="space-y-2">
               <h4 className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Services</h4>
               <div className="space-y-1">
@@ -121,7 +121,7 @@ export default function ServiceProviderCard({
           )}
 
           {/* Location */}
-          {provider.locations?.length > 0 && (
+          {Array.isArray(provider.locations) && provider.locations.length > 0 && (
             <div className="flex items-center text-xs text-gray-500">
               <FiMapPin className="mr-1 text-gray-400" />
               <span className="truncate">

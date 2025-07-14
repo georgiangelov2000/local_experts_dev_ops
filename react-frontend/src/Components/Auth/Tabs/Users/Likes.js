@@ -1,8 +1,8 @@
 import ServiceProviderCard from '../../../Home/ServiceProviderCard';
 import { useLikes } from '../../../../Models/User/useLikes';
 
-export default function Likes({ user }) {
-  const { likedProviders, loading, removeLike } = useLikes(user);
+export default function Likes({ user, data }) {
+  const { likedProviders, loading, removeLike } = useLikes(user, data);
 
   if (loading) return <div className="text-center text-blue-600">Loading...</div>;
   if (!likedProviders.length) return <div className="text-center text-gray-500">You have no liked providers yet.</div>;

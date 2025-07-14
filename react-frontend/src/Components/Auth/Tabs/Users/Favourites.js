@@ -1,8 +1,8 @@
 import ServiceProviderCard from '../../../Home/ServiceProviderCard';
 import { useFavourites } from '../../../../Models/User/useFavourites';
 
-export default function Favourites({ user }) {
-  const { favouriteProviders, loading, removeFavourite } = useFavourites(user);
+export default function Favourites({ user, data }) {
+  const { favouriteProviders, loading, removeFavourite } = useFavourites(user, data);
 
   if (loading) return <div className="text-center text-blue-600">Loading...</div>;
   if (!favouriteProviders.length) return <div className="text-center text-gray-500">You have no favourites yet.</div>;
