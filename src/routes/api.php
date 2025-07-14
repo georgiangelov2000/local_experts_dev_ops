@@ -9,31 +9,34 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('v1')->group(function () {
-    Route::post('register', [AuthController::class, 'register'])->middleware('throttle:5,1');
-    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:5,1');
-    Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:5,1');    Route::post('reset-password', [AuthController::class, 'resetPassword']);
-    Route::post('refresh', [AuthController::class, 'refresh']);
-    Route::get('/auth/{provider}/redirect', [AuthController::class, 'redirectToProvider']);
-    Route::get('/auth/{provider}/callback', [AuthController::class, 'handleProviderCallback']);
+    Route::middleware('throttle:60,1')->group(function () {
+        Route::post('register', [AuthController::class, 'register'])->middleware('throttle:5,1');
+        Route::post('login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+        Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:5,1');
+        Route::post('reset-password', [AuthController::class, 'resetPassword']);
+        Route::post('refresh', [AuthController::class, 'refresh']);
+        Route::get('/auth/{provider}/redirect', [AuthController::class, 'redirectToProvider']);
+        Route::get('/auth/{provider}/callback', [AuthController::class, 'handleProviderCallback']);
 
-    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-        $request->fulfill();
-        return response()->json(['message' => 'Email verified successfully.']);
-    })->middleware(['signed'])->name('verification.verify');
+        Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+            $request->fulfill();
+            return response()->json(['message' => 'Email verified successfully.']);
+        })->middleware(['signed'])->name('verification.verify');
 
-    Route::post('/email/verification-notification', function (Request $request) {
-        $user = auth()->user();
-        $user->sendEmailVerificationNotification();
-        return response()->json(['message' => 'Verification link sent!']);
-    })->middleware(['throttle:6,1'])->name('verification.send');
+        Route::post('/email/verification-notification', function (Request $request) {
+            $user = auth()->user();
+            $user->sendEmailVerificationNotification();
+            return response()->json(['message' => 'Verification link sent!']);
+        })->middleware(['throttle:6,1'])->name('verification.send');
 
-    Route::post('/providers/bulk', [\App\Http\Controllers\Api\V1\FrontEnd\ServiceProviderController::class, 'getProvidersByIds']);
-    Route::get('services', [ServiceProviderController::class, 'index']);
-    Route::get('services/{alias}/{page}', [ServiceProviderController::class, 'show']);
-    Route::post('services/{alias}/views', [ServiceProviderController::class, 'incrementViews']);
-    
-    Route::get('/categories', [CategoryController::class, 'index']);
-    Route::get('/categories/{category}/service-categories', [CategoryController::class, 'serviceCategories']);
+        Route::post('/providers/bulk', [ServiceProviderController::class, 'getProvidersByIds']);
+        Route::get('services', [ServiceProviderController::class, 'index']);
+        Route::get('services/{alias}/{page}', [ServiceProviderController::class, 'show']);
+        Route::post('services/{alias}/views', [ServiceProviderController::class, 'incrementViews']);
+        
+        Route::get('/categories', [CategoryController::class, 'index']);
+        Route::get('/categories/{category}/service-categories', [CategoryController::class, 'serviceCategories']);
+    });
 
     Route::middleware('auth:api')->group(function () {
         Route::post('providers/{provider}/like', [ServiceProviderController::class, 'like']);

@@ -20,6 +20,19 @@ apiClient.interceptors.request.use(config => {
   return Promise.reject(error);
 });
 
+apiClient.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      // Optionally: window.location = '/login';
+      // Or show a toast notification
+      // For now, just log
+      console.warn('Authentication error, please login again.');
+    }
+    return Promise.reject(error);
+  }
+);
+
 const apiService = {
   // 🔐 Authentication
   login: (data) => apiClient.post('/login', data),

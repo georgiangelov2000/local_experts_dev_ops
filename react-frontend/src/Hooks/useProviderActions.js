@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import apiService from "../Services/apiService";
 import { useAuth } from "../Context/AuthContext";
+import debounce from 'lodash.debounce';
 
 export default function useProviderActions(providerId) {
   const { user } = useAuth();
@@ -30,10 +31,8 @@ export default function useProviderActions(providerId) {
     }
   }, [providerId, isLoggedIn, user]);
 
-  // Toggle Like
-  const toggleLike = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  // Debounced API calls
+  const debouncedLike = useCallback(debounce(async () => {
     try {
       if (isLoggedIn) {
         await apiService.likeProvider(providerId);
@@ -54,12 +53,9 @@ export default function useProviderActions(providerId) {
     } finally {
       setLoading(false);
     }
-  }, [isLoggedIn, providerId]);
+  }, 300), [isLoggedIn, providerId]);
 
-  // Toggle Dislike
-  const toggleDislike = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  const debouncedDislike = useCallback(debounce(async () => {
     try {
       if (isLoggedIn) {
         await apiService.dislikeProvider(providerId);
@@ -80,12 +76,9 @@ export default function useProviderActions(providerId) {
     } finally {
       setLoading(false);
     }
-  }, [isLoggedIn, providerId]);
+  }, 300), [isLoggedIn, providerId]);
 
-  // Toggle Favourite
-  const toggleFavourite = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  const debouncedFavourite = useCallback(debounce(async () => {
     try {
       if (isLoggedIn) {
         await apiService.toggleFavourite(providerId);
@@ -105,7 +98,28 @@ export default function useProviderActions(providerId) {
     } finally {
       setLoading(false);
     }
-  }, [isLoggedIn, providerId]);
+  }, 300), [isLoggedIn, providerId]);
+
+  // Toggle Like
+  const toggleLike = useCallback(() => {
+    setLoading(true);
+    setError(null);
+    debouncedLike();
+  }, [debouncedLike]);
+
+  // Toggle Dislike
+  const toggleDislike = useCallback(() => {
+    setLoading(true);
+    setError(null);
+    debouncedDislike();
+  }, [debouncedDislike]);
+
+  // Toggle Favourite
+  const toggleFavourite = useCallback(() => {
+    setLoading(true);
+    setError(null);
+    debouncedFavourite();
+  }, [debouncedFavourite]);
 
   return {
     isFavourite,

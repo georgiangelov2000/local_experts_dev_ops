@@ -1,5 +1,7 @@
 import Select from 'react-select';
 import { FiMapPin, FiLayers, FiList, FiSearch, FiX, FiFilter, FiSliders } from 'react-icons/fi';
+import { useCallback } from 'react';
+import debounce from 'lodash.debounce';
 
 export default function SearchBar({ state, dispatch, setSearchParams }) {
 
@@ -93,6 +95,14 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
   };
 
   const hasActiveFilters = state.filters.city_alias || state.filters.category_alias || state.filters.service_category_alias || state.filters.term || state.filters.sort;
+
+  // Debounced version of applyFiltersToURL
+  const debouncedApplyFiltersToURL = useCallback(
+    debounce(() => {
+      applyFiltersToURL();
+    }, 300),
+    [state.filters.term, state.filters.city_alias, state.filters.category_alias, state.filters.service_category_alias, state.filters.sort]
+  );
 
   return (
     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 mb-6 border border-blue-100">
@@ -214,6 +224,7 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
                   type: "UPDATE_FILTER",
                   payload: { term: e.target.value }
                 });
+                debouncedApplyFiltersToURL();
               }}
               placeholder="Search for providers, services, or keywords..."
               className="w-full border border-gray-300 bg-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 placeholder-gray-400"
