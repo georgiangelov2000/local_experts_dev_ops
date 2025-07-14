@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { serviceReducer, initialServiceState } from '../../Reducers/serviceReducer';
 import apiService from '../../Services/apiService';
@@ -17,7 +17,26 @@ export default function Service() {
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const [state, dispatch] = useReducer(serviceReducer, initialServiceState);
-  const { user, authChecked } = useAuth();
+  const { user, authChecked, isAuthenticated } = useAuth();
+
+  // Initialize favourites on load
+  useEffect(() => {
+    if (!authChecked) return;
+    if (isAuthenticated && user) {
+      // Fetch from API or use user.favourite_ids
+      dispatch({
+        type: 'SET_FAVOURITES',
+        payload: { favourites: user.favourite_ids || [] },
+      });
+    } else {
+      // Guest: load from localStorage
+      const guestFavs = JSON.parse(localStorage.getItem('guest_favourites') || '[]');
+      dispatch({
+        type: 'SET_FAVOURITES',
+        payload: { favourites: guestFavs },
+      });
+    }
+  }, [user, authChecked, isAuthenticated]);
 
   // likes ,dislikes, favourites for auth users
   useEffect(() => {
@@ -63,6 +82,39 @@ export default function Service() {
 
     fetchData();
   }, [searchParams]);
+
+  // Toggle favourite handler
+  const toggleFavourite = useCallback(
+    async (providerId) => {
+      if (isAuthenticated) {
+        // Authenticated: call API to add/remove favourite
+        try {
+          const isFav = state.favourites.includes(providerId);
+          if (isFav) {
+            await apiService.removeFavourite(providerId);
+          } else {
+            await apiService.addFavourite(providerId);
+          }
+          // Update state
+          dispatch({ type: 'TOGGLE_FAVOURITE', payload: { id: providerId } });
+        } catch (err) {
+          // Optionally show error toast
+          console.error('Failed to update favourite:', err);
+        }
+      } else {
+        // Guest: update localStorage
+        let guestFavs = JSON.parse(localStorage.getItem('guest_favourites') || '[]');
+        if (guestFavs.includes(providerId)) {
+          guestFavs = guestFavs.filter(id => id !== providerId);
+        } else {
+          guestFavs.push(providerId);
+        }
+        localStorage.setItem('guest_favourites', JSON.stringify(guestFavs));
+        dispatch({ type: 'TOGGLE_FAVOURITE', payload: { id: providerId } });
+      }
+    },
+    [isAuthenticated, state.favourites]
+  );
 
   // Dynamic SEO logic
   const filters = [];
@@ -175,6 +227,7 @@ export default function Service() {
                     likes={state.likes}
                     dislikes={state.dislikes}
                     favourites={state.favourites}
+                    toggleFavourite={toggleFavourite}
                   />
                 ))}
               </div>

@@ -28,6 +28,7 @@ Route::prefix('v1')->group(function () {
         return response()->json(['message' => 'Verification link sent!']);
     })->middleware(['throttle:6,1'])->name('verification.send');
 
+    Route::post('/providers/bulk', [\App\Http\Controllers\Api\V1\FrontEnd\ServiceProviderController::class, 'getProvidersByIds']);
     Route::get('services', [ServiceProviderController::class, 'index']);
     Route::get('services/{alias}/{page}', [ServiceProviderController::class, 'show']);
     Route::post('services/{alias}/views', [ServiceProviderController::class, 'incrementViews']);

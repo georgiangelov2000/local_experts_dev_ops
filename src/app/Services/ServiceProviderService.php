@@ -82,6 +82,14 @@ class ServiceProviderService
         ];
     }
 
+    public function getProvidersByIds(array $ids): array
+    {
+        $providers = $this->providerRepository->findByIds($ids);
+        return [
+            'providers' => $this->mapProvidersForList($providers)
+        ];
+    }
+
     private function extractFilters(Request $request): array
     {
         return [

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { FiHeart, FiThumbsUp, FiThumbsDown, FiEye, FiMapPin, FiStar, FiClock, FiAward } from "react-icons/fi";
-import { FaStar, FaRegStar, FaStarHalfAlt, FaHeart, FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
+import { FaStar, FaRegStar, FaStarHalfAlt, FaHeart, FaThumbsUp, FaThumbsDown, FaRegHeart } from 'react-icons/fa';
 import useProviderActions from "../../Hooks/useProviderActions";
 import { useAuth } from "../../Context/AuthContext";
 
@@ -9,12 +9,13 @@ export default function ServiceProviderCard({
   likes,
   dislikes,
   favourites,
+  toggleFavourite,
 }) {
   const {
     isFavourite,
     isLiked,
     isDisliked,
-    toggleFavourite,
+    toggleFavourite: toggleFavouriteAction,
     like,
     dislike
   } = useProviderActions(provider.id);
@@ -37,6 +38,8 @@ export default function ServiceProviderCard({
       </div>
     );
   };
+
+  const isFavourited = favourites && favourites.includes(provider.id);
 
   return (
     <div className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:border-blue-200 transition-all duration-300 transform hover:-translate-y-1">
@@ -200,14 +203,12 @@ export default function ServiceProviderCard({
           </div>
           
           <button
-            className="p-2 rounded-full hover:bg-yellow-50 transition-colors duration-200"
-            onClick={(e) => {
-              e.preventDefault();
-              toggleFavourite();
-            }}
-            title="Add to Favorites"
+            aria-label={isFavourited ? 'Remove from favorites' : 'Add to favorites'}
+            onClick={() => toggleFavourite(provider.id)}
+            className={`p-2 rounded-full hover:bg-yellow-50 transition-colors duration-200 ${isFavourited ? 'bg-yellow-100' : ''}`}
+            title={isFavourited ? 'Remove from favorites' : 'Add to favorites'}
           >
-            {favourites?.includes(provider.id) ? (
+            {isFavourited ? (
               <FaHeart className="text-yellow-500 text-sm" />
             ) : (
               <FiHeart className="text-gray-400 hover:text-yellow-500 text-sm" />

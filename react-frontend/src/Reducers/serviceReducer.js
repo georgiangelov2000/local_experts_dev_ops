@@ -87,7 +87,21 @@ export function serviceReducer(state, action) {
                 ...state,
                 appliedFilters: { ...state.filters }
             };
-
+        case 'SET_FAVOURITES':
+            return {
+                ...state,
+                favourites: action.payload.favourites,
+            };
+        case 'TOGGLE_FAVOURITE': {
+            const id = action.payload.id;
+            const isFav = state.favourites.includes(id);
+            return {
+                ...state,
+                favourites: isFav
+                    ? state.favourites.filter(favId => favId !== id)
+                    : [...state.favourites, id],
+            };
+        }
         default:
             return state;
     }

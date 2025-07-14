@@ -182,4 +182,14 @@ class ServiceProviderController extends Controller
         $provider->increment('views');
         return response()->json(['message' => 'Views incremented successfully.'], 200);
     }
+
+    public function getProvidersByIds(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (!is_array($ids) || empty($ids)) {
+            return response()->json(['providers' => []], 200);
+        }
+        $data = $this->providerService->getProvidersByIds($ids);
+        return response()->json($data, 200);
+    }
 }

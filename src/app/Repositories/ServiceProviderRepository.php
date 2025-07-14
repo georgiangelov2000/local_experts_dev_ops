@@ -56,6 +56,27 @@ class ServiceProviderRepository
             ->count();
     }
 
+    public function findByIds(array $ids): Collection
+    {
+        return ServiceProvider::with([
+            'user:id,email',
+            'serviceCategory:id,category_id,alias,name',
+            'media',
+            'category:id,name,alias',
+            'projects',
+            'workspaces.city:id,name',
+            'certifications',
+            'contact'
+        ])
+        ->withCount([
+            'likes',
+            'dislikes',
+            'reviews',
+        ])
+        ->whereIn('id', $ids)
+        ->get();
+    }
+
 
     public function incrementViews(ServiceProvider $provider): void
     {
