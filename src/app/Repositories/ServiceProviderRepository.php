@@ -42,7 +42,7 @@ class ServiceProviderRepository
 
     public function getRelatedProviders(ServiceProvider $provider, int $limit = 5): Collection
     {
-        return ServiceProvider::with(['user', 'serviceCategory', 'media'])
+        return ServiceProvider::with(['user', 'serviceCategory', 'media', 'workspaces.city', 'certifications'])
             ->where('category_id', $provider->category_id)
             ->where('id', '!=', $provider->id)
             ->limit($limit)
@@ -151,7 +151,7 @@ class ServiceProviderRepository
         if (!empty($filters['service_category_alias'])) {
             $serviceCategory = ServiceCategory::where('alias', $filters['service_category_alias'])->first();
             if ($serviceCategory) {
-                $query->where('alias', $filters['service_category_alias']);
+                $query->where('service_category_id', $serviceCategory->id);
             }
         }
 
