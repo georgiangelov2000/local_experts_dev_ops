@@ -32,6 +32,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (app()->environment('production')) {
+            \URL::forceScheme('https');
+        }
+        
         Route::prefix('api')->middleware('api')->group(base_path('routes/api.php'));
         
         ResetPassword::toMailUsing(function ($notifiable, $token) {
