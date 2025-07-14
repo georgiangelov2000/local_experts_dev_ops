@@ -17,9 +17,8 @@ use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 {
-    public function profile(Request $request)
+    public function profile(ProfileRequest $request)
     {
-        return response()->json($request->all());
         $user = auth()->user();
 
         // if (!$user->hasVerifiedEmail()) {
@@ -35,7 +34,9 @@ class ProfileController extends Controller
         switch ($tab) {
             case 'basic':
                 $serviceProvider->business_name = $validated['business_name'];
-                $serviceProvider->description = $validated['description'];
+                // Save description as a file, not in the DB
+                $descriptionPath = storage_path('app/public/descriptions/description_' . ($serviceProvider->id ?? 'new') . '.html');
+                file_put_contents($descriptionPath, $validated['description']);
                 $serviceProvider->category_id = (int) $validated['category_id'];
                 $serviceProvider->service_category_id = (int) $validated['service_category_id'];
                 $serviceProvider->start_time = Carbon::now();
@@ -138,13 +139,15 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
         $provider = $user->serviceProvider;
+        $descriptionFile = storage_path('app/public/descriptions/description_' . $provider->id . '.html');
+        $description = file_exists($descriptionFile) ? file_get_contents($descriptionFile) : null;
         switch ($tab) {
             case 'basic':
                 return response()->json([
                     'id' => $user->id,
                     'email' => $user->email,
                     'business_name' => $provider->business_name,
-                    'description' => $provider->description,
+                    'description' => $description,
                     'categories' => Category::select('id','name')->get(),
                     'category_id' => $provider->category_id,
                     'service_categories' => ServiceCategory::where('category_id',$provider->category_id)->get(),
@@ -184,10 +187,12 @@ class ProfileController extends Controller
         if (!$provider) {
             return response()->json(['error' => 'No provider profile found.'], 404);
         }
+        $descriptionFile = storage_path('app/public/descriptions/description_' . $provider->id . '.html');
+        $description = file_exists($descriptionFile) ? file_get_contents($descriptionFile) : null;
         return response()->json([
             'id' => $provider->id,
             'business_name' => $provider->business_name,
-            'description' => $provider->description,
+            'description' => $description,
             'category_id' => $provider->category_id,
             'category' => $provider->category?->name,
             'service_category_id' => $provider->service_category_id,

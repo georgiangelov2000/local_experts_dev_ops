@@ -4,7 +4,7 @@ import * as yup from "yup";
 
 const projectSchema = yup.object().shape({
   project_name: yup.string().nullable(),
-  description: yup.string().max(500, "Project description is too long"),
+  description: yup.string(),
   date_start: yup
     .date()
     .nullable()

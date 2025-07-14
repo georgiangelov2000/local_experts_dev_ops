@@ -5,7 +5,7 @@ import * as yup from "yup";
 const basicProfileSchema = yup.object().shape({
     business_name: yup.string().required("Business name is required"),
     email: yup.string().email("Invalid email format").required("Email is required"),
-    description: yup.string().max(500, "Project description is too long"),
+    description: yup.string(),
     category_id: yup
         .number()
         .typeError("Category is required")

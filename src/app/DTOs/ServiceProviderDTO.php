@@ -30,10 +30,12 @@ class ServiceProviderDTO
 
     public static function fromModel(ServiceProvider $provider): self
     {
+        $descriptionFile = storage_path('app/public/descriptions/description_' . $provider->id . '.html');
+        $description = file_exists($descriptionFile) ? file_get_contents($descriptionFile) : null;
         return new self(
             id: $provider->id,
             business_name: $provider->business_name,
-            description: $provider->description,
+            description: $description,
             service_category: $provider->serviceCategory?->name,
             start_time: $provider->start_time,
             stop_time: $provider->stop_time,
