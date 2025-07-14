@@ -11,7 +11,7 @@ export default function Header() {
   const [favouritesCount, setFavouritesCount] = useState(0);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!user) {
       const updateCount = () => {
         const favs = JSON.parse(localStorage.getItem('guest_favourites') || '[]');
         setFavouritesCount(favs.length);
@@ -20,7 +20,7 @@ export default function Header() {
       window.addEventListener('storage', updateCount);
       return () => window.removeEventListener('storage', updateCount);
     }
-  }, [isAuthenticated]);
+  }, [user]);
 
   const handleLogout = async () => {
     await logout();
@@ -57,23 +57,13 @@ export default function Header() {
               Home
             </Link>
 
-            {!isAuthenticated && (
+            {!user && (
               <Link
                 to="/favourites"
                 className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
               >
                 <FiHeart className="mr-2" />
                 Favourites{favouritesCount > 0 ? ` (${favouritesCount})` : ''}
-              </Link>
-            )}
-
-            {user && (
-              <Link
-                to="/favourites"
-                className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
-              >
-                <FiHeart className="mr-2" />
-                Favourites
               </Link>
             )}
           </nav>
@@ -180,7 +170,7 @@ export default function Header() {
                 Home
               </Link>
 
-              {!isAuthenticated && (
+              {!user && (
                 <Link
                   to="/favourites"
                   className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"

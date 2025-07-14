@@ -205,7 +205,7 @@ export default function ServiceProviderCard({
           <button
             aria-label={isFavourited ? 'Remove from favorites' : 'Add to favorites'}
             onClick={() => toggleFavourite(provider.id)}
-            className={`p-2 rounded-full hover:bg-yellow-50 transition-colors duration-200 ${isFavourited ? 'bg-yellow-100' : ''}`}
+            className={`p-2 rounded-full hover:bg-yellow-50 transition-colors duration-200 cursor-pointer ${isFavourited ? 'bg-yellow-100' : ''}`}
             title={isFavourited ? 'Remove from favorites' : 'Add to favorites'}
           >
             {isFavourited ? (
