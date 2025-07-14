@@ -1,5 +1,5 @@
 export const initialState = {
-    activeTab: 'profile',
+    activeTab: 'basic',
 }
 
 export function userProfileReducer(state, action) {
