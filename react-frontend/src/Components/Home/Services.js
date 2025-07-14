@@ -11,6 +11,7 @@ import { useAuth } from '../../Context/AuthContext';
 import SEO from '../Auth/Shared/SEO';
 import { useLocation } from 'react-router-dom';
 import { FiGrid, FiList, FiSearch, FiFilter } from 'react-icons/fi';
+import { FaSpinner } from 'react-icons/fa';
 
 export default function Service() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -90,16 +91,10 @@ export default function Service() {
           image={image}
         />
         <div className="p-6 bg-white rounded-t-lg">
-          <div className="mb-8">
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl mb-4 animate-pulse">
-                <FiSearch className="text-white text-2xl" />
-              </div>
-              <div className="w-64 h-8 bg-gray-200 rounded mx-auto mb-2 animate-pulse"></div>
-              <div className="w-96 h-4 bg-gray-200 rounded mx-auto animate-pulse"></div>
-            </div>
+          <div className="flex justify-center items-center p-6">
+            <FaSpinner className="animate-spin text-2xl text-blue-600" />
           </div>
-          
+  
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {Array.from({ length: 8 }).map((_, index) => (
               <ServiceProviderCardSkeleton key={index} />
@@ -109,7 +104,7 @@ export default function Service() {
       </>
     );
   }
-
+  
   return (
     <>
       <SEO

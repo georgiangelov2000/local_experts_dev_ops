@@ -21,6 +21,7 @@ return new class extends Migration
                 $table->integer('service_category_id')->index();
                 $table->dateTime('start_time')->nullable();
                 $table->dateTime('stop_time')->nullable();
+                $table->tinyInteger('is_published')->default(0);
                 $table->string('alias')->unique();
                 $table->unsignedInteger('views')->default(0);
                 $table->unsignedBigInteger('contact_id')->nullable()->unique();

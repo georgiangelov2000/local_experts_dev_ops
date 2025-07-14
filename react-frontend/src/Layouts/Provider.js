@@ -1,5 +1,4 @@
 import { useParams } from 'react-router-dom';
-import RelatedProviders from '../Components/Provider/RelatedProviders';
 import RelatedProvidersSection from '../Components/Provider/RelatedProvidersSection';
 import ProfileTab from '../Components/Provider/Tabs/ProfileTab';
 import ProjectsTab from '../Components/Provider/Tabs/ProjectsTab';
@@ -8,7 +7,7 @@ import ReviewsSection from '../Components/Provider/ReviewsSection';
 import ProviderStats from '../Components/Provider/ProviderStats';
 import ProviderContact from '../Components/Provider/ProviderContact';
 import { useProvider } from '../Hooks/useProvider';
-import { FaStar, FaRegStar } from 'react-icons/fa';
+import { FaStar, FaRegStar, FaSpinner } from 'react-icons/fa';
 import SEO from '../Components/Auth/Shared/SEO';
 
 export default function Provider() {
@@ -29,7 +28,11 @@ export default function Provider() {
   } = useProvider(alias);
   const tabs = ['Profile', 'Projects', 'Videos'];
 
-  if (loading) return <div className="text-center p-6">Loading provider details...</div>;
+  if (loading) return (
+    <div className="flex justify-center items-center p-6">
+      <FaSpinner className="animate-spin text-2xl text-blue-600" />
+    </div>
+  );
   if (!provider) return <div className="text-center p-6 text-red-600">Provider not found.</div>;
 
   // Dynamic SEO values
