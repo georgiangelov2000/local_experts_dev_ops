@@ -6,15 +6,15 @@ export function useLikes(user, data) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (data && data.providers) {
-      setLikedProviders(data.providers);
+    if (data && data.likes) {
+      setLikedProviders(data.likes);
       setLoading(false);
       return;
     }
     if (user.like_ids && user.like_ids.length > 0) {
       setLoading(true);
       apiService.getProvidersByIds(user.like_ids).then(res => {
-        setLikedProviders(res.data.providers || []);
+        setLikedProviders(res.data.likes || []);
       }).finally(() => setLoading(false));
     } else {
       setLikedProviders([]);

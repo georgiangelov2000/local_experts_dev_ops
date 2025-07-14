@@ -8,15 +8,18 @@ export default function Likes({ user, data }) {
   if (!likedProviders.length) return <div className="text-center text-gray-500">You have no liked providers yet.</div>;
 
   return (
-    <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-      {likedProviders.map(provider => (
-        <ServiceProviderCard
-          key={provider.id}
-          provider={provider}
-          showDislikeButton
-          onDislike={() => removeLike(provider.id)}
-        />
-      ))}
-    </div>
+    <>
+      <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">Your Liked Providers</h2>
+      <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        {likedProviders.map(provider => (
+          <ServiceProviderCard
+            key={provider.id}
+            provider={provider}
+            showDislikeButton
+            onDislike={() => removeLike(provider.id)}
+          />
+        ))}
+      </div>
+    </>
   );
 } 

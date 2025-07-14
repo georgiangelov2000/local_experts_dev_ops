@@ -6,15 +6,15 @@ export function useFavourites(user, data) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (data && data.providers) {
-      setFavouriteProviders(data.providers);
+    if (data && data.favourites) {
+      setFavouriteProviders(data.favourites);
       setLoading(false);
       return;
     }
     if (user.favourite_ids && user.favourite_ids.length > 0) {
       setLoading(true);
       apiService.getProvidersByIds(user.favourite_ids).then(res => {
-        setFavouriteProviders(res.data.providers || []);
+        setFavouriteProviders(res.data.favourites || []);
       }).finally(() => setLoading(false));
     } else {
       setFavouriteProviders([]);

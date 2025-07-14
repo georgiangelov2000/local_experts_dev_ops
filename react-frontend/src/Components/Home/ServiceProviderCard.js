@@ -41,6 +41,7 @@ export default function ServiceProviderCard({
 
   const isFavourited = favourites && favourites.includes(provider.id);
 
+  console.log(provider);
   return (
     <div className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:border-blue-200 transition-all duration-300 transform hover:-translate-y-1">
       <Link
