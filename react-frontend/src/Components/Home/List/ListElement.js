@@ -150,12 +150,12 @@ export default function ListElement({ provider, likes, dislikes, favourites }) {
 
                 {/* Engagement Stats */}
                 <div className="flex items-center space-x-3 text-sm">
-                  <div className="flex items-center text-green-600">
-                    <span className="mr-1">👍</span>
+                  <div className="flex items-center text-gray-500">
+                    {/* <span className="mr-1">👍</span> */}
                     <span className="font-medium">{provider.likes_count ?? 0} {t('likes')}</span>
                   </div>
-                  <div className="flex items-center text-red-600">
-                    <span className="mr-1">👎</span>
+                  <div className="flex items-center text-gray-500">
+                    {/* <span className="mr-1">👎</span> */}
                     <span className="font-medium">{provider.dislikes_count ?? 0} {t('dislikes')}</span>
                   </div>
                 </div>
