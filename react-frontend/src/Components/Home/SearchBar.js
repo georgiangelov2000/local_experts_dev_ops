@@ -115,7 +115,7 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
           <FiSearch className="text-white text-xl" />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{t('find_service_providers')}</h2>
+          <h2 className="font-bold text-gray-900 lg:text-2xl md:text-2xl sm:text-sm">{t('find_service_providers')}</h2>
           <p className="text-gray-600">{t('search_term')}</p>
         </div>
       </div>

@@ -54,7 +54,7 @@ export default function Categories({ categories }) {
               <div className={`absolute inset-0 bg-gradient-to-br ${colorClass} opacity-5 rounded-xl group-hover:opacity-10 transition-opacity duration-300`}></div>
               
               {/* Content */}
-              <div className="relative z-10">
+              <div className="relative">
                 {/* Icon */}
                 <div className={`w-12 h-12 bg-gradient-to-br ${colorClass} rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300`}>
                   <img
