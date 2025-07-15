@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ChangePasswordRequest;
+use App\Models\ServiceProvider;
 use App\Models\User;
 use Password;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -17,12 +18,33 @@ class AuthController extends Controller
 {
     public function register(RegisterRequest $request)
     {
+        $validated = $request->validated();
+        $existingUser = User::where("email", $validated["email"])->first();
+        if($existingUser) {
+            return response()->json(['message' => 'Email already registered.'], 409);
+        }
 
-        $user = User::create([
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role_id' => $request->type,
-        ]);
+        if($validated['type'] == User::SERVICE_PROVIDER) {
+            $user = new User();
+            $user->email = $validated['email'];
+            $user->password = Hash::make($validated['password']);
+            $user->role_id = User::SERVICE_PROVIDER;
+            $user->save();
+
+            $serviceProvider = new ServiceProvider();
+            $serviceProvider->business_name = $validated['business_name'];
+            $serviceProvider->service_category_id = $validated['service_category_id'];
+            $serviceProvider->user_id = $user->id;
+            $serviceProvider->save();
+        } elseif($validated['type'] == User::USER) {
+            $user = new User();
+            $user->email = $validated['email'];
+            $user->password = Hash::make($validated['password']);
+            $user->role_id = User::USER;
+            $user->save();
+        } else {
+            return response()->json(['message' => 'Invalid registration type.'], 400);
+        }
 
         $user->sendEmailVerificationNotification();
 
@@ -43,9 +65,9 @@ class AuthController extends Controller
         $user->last_logged_in = now();
         $user->save();
 
-        // if (!$user->hasVerifiedEmail()) {
-        //     return response()->json(['error' => 'Please verify your email before logging in.'], 403);
-        // }
+        if (!$user->hasVerifiedEmail()) {
+            return response()->json(['error' => 'Please verify your email before logging in.'], 403);
+        }
 
         return response()->json([
             'token' => $token,
@@ -152,6 +174,7 @@ class AuthController extends Controller
 
     public function handleProviderCallback($provider)
     {
+     
         try {
             $socialUser = Socialite::driver($provider)->user();
         } catch (\Exception $e) {

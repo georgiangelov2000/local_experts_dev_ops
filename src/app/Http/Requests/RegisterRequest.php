@@ -13,10 +13,19 @@ class RegisterRequest extends FormRequest
 
     public function rules()
     {
-        return [
-            'email'                => 'required|string|email|max:255|unique:users,email',
-            'password'             => 'required|string|min:6|confirmed',
-            'type'                 => 'required|in:2,3' // Assuming 2 is SERVICE_PROVIDER and 3 is USER
+        $type = $this->input('type');
+        $base = [
+            'email'    => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:6',
+            'type'     => 'required|in:2,3',
         ];
+
+        if ($type == 2) { // Service Provider
+            return array_merge($base, [
+                'business_name' => 'required|string|max:255',
+                'service_category_id' => 'required|integer|exists:service_categories,id',
+            ]);
+        }
+        return $base;
     }
 }

@@ -4,7 +4,7 @@ return [
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
     'allowed_methods' => ['*'],
     'allowed_origins' => [
-        'http://localhost:3000', // React dev
+        'http://172.18.0.2:3000', // React dev
         'https://your-production-frontend.com', // Replace with your production domain
     ],
     'allowed_origins_patterns' => [],

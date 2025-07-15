@@ -44,13 +44,12 @@ export default function Login() {
         url="https://yourdomain.com/login"
         image="https://yourdomain.com/og-image.jpg"
       />
-      <div className="bg-white p-6 w-full max-w-sm rounded shadow">
+      <div className="bg-white p-6 w-full max-w-sm rounded-sm shadow-sm">
         <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">{t('login')}</h2>
-        <p className="text-center text-gray-600 mb-6">Sign in to your account</p>
 
         <form onSubmit={handleSubmit(onSubmit)} >
           <div className="mb-4 relative">
-            <FiMail style={{ left: '18px' }} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <FiMail style={{ left: '18px' }} className="absolute left-3 top-1/2 transform text-gray-400" />
             <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">
               {t('email')}
             </label>
@@ -64,7 +63,7 @@ export default function Login() {
           </div>
 
           <div className="mb-4 relative">
-            <FiLock style={{ left: '18px' }} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <FiLock style={{ left: '18px' }} className="absolute left-3 top-1/2 transform text-gray-400" />
             <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="password">
               {t('password')}
             </label>
@@ -86,7 +85,7 @@ export default function Login() {
           {submitError && <p className="text-red-500">{submitError}</p>}
         </form>
 
-        <div className="flex justify-between items-center mt-6 flex-wrap">
+        <div className="flex justify-between items-center mt-6 flex-wrap text-sm">
           <Link to="/" className="text-blue-600 hover:underline flex items-center">
             {t('go_back_home')}
           </Link>
@@ -94,7 +93,7 @@ export default function Login() {
             {t('forgot_password')}
           </Link>
         </div>
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center text-sm">
           <span className="text-gray-600">{t('dont_have_account')}</span>{' '}
           <Link to="/register" className="text-blue-600 hover:underline font-semibold">
             {t('sign_up')}
