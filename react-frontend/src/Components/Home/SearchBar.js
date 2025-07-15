@@ -126,7 +126,7 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              <FiMapPin className="inline mr-2 text-blue-500" />
+              <FiMapPin className="inline mr-2" />
               {t('location')}
             </label>
             <Select
@@ -161,7 +161,7 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              <FiLayers className="inline mr-2 text-green-500" />
+              <FiLayers className="inline mr-2" />
               {t('category')}
             </label>
             <Select
@@ -187,7 +187,7 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              <FiList className="inline mr-2 text-purple-500" />
+              <FiList className="inline mr-2" />
               {t('service_type')}
             </label>
             <Select
@@ -216,7 +216,7 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              <FiSearch className="inline mr-2 text-orange-500" />
+              <FiSearch className="inline mr-2" />
               {t('search_term')}
             </label>
             <input

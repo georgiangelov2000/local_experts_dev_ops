@@ -79,14 +79,14 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 shadow-md mt-4"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 shadow-md mt-4 cursor-pointer"
           >
             {t('submit')}
           </button>
           {submitError && <p className="text-red-500">{submitError}</p>}
         </form>
 
-        <div className="flex justify-between items-center mt-6">
+        <div className="flex justify-between items-center mt-6 flex-wrap">
           <Link to="/" className="text-blue-600 hover:underline flex items-center">
             {t('go_back_home')}
           </Link>
