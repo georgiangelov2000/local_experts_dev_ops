@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaStar, FaRegStar } from "react-icons/fa";
+import { FaStar, FaRegStar, FaStarHalfAlt } from "react-icons/fa";
 import { FiEye, FiThumbsUp, FiThumbsDown, FiMapPin, FiArrowRight } from "react-icons/fi";
 import { useTranslation } from 'react-i18next';
 
@@ -17,13 +17,31 @@ export default function RelatedProviders({ providers = [] }) {
     );
   }
 
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating || 0);
+    const halfStar = (rating || 0) - fullStars >= 0.5;
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+    return (
+      <div className="flex items-center">
+        {Array.from({ length: fullStars }).map((_, i) => (
+          <FaStar key={`star-filled-${i}`} className="text-yellow-400 text-sm" />
+        ))}
+        {halfStar && <FaStarHalfAlt className="text-yellow-400 text-sm" />}
+        {Array.from({ length: emptyStars }).map((_, i) => (
+          <FaRegStar key={`star-empty-${i}`} className="text-yellow-400 text-sm" />
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="lg:p-0 sm:p-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
         {providers.map((provider) => {
           const rating = Math.round(provider.final_grade || 0);
           const hasImage = provider.media?.length > 0;
-          
+
           return (
             <div
               key={provider.id}
@@ -40,7 +58,7 @@ export default function RelatedProviders({ providers = [] }) {
                   alt={provider.business_name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                
+
                 {/* Category Badge */}
                 <div className="absolute top-3 left-5">
                   <span className="inline-block text-xs font-semibold bg-blue-600 text-white rounded-full px-3 py-1 shadow-sm">
@@ -50,7 +68,7 @@ export default function RelatedProviders({ providers = [] }) {
 
                 {/* Rating Badge */}
                 <div className="absolute top-3 right-5 bg-blue-600 rounded-full">
-                  <div className="bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 flex items-center">
+                  <div className="backdrop-blur-sm rounded-full px-2 py-1 flex items-center">
                     <FaStar className="text-yellow-400 text-xs mr-1" />
                     <span className="text-xs font-semibold text-white">{rating}.0</span>
                   </div>
@@ -85,11 +103,10 @@ export default function RelatedProviders({ providers = [] }) {
                 {/* Locations */}
                 {provider.locations?.length > 0 && (
                   <div className="flex items-center mb-3">
-                    <FiMapPin className="text-gray-400 text-sm mr-2" />
                     <div className="flex flex-wrap gap-1">
                       {provider.locations.slice(0, 2).map((city, idx) => (
-                        <span 
-                          key={idx} 
+                        <span
+                          key={idx}
                           className="inline-flex items-center bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full"
                         >
                           {city}
@@ -104,25 +121,31 @@ export default function RelatedProviders({ providers = [] }) {
                   </div>
                 )}
 
+
                 {/* Stats Row */}
-                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                <div className="flex items-center  justify-between pt-3 border-t border-gray-100">
+                  <div className="flex items-center space-x-2">
+                    {renderStars(provider.final_grade)}
+                    <span className="text-xs text-gray-500">
+                      ({provider.reviews_count ?? 0} {t('reviews')})
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-400">
+                      {/* <FiEye className="mr-1" /> */}
+                      <span className="font-medium">{provider.views_count || 0} {t('views')}</span>
+                    </div>
+                </div>
+
+                <div className="flex items-center  justify-between pt-3">
                   <div className="flex items-center space-x-4 text-xs text-gray-500">
                     <div className="flex items-center">
-                      <FiEye className="mr-1" />
-                      <span>{provider.views_count || 0} {t('views')}</span>
+                      {/* <FiThumbsUp className="mr-1 text-green-500" /> */}
+                      <span className="font-medium">{provider.likes_count || 0} {t('likes')}</span>
                     </div>
                     <div className="flex items-center">
-                      <FiThumbsUp className="mr-1 text-green-500" />
-                      <span>{provider.likes_count || 0} {t('likes')}</span>
+                      {/* <FiThumbsDown className="mr-1 text-red-500" /> */}
+                      <span className="font-medium">{provider.dislikes_count || 0} {t('dislikes')}</span>
                     </div>
-                    <div className="flex items-center">
-                      <FiThumbsDown className="mr-1 text-red-500" />
-                      <span>{provider.dislikes_count || 0} {t('dislikes')}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="text-xs text-gray-400">
-                    {provider.reviews_count || 0} {t('reviews')}
                   </div>
                 </div>
 
@@ -132,7 +155,7 @@ export default function RelatedProviders({ providers = [] }) {
                     to={`/providers/${provider.alias}`}
                     className="w-full inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
                   >
-                    View Profile
+                    {t('view_profile')}
                     <FiArrowRight className="ml-2 text-xs" />
                   </Link>
                 </div>

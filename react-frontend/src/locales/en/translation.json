@@ -83,5 +83,6 @@
   "login_to_review": "Log In to Review",
   "login_to_add_review": "Please log in to add a review and help others make informed decisions.",
   "anonymous_user": "Anonymous User",
-  "out_of_5": "out of 5"
+  "out_of_5": "out of 5",
+  "views": "Views"
 } 

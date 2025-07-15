@@ -82,7 +82,7 @@ export default function ServiceProviderCard({
 
           {/* Rating Badge */}
           <div className="absolute top-3 right-6 bg-blue-600 rounded-full">
-            <div className="bg-white/95 backdrop-blur-sm rounded-full px-3 py-1 flex items-center shadow-sm">
+            <div className="backdrop-blur-sm rounded-full px-3 py-1 flex items-center shadow-sm">
               <FiStar className="text-yellow-400 text-sm mr-1" />
               <span className="text-sm font-semibold text-white">
                 {provider.final_grade ? provider.final_grade.toFixed(1) : '0.0'}
@@ -135,9 +135,9 @@ export default function ServiceProviderCard({
           )}
 
           {/* Stats Row */}
-          <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+          <div className="flex flex-wrap items-center justify-between pt-3 border-t border-gray-100 mb-2">
             {/* Rating & Reviews */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 mb-2">
               {renderStars(provider.final_grade)}
               <span className="text-xs text-gray-500">
                 ({provider.reviews_count ?? 0} {t('reviews')})
@@ -154,12 +154,12 @@ export default function ServiceProviderCard({
           {/* Engagement Stats */}
           <div className="flex items-center justify-between text-xs">
             <div className="flex items-center space-x-3">
-              <div className="flex items-center text-green-600">
-                <span className="mr-1">👍</span>
+              <div className="flex items-center text-gray-500">
+                {/* <span className="mr-1">👍</span> */}
                 <span className="font-medium">{provider.likes_count ?? 0} {t('likes')}</span>
               </div>
-              <div className="flex items-center text-red-600">
-                <span className="mr-1">👎</span>
+              <div className="flex items-center text-gray-500">
+                {/* <span className="mr-1">👎</span> */}
                 <span className="font-medium">{provider.dislikes_count ?? 0} {t('dislikes')}</span>
               </div>
             </div>
