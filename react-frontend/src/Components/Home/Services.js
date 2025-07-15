@@ -144,7 +144,7 @@ export default function Service() {
           url={canonicalUrl}
           image={image}
         />
-        <div className="p-6 bg-white rounded-t-lg">
+        <div className=" p-6 bg-white rounded-t-lg">
           <div className="flex justify-center items-center p-6">
             <FaSpinner className="animate-spin text-2xl text-blue-600" />
           </div>
@@ -167,7 +167,7 @@ export default function Service() {
         url={canonicalUrl}
         image={image}
       />
-      <div className="p-6 bg-white rounded-t-lg">
+      <div className="bg-white rounded-t-lg p-2 sm:p-4 md:p-6 lg:p-8">
         <SearchBar 
           state={state} 
           dispatch={dispatch}
@@ -179,7 +179,7 @@ export default function Service() {
             <Categories categories={state.categories} />
             
             {/* Providers Section Header */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-wrap items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-gray-900">{t('service_providers')}</h2>
               <span className="text-sm text-gray-500">{t('providers_found', { count: state.providers.length })}</span>
             </div>

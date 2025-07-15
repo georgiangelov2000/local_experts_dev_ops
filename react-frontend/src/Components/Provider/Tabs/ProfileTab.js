@@ -1,6 +1,8 @@
 import { FiPhone, FiMapPin, FiMail, FiGlobe, FiAward, FiExternalLink, FiCheckCircle, FiPackage, FiDollarSign, FiInfo, FiUser } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
 export default function ProfileTab({ provider }) {
+  const { t } = useTranslation();
   return (
     <>
       <div className="mb-6">
@@ -9,14 +11,14 @@ export default function ProfileTab({ provider }) {
             <FiInfo className="text-white text-lg" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-gray-900">About</h3>
-            <p className="text-sm text-gray-600">Professional background and expertise</p>
+            <h3 className="text-xl font-bold text-gray-900">{t('about')}</h3>
+            <p className="text-sm text-gray-600">{t('professional_background_and_expertise')}</p>
           </div>
         </div>
         
         <div className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-300">
           <p className="text-sm text-gray-700 leading-relaxed">
-            {provider.description || "No description available."}
+            {provider.description || t('no_description_available')}
           </p>
         </div>
       </div>
@@ -27,8 +29,8 @@ export default function ProfileTab({ provider }) {
             <FiUser className="text-blue-600 text-lg" />
           </div>
           <div>
-            <h4 className="text-xl font-bold text-gray-900">Contact Information</h4>
-            <p className="text-sm text-gray-600">Get in touch and connect</p>
+            <h4 className="text-xl font-bold text-gray-900">{t('contact_information')}</h4>
+            <p className="text-sm text-gray-600">{t('get_in_touch_and_connect')}</p>
           </div>
         </div>
         
@@ -88,7 +90,7 @@ export default function ProfileTab({ provider }) {
                   rel="noopener noreferrer" 
                   className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200"
                 >
-                  Facebook
+                  {t('facebook')}
                 </a>
               </div>
             )}
@@ -104,7 +106,7 @@ export default function ProfileTab({ provider }) {
                   rel="noopener noreferrer" 
                   className="text-sm text-pink-600 hover:text-pink-800 font-medium transition-colors duration-200"
                 >
-                  Instagram
+                  {t('instagram')}
                 </a>
               </div>
             )}
@@ -120,8 +122,8 @@ export default function ProfileTab({ provider }) {
               <FiCheckCircle className="text-white text-lg" />
             </div>
             <div>
-              <h4 className="text-xl font-bold text-gray-900">Certifications</h4>
-              <p className="text-sm text-gray-600">Verified credentials and qualifications</p>
+              <h4 className="text-xl font-bold text-gray-900">{t('certifications')}</h4>
+              <p className="text-sm text-gray-600">{t('verified_credentials_and_qualifications')}</p>
             </div>
           </div>
           
@@ -155,7 +157,7 @@ export default function ProfileTab({ provider }) {
                                 className="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-600 text-xs font-medium rounded-lg hover:bg-blue-100 transition-colors duration-200"
                               >
                                 <FiExternalLink className="mr-1" />
-                                View Certificate
+                                {t('view_certificate')}
                               </a>
                             )}
                             {cert.link && (
@@ -166,7 +168,7 @@ export default function ProfileTab({ provider }) {
                                 className="inline-flex items-center px-2 py-1 bg-green-50 text-green-600 text-xs font-medium rounded-lg hover:bg-green-100 transition-colors duration-200"
                               >
                                 <FiExternalLink className="mr-1" />
-                                Verify Online
+                                {t('verify_online')}
                               </a>
                             )}
                           </div>
@@ -194,8 +196,8 @@ export default function ProfileTab({ provider }) {
               <FiPackage className="text-white text-lg" />
             </div>
             <div>
-              <h4 className="text-xl font-bold text-gray-900">Services Offered</h4>
-              <p className="text-sm text-gray-600">Professional services and pricing</p>
+              <h4 className="text-xl font-bold text-gray-900">{t('services_offered')}</h4>
+              <p className="text-sm text-gray-600">{t('professional_services_and_pricing')}</p>
             </div>
           </div>
           
@@ -216,7 +218,7 @@ export default function ProfileTab({ provider }) {
                   
                   {/* Price Badge */}
                   <div className="flex items-center px-3 py-1 bg-blue-100 text-blue-700 text-sm font-semibold rounded-full">
-                    {service.price} лв
+                    {service.price} {t('currency_bgn')}
                   </div>
                 </div>
               </div>

@@ -17,7 +17,7 @@ export default function App() {
     <AuthProvider>
       <Router>
         <Header />
-        <main className="min-h-720 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 w-full max-w-7xl">
+        <main className="min-h-720 mx-auto max-w-6xl px-0 sm:px-6 lg:px-8 w-full max-w-7xl">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/favourites" element={<Favourites />} />

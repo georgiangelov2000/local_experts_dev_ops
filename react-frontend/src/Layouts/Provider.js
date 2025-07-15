@@ -58,7 +58,7 @@ export default function Provider() {
         url={seoUrl}
         image={seoImage}
       />
-      <div className="bg-white rounded-lg p-6">
+      <div className="bg-white rounded-lg md:p-6">
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
           <div className="flex items-center">
