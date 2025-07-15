@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1\FrontEnd;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileRequest;
 use App\Models\Category;
-use App\Models\Certification;
+use App\Models\User;
 use App\Models\City;
 use App\Models\ServiceCategory;
 use App\Models\ServiceProvider;
@@ -28,7 +28,7 @@ class ProfileController extends Controller
         $validated = $request->validated();
         $tab = $request->input('tab');
 
-        if ($user->type === 'provider') {
+        if ($user->role_id === User::SERVICE_PROVIDER) {
             // Service provider
             $serviceProvider = $user->serviceProvider()->first() ?? new ServiceProvider(['user_id' => $user->id]);
 
@@ -232,7 +232,7 @@ class ProfileController extends Controller
     public function tabData($tab)
     {
         $user = auth()->user();
-        if ($user->type === 'provider') {
+        if ($user->role_id === User::SERVICE_PROVIDER) {
             $provider = $user->serviceProvider;
             $descriptionFile = storage_path('app/public/descriptions/description_' . $provider->id . '.html');
             $description = file_exists($descriptionFile) ? file_get_contents($descriptionFile) : null;

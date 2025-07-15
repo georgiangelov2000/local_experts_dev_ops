@@ -2,10 +2,11 @@ import { useBasicProfileForm } from "../../../../Models/Provider/useBasicForm";
 import Select from "react-select";
 import { Controller } from "react-hook-form";
 import apiService from "../../../../Services/apiService";
-import { useState } from "react";
-import { useRef } from "react";
+import { useState, useRef } from "react";
+import { useTranslation } from 'react-i18next';
 
 export default function Profile({ data }) {
+  const { t } = useTranslation();
   const { register, handleSubmit, errors, control } = useBasicProfileForm({ tabData: data });
   const [submitStatus, setSubmitStatus] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
@@ -26,7 +27,7 @@ export default function Profile({ data }) {
       const response = await apiService.saveProfileTab('basic', formData);
       setSubmitStatus({ type: 'success', message: response.data.message });
     } catch (error) {
-      setSubmitStatus({ type: 'error', message: error.response?.data?.error || 'Failed to save profile.' });
+      setSubmitStatus({ type: 'error', message: error.response?.data?.error || t('failed_to_save_profile') });
     }
   };
 
@@ -48,14 +49,14 @@ export default function Profile({ data }) {
           ) : (
             <svg aria-hidden="true" className="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 13a1 1 0 01-1 1H3a1 1 0 010-2h14a1 1 0 011 1zm-7-7a1 1 0 00-1 1v4a1 1 0 002 0V7a1 1 0 00-1-1zm0 8a1 1 0 100 2 1 1 0 000-2z" clipRule="evenodd"></path></svg>
           )}
-          <span className="sr-only">{submitStatus.type === 'success' ? 'Success' : 'Error'}</span>
+          <span className="sr-only">{submitStatus.type === 'success' ? t('success') : t('error')}</span>
           <div>
             {submitStatus.message}
           </div>
         </div>
       )}
       <div className="mt-2">
-        <label className="block mb-1 font-medium text-xs text-gray-500">Business Name</label>
+        <label className="block mb-1 font-medium text-xs text-gray-500">{t('business_name')}</label>
         <input
           type="text"
           {...register("business_name")}
@@ -66,7 +67,7 @@ export default function Profile({ data }) {
         )}
       </div>
       <div className="mt-2">
-        <label className="block mb-1 font-medium text-xs text-gray-500">Business Email</label>
+        <label className="block mb-1 font-medium text-xs text-gray-500">{t('business_email')}</label>
         <input
           type="email"
           {...register("email")}
@@ -77,7 +78,7 @@ export default function Profile({ data }) {
         )}
       </div>
       <div className="mt-2">
-        <label className="block mb-1 font-medium text-xs text-gray-500">Business Category</label>
+        <label className="block mb-1 font-medium text-xs text-gray-500">{t('business_category')}</label>
         <Controller
           name="category_id"
           control={control}
@@ -88,7 +89,7 @@ export default function Profile({ data }) {
               value={categoryOptions.find(option => option.value === field.value) || null}
               onChange={option => field.onChange(option ? option.value : null)}
               isClearable
-              placeholder="Select Category"
+              placeholder={t('select_category')}
             />
           )}
         />
@@ -97,7 +98,7 @@ export default function Profile({ data }) {
         )}
       </div>
       <div className="mt-2">
-        <label className="block mb-1 font-medium text-xs text-gray-500">Offered Service Type</label>
+        <label className="block mb-1 font-medium text-xs text-gray-500">{t('offered_service_type')}</label>
         <Controller
           name="service_category_id"
           control={control}
@@ -108,7 +109,7 @@ export default function Profile({ data }) {
               value={serviceCategoryOptions.find(option => option.value === field.value) || null}
               onChange={option => field.onChange(option ? option.value : null)}
               isClearable
-              placeholder="Select Service Type"
+              placeholder={t('select_service_type')}
             />
           )}
         />
@@ -117,7 +118,7 @@ export default function Profile({ data }) {
         )}
       </div>
       <div className="mt-2">
-        <label className="block mb-1 font-medium text-xs text-gray-500">Operating Cities</label>
+        <label className="block mb-1 font-medium text-xs text-gray-500">{t('operating_cities')}</label>
         <Controller
           name="cities"
           control={control}
@@ -129,7 +130,7 @@ export default function Profile({ data }) {
               value={cityOptions.filter(option => (field.value || []).includes(option.value))}
               onChange={selected => field.onChange(selected ? selected.map(opt => opt.value) : [])}
               isMulti
-              placeholder="Select Cities"
+              placeholder={t('select_cities')}
             />
           )}
         />
@@ -138,9 +139,9 @@ export default function Profile({ data }) {
         )}
       </div>
       <div className="md:col-span-2 mt-2">
-        <label className="block mb-1 font-medium text-xs text-gray-500">Business Description</label>
+        <label className="block mb-1 font-medium text-xs text-gray-500">{t('business_description')}</label>
         <textarea
-          placeholder="Tell us more about your business..."
+          placeholder={t('business_description_placeholder')}
           {...register("description")}
           className="w-full border border-gray-300 rounded p-2 text-sm"
           rows={4}
@@ -151,13 +152,13 @@ export default function Profile({ data }) {
       </div>
       {/* Avatar Upload - Flowbite style */}
       <div className="mt-4">
-        <label className="block mb-1 font-medium text-xs text-gray-500">Avatar Image</label>
+        <label className="block mb-1 font-medium text-xs text-gray-500">{t('avatar_image')}</label>
         <div className="flex items-center gap-4">
           <div className="shrink-0">
             <img
               className="h-16 w-16 object-cover rounded-full border border-gray-200"
               src={avatarPreview || data.image || 'https://flowbite.com/docs/images/people/profile-picture-5.jpg'}
-              alt="Current avatar"
+              alt={t('current_avatar')}
             />
           </div>
           <input
@@ -169,13 +170,13 @@ export default function Profile({ data }) {
             ref={fileInputRef}
           />
         </div>
-        <p className="mt-1 text-xs text-gray-500">PNG, JPG, JPEG up to 2MB.</p>
+        <p className="mt-1 text-xs text-gray-500">{t('avatar_upload_hint')}</p>
       </div>
       <button
         type="submit"
         className="bg-gray-800 text-white px-4 py-2 mt-2 cursor-pointer"
       >
-        Save
+        {t('save')}
       </button>
     </form>
   );
