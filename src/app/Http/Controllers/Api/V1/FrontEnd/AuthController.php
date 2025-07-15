@@ -40,6 +40,8 @@ class AuthController extends Controller
         }
 
         $user = auth()->user();
+        $user->last_logged_in = now();
+        $user->save();
 
         // if (!$user->hasVerifiedEmail()) {
         //     return response()->json(['error' => 'Please verify your email before logging in.'], 403);

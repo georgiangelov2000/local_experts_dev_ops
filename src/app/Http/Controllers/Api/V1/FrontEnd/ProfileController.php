@@ -334,6 +334,7 @@ class ProfileController extends Controller
                     'status' => $project->status,
                 ];
             }),
+            'last_logged_in' => $provider->user->last_logged_in ?? null,
             'certifications' => $provider->certifications->map(function ($cert) {
                 return [
                     'id' => $cert->id,

@@ -33,7 +33,8 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     protected $fillable = [
         'email',
         'password',
-        'role_id'
+        'role_id',
+        'last_logged_in',
     ];
 
     /**
@@ -56,6 +57,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_logged_in' => 'datetime',
         ];
     }
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { FiUser, FiMail, FiTag, FiFileText, FiBriefcase, FiAward, FiPhone, FiMapPin, FiGlobe, FiFacebook, FiInstagram } from "react-icons/fi";
+import { FiUser, FiMail, FiTag, FiFileText, FiBriefcase, FiAward, FiPhone, FiMapPin, FiGlobe, FiFacebook, FiInstagram, FiClock } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
 
 export default function Preview({ data }) {
@@ -44,6 +44,15 @@ export default function Preview({ data }) {
                 <div>
                   <p className="text-sm text-gray-500 font-medium">{t('business_email')}</p>
                   <p className="text-gray-800 font-semibold">{data.email}</p>
+                </div>
+              </div>
+              <div className="flex items-center">
+                <FiClock className="text-gray-500 mr-3 w-5 h-5" />
+                <div>
+                  <p className="text-sm text-gray-500 font-medium">{t('last_logged_in')}</p>
+                  <p className="text-gray-800 font-semibold">
+                    {data.last_logged_in ? new Date(data.last_logged_in).toLocaleString() : t('never')}
+                  </p>
                 </div>
               </div>
             </div>

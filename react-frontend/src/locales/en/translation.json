@@ -155,5 +155,7 @@
   "failed_to_save_certifications": "Failed to save certifications.",
   "image_upload_hint": "Upload a scan or photo of your certificate (optional).",
   "certified": "Certified",
-  "no_certifications": "No certifications added yet."
+  "no_certifications": "No certifications added yet.",
+  "last_logged_in": "Last logged in",
+  "never": "Never"
 } 

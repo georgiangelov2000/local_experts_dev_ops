@@ -23,6 +23,7 @@ return new class extends Migration
                 $table->string('provider')->nullable();
                 $table->string('provider_id')->nullable();
                 $table->string('social_name')->nullable();
+                $table->timestamp('last_logged_in')->nullable();
                 $table->rememberToken();
                 $table->timestamps();
             });
