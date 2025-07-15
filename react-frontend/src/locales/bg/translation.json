@@ -86,5 +86,11 @@
   "anonymous_user": "Анонимен потребител",
   "out_of_5": "от 5",
   "logged_in_with": "Влязъл чрез",
-  "views": "Преглеждания"
+  "views": "Преглеждания",
+  "view_project": "Виж проекта",
+  "no_projects_available": "Няма налични проекти.",
+  "no_videos_available": "Няма налични видеа.",
+  "video_title": "Видео {{number}}",
+  "promoted": "Промотиран",
+  "more_services": "още услуги"
 } 

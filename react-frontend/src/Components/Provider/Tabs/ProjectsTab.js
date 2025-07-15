@@ -1,4 +1,7 @@
+import { useTranslation } from 'react-i18next';
+
 export default function ProjectsTab({ projects }) {
+  const { t, i18n } = useTranslation();
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {projects?.length > 0 ? (
@@ -15,25 +18,24 @@ export default function ProjectsTab({ projects }) {
               alt={project.project_name}
               className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
             />
-            
             {/* Overlay with info */}
             <div className="absolute inset-0 bg-black group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
               <h4 className="text-sm font-semibold text-white mb-1">{project.project_name}</h4>
               <p className="text-xs text-gray-200 mb-1">{project.description}</p>
               <p className="text-xs text-gray-300 mb-2">
-                {new Date(project.date_start).toLocaleDateString()} - {new Date(project.date_end).toLocaleDateString()}
+                {new Date(project.date_start).toLocaleDateString(i18n.language)} - {new Date(project.date_end).toLocaleDateString(i18n.language)}
               </p>
               <a
                 href={`/projects/${project.id}`}
                 className="text-xs font-medium text-blue-300 hover:underline"
               >
-                View Project →
+                {t('view_project')} →
               </a>
             </div>
           </div>
         ))
       ) : (
-        <div className="text-sm text-gray-500">No projects available.</div>
+        <div className="text-sm text-gray-500">{t('no_projects_available')}</div>
       )}
     </div>
   );

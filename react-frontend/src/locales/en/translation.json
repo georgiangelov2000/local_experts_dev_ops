@@ -84,5 +84,11 @@
   "login_to_add_review": "Please log in to add a review and help others make informed decisions.",
   "anonymous_user": "Anonymous User",
   "out_of_5": "out of 5",
-  "views": "Views"
+  "views": "Views",
+  "view_project": "View Project",
+  "no_projects_available": "No projects available.",
+  "no_videos_available": "No videos available.",
+  "video_title": "Video {{number}}",
+  "promoted": "Promoted",
+  "more_services": "more services"
 } 

@@ -204,11 +204,16 @@ export default function ProfileTab({ provider }) {
                   
                   {/* Price Badge */}
                   <div className="flex items-center px-3 py-1 bg-blue-100 text-blue-700 text-sm font-semibold rounded-full">
-                    {service.price} {t('currency_bgn')}
+                    <span className="font-semibold text-blue-600 ml-2">{service.price} {t('currency_bgn')}</span>
                   </div>
                 </div>
               </div>
             ))}
+            {provider.services.length > 4 && (
+              <div className="text-xs text-gray-500 italic col-span-full">
+                +{provider.services.length - 4} {t('more_services')}
+              </div>
+            )}
           </div>
         </div>
       )}
