@@ -114,5 +114,9 @@
   "view_public_profile": "Виж публичния профил",
   "failed_to_load_profile_preview": "Грешка при зареждане на прегледа на профила.",
   "failed_to_load_data": "Грешка при зареждане на данните.",
-  "no_data": "Няма данни."
+  "no_data": "Няма данни.",
+  "find_your_perfect_match": "Открийте перфектния експерт",
+  "welcome_back": "Добре дошли отново",
+  "signed_in": "Вписан",
+  "sign_out": "Изход"
 } 

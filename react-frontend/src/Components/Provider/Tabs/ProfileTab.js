@@ -6,116 +6,98 @@ export default function ProfileTab({ provider }) {
   return (
     <>
       <div className="mb-6">
-        <div className="flex items-center mb-4">
-          {/* <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl mr-3">
-            <FiInfo className="text-white text-lg" />
-          </div> */}
-          <div>
-            <h3 className="text-xl font-bold text-gray-900">{t('about')}</h3>
-            <p className="text-sm text-gray-600">{t('professional_background_and_expertise')}</p>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+          <div className="flex flex-col items-center sm:items-start gap-2 w-full sm:w-auto">
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900">{t('about')}</h3>
+            <p className="text-sm sm:text-base text-gray-600">{t('professional_background_and_expertise')}</p>
           </div>
         </div>
-        
-        <div className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-300">
-          <p className="text-sm text-gray-700 leading-relaxed">
+        <div className="bg-white border border-gray-200 rounded-xl p-3 sm:p-4 hover:shadow-md transition-all duration-300">
+          <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
             {provider.description || t('no_description_available')}
           </p>
         </div>
       </div>
-
       <div className="mb-6">
-        <div className="flex items-center mb-4">
-          {/* <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl mr-3">
-            <FiUser className="text-blue-600 text-lg" />
-          </div> */}
-          <div>
-            <h4 className="text-xl font-bold text-gray-900">{t('contact_information')}</h4>
-            <p className="text-sm text-gray-600">{t('get_in_touch_and_connect')}</p>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+          <div className="flex flex-col items-center sm:items-start gap-2 w-full sm:w-auto">
+            <h4 className="text-xl sm:text-2xl font-bold text-gray-900">{t('contact_information')}</h4>
+            <p className="text-sm sm:text-base text-gray-600">{t('get_in_touch_and_connect')}</p>
           </div>
         </div>
-        
-        <div 
-        className='p-2'
-        // className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-300"
-        >
-          <div className="flex flex-wrap gap-4 items-center">
-            {provider.contact?.phone && (
-              <div className="flex items-center">
-                <FiPhone className="text-gray-500 text-lg mr-2" />
-                <span className="text-sm text-gray-700 font-medium">{provider.contact.phone}</span>
-              </div>
-            )}
-            {provider.contact?.email && (
-              <div className="flex items-center">
-                <FiMail className="text-gray-500 text-lg mr-2" />
-                <span className="text-sm text-gray-700 font-medium">{provider.contact.email}</span>
-              </div>
-            )}
-            {provider.contact?.website && (
-              <div className="flex items-center">
-                <FiGlobe className="text-gray-500 text-lg mr-2" />
-                <a 
-                  href={provider.contact.website} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200"
-                >
-                  {provider.contact.website}
-                </a>
-              </div>
-            )}
-            {provider.contact?.address && (
-              <div className="flex items-center">
-                <FiMapPin className="text-gray-500 text-lg mr-2" />
-                <span className="text-sm text-gray-700 font-medium">{provider.contact.address}</span>
-              </div>
-            )}
-            {provider.contact?.facebook && (
-              <div className="flex items-center">
-                <FiFacebook className="text-gray-500 text-lg mr-2" />
-                <a 
-                  href={provider.contact.facebook} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200"
-                >
-                  {t('facebook')}
-                </a>
-              </div>
-            )}
-            {provider.contact?.instagram && (
-              <div className="flex items-center">
-                <FiInstagram className="text-gray-500 text-lg mr-2" />
-                <a 
-                  href={provider.contact.instagram} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200"
-                >
-                  {t('instagram')}
-                </a>
-              </div>
-            )}
-          </div>
+        <div className="flex flex-wrap gap-3 sm:gap-4 items-center bg-white border border-gray-200 rounded-xl p-2 sm:p-4 hover:shadow-md transition-all duration-300">
+          {provider.contact?.phone && (
+            <div className="flex items-center">
+              <FiPhone className="text-gray-500 text-lg mr-2" />
+              <span className="text-sm text-gray-700 font-medium">{provider.contact.phone}</span>
+            </div>
+          )}
+          {provider.contact?.email && (
+            <div className="flex items-center">
+              <FiMail className="text-gray-500 text-lg mr-2" />
+              <span className="text-sm text-gray-700 font-medium">{provider.contact.email}</span>
+            </div>
+          )}
+          {provider.contact?.website && (
+            <div className="flex items-center">
+              <FiGlobe className="text-gray-500 text-lg mr-2" />
+              <a 
+                href={provider.contact.website} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200"
+              >
+                {provider.contact.website}
+              </a>
+            </div>
+          )}
+          {provider.contact?.address && (
+            <div className="flex items-center">
+              <FiMapPin className="text-gray-500 text-lg mr-2" />
+              <span className="text-sm text-gray-700 font-medium">{provider.contact.address}</span>
+            </div>
+          )}
+          {provider.contact?.facebook && (
+            <div className="flex items-center">
+              <FiFacebook className="text-gray-500 text-lg mr-2" />
+              <a 
+                href={provider.contact.facebook} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200"
+              >
+                {t('facebook')}
+              </a>
+            </div>
+          )}
+          {provider.contact?.instagram && (
+            <div className="flex items-center">
+              <FiInstagram className="text-gray-500 text-lg mr-2" />
+              <a 
+                href={provider.contact.instagram} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200"
+              >
+                {t('instagram')}
+              </a>
+            </div>
+          )}
         </div>
       </div>
 
 
       {provider.certifications?.length > 0 && (
         <div className="mb-6 mt-6">
-          <div className="flex items-center mb-4">
-            {/* <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl mr-3">
-              <FiCheckCircle className="text-white text-lg" />
-            </div> */}
-            <div>
-              <h4 className="text-xl font-bold text-gray-900">{t('certifications')}</h4>
-              <p className="text-sm text-gray-600">{t('verified_credentials_and_qualifications')}</p>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+            <div className="flex flex-col items-center sm:items-start gap-2 w-full sm:w-auto">
+              <h4 className="text-xl sm:text-2xl font-bold text-gray-900">{t('certifications')}</h4>
+              <p className="text-sm sm:text-base text-gray-600">{t('verified_credentials_and_qualifications')}</p>
             </div>
           </div>
-          
-          <div className="grid gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {provider.certifications.map((cert, idx) => (
-              <div key={idx} className="group bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-green-200 transition-all duration-300">
+              <div key={idx} className="group bg-white border border-gray-200 rounded-xl p-3 sm:p-4 hover:shadow-md hover:border-green-200 transition-all duration-300">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-3 flex-1">
                     {/* <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-lg flex-shrink-0">
@@ -177,19 +159,15 @@ export default function ProfileTab({ provider }) {
 
       {provider.services?.length > 0 && (
         <div className="mb-6 mt-6">
-          <div className="flex items-center mb-4">
-            {/* <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl mr-3">
-              <FiPackage className="text-white text-lg" />
-            </div> */}
-            <div>
-              <h4 className="text-xl font-bold text-gray-900">{t('services_offered')}</h4>
-              <p className="text-sm text-gray-600">{t('professional_services_and_pricing')}</p>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+            <div className="flex flex-col items-center sm:items-start gap-2 w-full sm:w-auto">
+              <h4 className="text-xl sm:text-2xl font-bold text-gray-900">{t('services_offered')}</h4>
+              <p className="text-sm sm:text-base text-gray-600">{t('professional_services_and_pricing')}</p>
             </div>
           </div>
-          
-          <div className="grid gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {provider.services.map((service, idx) => (
-              <div key={idx} className="group bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-blue-200 transition-all duration-300">
+              <div key={idx} className="group bg-white border border-gray-200 rounded-xl p-3 sm:p-4 hover:shadow-md hover:border-blue-200 transition-all duration-300">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3 flex-1">
                     {/* <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-500 rounded-lg flex-shrink-0">

@@ -82,17 +82,18 @@ export default function Provider({ user }) {
             <div className="flex flex-wrap gap-2 bg-gray-50 border-0">
                 <SocialProfile user={user} />
             </div>
-            <div className='flex flex-wrap gap-2 bg-gray-50 p-5 border-0 items-center'>
-            {providerTabs.map(tab => (
-                    <button
-                        key={tab.id}
-                        className={`text-sm flex items-center gap-2 py-2 px-3 rounded transition cursor-pointer 
-                                        ${state.activeTab === tab.id ? 'bg-gray-700 text-white font-semibold' : 'text-gray-600 hover:bg-gray-100'}`}
-                        onClick={() => dispatch({ type: 'SET_ACTIVE_TAB', payload: tab.id })}
-                    >
-                        {tab.icon}
-                        <span>{tab.name}</span>
-                    </button>
+            <div className='w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent'>
+              <div className='flex flex-nowrap gap-2 bg-gray-50 p-3 sm:p-5 border-0 items-center whitespace-nowrap'>
+                {providerTabs.map(tab => (
+                  <button
+                    key={tab.id}
+                    className={`text-sm flex items-center gap-2 py-2 px-3 rounded transition cursor-pointer 
+                      ${state.activeTab === tab.id ? 'bg-gray-700 text-white font-semibold' : 'text-gray-600 hover:bg-gray-100'}`}
+                    onClick={() => dispatch({ type: 'SET_ACTIVE_TAB', payload: tab.id })}
+                  >
+                    {tab.icon}
+                    <span>{tab.name}</span>
+                  </button>
                 ))}
                 {/* View Public Profile Button */}
                 {user?.alias && (
@@ -104,6 +105,7 @@ export default function Provider({ user }) {
                     {t('view_public_profile')}
                   </button>
                 )}
+              </div>
             </div>
             <div className="bg-white p-4 min-h-720">
                 {renderTabContent()}

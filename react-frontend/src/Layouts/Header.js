@@ -49,7 +49,7 @@ export default function Header() {
                 <span className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-200">
                   Local Experts
                 </span>
-                <p className="text-xs text-gray-500 -mt-1">Find Your Perfect Match</p>
+                <p className="text-xs text-gray-500 -mt-1">{t('find_your_perfect_match')}</p>
               </div>
             </Link>
           </div>
@@ -109,7 +109,7 @@ export default function Header() {
                     <p className="text-sm font-medium text-gray-900 truncate max-w-32">
                       {user.email}
                     </p>
-                    <p className="text-xs text-gray-500">Welcome back</p>
+                    <p className="text-xs text-gray-500">{t('welcome_back')}</p>
                   </div>
                 </button>
 
@@ -118,7 +118,7 @@ export default function Header() {
                   <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
                     <div className="px-4 py-3 border-b border-gray-100">
                       <p className="text-sm font-medium text-gray-900">{user.email}</p>
-                      <p className="text-xs text-gray-500">Signed in</p>
+                      <p className="text-xs text-gray-500">{t('signed_in')}</p>
                     </div>
                     
                     <Link
@@ -130,14 +130,6 @@ export default function Header() {
                       {t('view_profile')}
                     </Link>
                     
-                    <Link
-                      to="/favourites"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
-                      onClick={() => setUserMenuOpen(false)}
-                    >
-                      <FiHeart className="mr-3" />
-                      Favourites
-                    </Link>
                     
                     <div className="border-t border-gray-100 my-1"></div>
                     
@@ -146,7 +138,7 @@ export default function Header() {
                       className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200 cursor-pointer"
                     >
                       <FiLogOut className="mr-3" />
-                      Sign Out
+                      {t('sign_out')}
                     </button>
                   </div>
                 )}

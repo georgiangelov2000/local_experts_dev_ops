@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 export default function VideosTab({ videos }) {
   const { t } = useTranslation();
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
       {videos?.length > 0 ? (
         videos.map((videoUrl, idx) => (
           <div key={idx} className="aspect-w-16 aspect-h-9 bg-black rounded-lg overflow-hidden">

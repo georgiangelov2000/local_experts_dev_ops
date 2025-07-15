@@ -112,5 +112,9 @@
   "view_public_profile": "View Public Profile",
   "failed_to_load_profile_preview": "Failed to load profile preview.",
   "failed_to_load_data": "Failed to load data.",
-  "no_data": "No data."
+  "no_data": "No data.",
+  "find_your_perfect_match": "Find Your Perfect Match",
+  "welcome_back": "Welcome back",
+  "signed_in": "Signed in",
+  "sign_out": "Sign Out"
 } 
