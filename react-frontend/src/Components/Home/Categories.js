@@ -1,8 +1,10 @@
 import { useSearchParams } from 'react-router-dom';
 import { FiGrid, FiTrendingUp, FiUsers, FiStar } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
 export default function Categories({ categories }) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { t } = useTranslation();
 
   const handleCategoryClick = (categoryId) => {
     const newParams = new URLSearchParams(searchParams);
@@ -32,10 +34,8 @@ export default function Categories({ categories }) {
         <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl mb-4">
           <FiGrid className="text-white text-2xl" />
         </div>
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">Explore Categories</h2>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Discover professional service providers across various categories. Find the perfect expert for your needs.
-        </p>
+        <h2 className="text-3xl font-extrabold text-gray-900 mb-2">{t('explore_categories')}</h2>
+        <p className="text-gray-600 text-lg">{t('discover_providers')}</p>
       </div>
 
       {/* Categories Grid */}
@@ -94,7 +94,7 @@ export default function Categories({ categories }) {
           <div className="text-2xl font-bold text-blue-600">
             {categories.reduce((sum, cat) => sum + (cat.service_providers_count || 0), 0)}
           </div>
-          <div className="text-sm text-blue-700">Total Providers</div>
+          <div className="text-sm text-blue-700">{t('total_providers')}</div>
         </div>
 
         <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-4 text-center">
@@ -104,7 +104,7 @@ export default function Categories({ categories }) {
           <div className="text-2xl font-bold text-green-600">
             {categories.length}
           </div>
-          <div className="text-sm text-green-700">Categories</div>
+          <div className="text-sm text-green-700">{t('categories')}</div>
         </div>
 
         <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl p-4 text-center">
@@ -114,7 +114,7 @@ export default function Categories({ categories }) {
           <div className="text-2xl font-bold text-purple-600">
             {categories.filter(cat => (cat.service_providers_count || 0) > 0).length}
           </div>
-          <div className="text-sm text-purple-700">Active Categories</div>
+          <div className="text-sm text-purple-700">{t('active_categories')}</div>
         </div>
       </div>
     </div>

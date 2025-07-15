@@ -1,13 +1,17 @@
 import { usePasswordForm } from '../../../../Models/User/usePasswordForm';
+import { useTranslation } from 'react-i18next';
 
 export default function Password() {
   const { register, handleSubmit, formState: { errors }, onSubmit, loading, error, success } = usePasswordForm();
+  const { t } = useTranslation();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <h2 className="text-xl font-bold mb-4">Change Password</h2>
+      <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">{t('change_password')}</h2>
       <div className="mb-4">
-        <label className="block text-gray-700 mb-1">Current Password</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="password">
+          {t('password')}
+        </label>
         <input {...register('current')} type="password" className="w-full border border-gray-300 rounded p-2 text-sm" required />
         {errors.current && <div className="text-red-500 text-xs mt-1">{errors.current.message}</div>}
       </div>
@@ -26,9 +30,9 @@ export default function Password() {
       <div className="flex justify-end">
         <button 
             type="submit" 
-            className="bg-gray-800 text-white px-4 py-2 mt-2 cursor-pointer"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 shadow-md mt-4"
             disabled={loading}>
-            {loading ? 'Saving...' : 'Save Password'}
+            {t('submit')}
             </button>
       </div>
     </form>

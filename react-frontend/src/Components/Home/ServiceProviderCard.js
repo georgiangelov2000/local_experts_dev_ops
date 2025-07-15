@@ -3,6 +3,7 @@ import { FiHeart, FiThumbsUp, FiThumbsDown, FiEye, FiMapPin, FiStar, FiClock, Fi
 import { FaStar, FaRegStar, FaStarHalfAlt, FaHeart, FaThumbsUp, FaThumbsDown, FaRegHeart } from 'react-icons/fa';
 import useProviderActions from "../../Hooks/useProviderActions";
 import { useAuth } from "../../Context/AuthContext";
+import { useTranslation } from 'react-i18next';
 
 export default function ServiceProviderCard({
   provider,
@@ -21,6 +22,7 @@ export default function ServiceProviderCard({
     error
   } = useProviderActions(provider.id);
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const renderStars = (rating) => {
     const fullStars = Math.floor(rating || 0);
@@ -98,13 +100,13 @@ export default function ServiceProviderCard({
 
           {/* Description */}
           <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">
-            {provider.description || "Professional service provider with excellent reputation and quality work."}
+            {provider.description || t('find_service_providers')}
           </p>
 
           {/* Services Preview */}
           {Array.isArray(provider.services) && provider.services.length > 0 && (
             <div className="space-y-2">
-              <h4 className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Services</h4>
+              <h4 className="text-xs font-semibold text-gray-700 uppercase tracking-wide">{t('service_type')}</h4>
               <div className="space-y-1">
                 {provider.services.slice(0, 2).map((service, idx) => (
                   <div key={idx} className="flex justify-between items-center text-xs">
@@ -114,7 +116,7 @@ export default function ServiceProviderCard({
                 ))}
                 {provider.services.length > 2 && (
                   <div className="text-xs text-gray-500 italic">
-                    +{provider.services.length - 2} more services
+                    +{provider.services.length - 2} {t('service_type').toLowerCase()}
                   </div>
                 )}
               </div>
@@ -127,7 +129,7 @@ export default function ServiceProviderCard({
               <FiMapPin className="mr-1 text-gray-400" />
               <span className="truncate">
                 {provider.locations.slice(0, 2).join(', ')}
-                {provider.locations.length > 2 && ` +${provider.locations.length - 2} more`}
+                {provider.locations.length > 2 && ` +${provider.locations.length - 2} ${t('location').toLowerCase()}`}
               </span>
             </div>
           )}
@@ -138,14 +140,14 @@ export default function ServiceProviderCard({
             <div className="flex items-center space-x-2">
               {renderStars(provider.final_grade)}
               <span className="text-xs text-gray-500">
-                ({provider.reviews_count ?? 0})
+                ({provider.reviews_count ?? 0} {t('reviews')})
               </span>
             </div>
 
             {/* Views */}
             <div className="flex items-center text-xs text-gray-500">
               <FiEye className="mr-1" />
-              {provider.views_count ?? 0}
+              {provider.views_count ?? 0} {t('views')}
             </div>
           </div>
 
@@ -154,11 +156,11 @@ export default function ServiceProviderCard({
             <div className="flex items-center space-x-3">
               <div className="flex items-center text-green-600">
                 <span className="mr-1">👍</span>
-                <span className="font-medium">{provider.likes_count ?? 0}</span>
+                <span className="font-medium">{provider.likes_count ?? 0} {t('likes')}</span>
               </div>
               <div className="flex items-center text-red-600">
                 <span className="mr-1">👎</span>
-                <span className="font-medium">{provider.dislikes_count ?? 0}</span>
+                <span className="font-medium">{provider.dislikes_count ?? 0} {t('dislikes')}</span>
               </div>
             </div>
           </div>

@@ -6,12 +6,14 @@ import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
 import { useAuth } from "../Context/AuthContext";
 import { useLoginForm } from "../Models/useLoginForm";
+import { useTranslation } from 'react-i18next';
 
 export default function Login() {
   const { user, authChecked, login } = useAuth();
   const navigate = useNavigate();
   const [submitError, setSubmitError] = useState("");
   const { register, handleSubmit, errors, reset } = useLoginForm();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (authChecked && user) {
@@ -43,12 +45,15 @@ export default function Login() {
         image="https://yourdomain.com/og-image.jpg"
       />
       <div className="bg-white p-6 w-full max-w-sm rounded shadow">
-        <h2 className="text-2xl font-bold text-center mb-2">Sign In</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">{t('login')}</h2>
         <p className="text-center text-gray-600 mb-6">Sign in to your account</p>
 
         <form onSubmit={handleSubmit(onSubmit)} >
           <div className="mb-4 relative">
             <FiMail style={{ left: '18px' }} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">
+              {t('email')}
+            </label>
             <input
               {...register("email")} 
               placeholder="Email"
@@ -60,6 +65,9 @@ export default function Login() {
 
           <div className="mb-4 relative">
             <FiLock style={{ left: '18px' }} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="password">
+              {t('password')}
+            </label>
             <input
               {...register("password")} 
               placeholder="Password" 
@@ -69,24 +77,28 @@ export default function Login() {
             />
           </div>
 
-          <button type="submit" className="w-full bg-blue-600 text-white py-2   hover:bg-blue-700 transition cursor-pointer">
-            Sign In
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 shadow-md mt-4"
+          >
+            {t('submit')}
           </button>
           {submitError && <p className="text-red-500">{submitError}</p>}
         </form>
 
-        <p className="text-center text-sm text-gray-600 mt-4">
-          Don’t have an account?{' '}
-          <Link to="/register" className="text-blue-600 hover:underline">
-            Sign up
+        <div className="flex justify-between items-center mt-6">
+          <Link to="/" className="text-blue-600 hover:underline flex items-center">
+            {t('go_back_home')}
           </Link>
-        </p>
-
-        <div className="mt-4 text-center">
-          <Link to="/" className="text-blue-600 hover:underline text-sm">← Go back to Home</Link>
+          <Link to="/forgot-password" className="text-blue-600 hover:underline flex items-center">
+            {t('forgot_password')}
+          </Link>
         </div>
-        <div className="mt-4 text-center">
-          <Link to="/forgot-password" className="text-blue-600 hover:underline text-sm">← Forgot password</Link>
+        <div className="mt-6 text-center">
+          <span className="text-gray-600">{t('dont_have_account')}</span>{' '}
+          <Link to="/register" className="text-blue-600 hover:underline font-semibold">
+            {t('sign_up')}
+          </Link>
         </div>
 
       </div>

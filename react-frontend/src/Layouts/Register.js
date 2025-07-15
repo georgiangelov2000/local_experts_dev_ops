@@ -6,6 +6,7 @@ import { FiMail, FiLock, FiKey, FiUser, FiBriefcase, FiGlobe, FiPhone, FiMapPin 
 import { FaFacebook, FaInstagram } from 'react-icons/fa';
 import { useRegisterForm } from "../Models/useRegisterForm";
 import { FcGoogle } from 'react-icons/fc';
+import { useTranslation } from 'react-i18next';
 
 export default function Register() {
   const [tab, setTab] = useState('user');
@@ -15,6 +16,8 @@ export default function Register() {
   const [loadingServiceCategories, setLoadingServiceCategories] = useState(false);
   const [socialLoading, setSocialLoading] = useState(false);
   const socialPopupRef = useRef(null);
+
+  const { t } = useTranslation();
 
   // Use the correct form hook for each tab
   const userForm = useRegisterForm('user');
@@ -134,22 +137,22 @@ export default function Register() {
         image="https://yourdomain.com/og-image.jpg"
       />
       <div className="bg-white p-8 w-full max-w-4xl rounded-2xl shadow-xl border border-gray-200 transition-all duration-300">
-        <h2 className="text-3xl font-extrabold mb-2 text-center text-gray-800">Register</h2>
-        <p className="text-center text-gray-500 mb-6 text-lg">Create your account to get started</p>
+      <h2 className="text-3xl font-extrabold mb-2 text-center text-gray-800">Register</h2>
+      <p className="text-center text-gray-500 mb-6 text-lg">Create your account to get started</p>
         <div className="flex mb-8 gap-2">
 
           <button
             className={`flex-1 p-3 rounded-t-lg border-b-4 transition-all duration-200 flex items-center justify-center gap-2 text-lg shadow-sm ${tab === 'user' ? 'border-blue-700 bg-blue-50 text-blue-700 font-bold' : 'border-gray-200 bg-gray-100 text-gray-500 hover:bg-blue-100 hover:text-blue-700'}`} onClick={() => handleTab('user')}
             type="button"
           >
-            Register as User
+            {t('registerAsUser')}
           </button>
           <button
             className={`flex-1 p-3 rounded-t-lg border-b-4 transition-all duration-200 flex items-center justify-center gap-2 text-lg shadow-sm ${tab === 'provider' ? 'border-blue-700 bg-blue-50 text-blue-700 font-bold' : 'border-gray-200 bg-gray-100 text-gray-500 hover:bg-blue-100 hover:text-blue-700'}`}
             onClick={() => handleTab('provider')}
             type="button"
           >
-            Register as Service Provider
+            {t('registerAsProvider')}
           </button>
         </div>
         {message.text && (
@@ -275,9 +278,9 @@ export default function Register() {
             <div className="col-span-2">
               <button
                 type="submit"
-                className="bg-blue-700 text-white p-2.5 hover:bg-blue-800 cursor-pointer"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 shadow-md mt-4"
               >
-                Register
+                {t('submit')}
               </button>
             </div>
           </form>
@@ -379,7 +382,7 @@ export default function Register() {
                   handleCategoryChange(e);
                 }}
               >
-                <option value="">Select Category</option>
+                <option value="">{t('selectCategory')}</option>
                 {categories.map(cat => (
                   <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
@@ -395,7 +398,7 @@ export default function Register() {
                   defaultValue=""
                   disabled={loadingServiceCategories}
                 >
-                  <option value="">{loadingServiceCategories ? 'Loading...' : 'Select Service Category'}</option>
+                  <option value="">{loadingServiceCategories ? 'Loading...' : t('selectServiceCategory')}</option>
                   {serviceCategories.map(sub => (
                     <option key={sub.id} value={sub.id}>{sub.name}</option>
                   ))}
@@ -428,9 +431,9 @@ export default function Register() {
             <div className="col-span-2">
               <button
                 type="submit"
-                className="bg-blue-700 text-white p-2.5 hover:bg-blue-800 cursor-pointer"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 shadow-md mt-4"
               >
-                Register
+                {t('submit')}
               </button>
             </div>
           </form>
@@ -449,7 +452,7 @@ export default function Register() {
               disabled={socialLoading}
             >
               <FcGoogle className="text-xl" />
-              Continue with Google
+              {t('continueWithGoogle')}
             </button>
             <button
               type="button"
@@ -458,7 +461,7 @@ export default function Register() {
               disabled={socialLoading}
             >
               <FaFacebook className="text-xl" />
-              Continue with Facebook
+              {t('continueWithFacebook')}
             </button>
           </div>
           {socialLoading && <div className="text-center text-blue-600 mt-2">Loading social profile...</div>}

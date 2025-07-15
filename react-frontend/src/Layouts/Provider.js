@@ -9,6 +9,7 @@ import ProviderContact from '../Components/Provider/ProviderContact';
 import { useProvider } from '../Hooks/useProvider';
 import { FaStar, FaRegStar, FaSpinner } from 'react-icons/fa';
 import SEO from '../Components/Auth/Shared/SEO';
+import { useTranslation } from 'react-i18next';
 
 export default function Provider() {
   const { alias } = useParams();
@@ -26,22 +27,24 @@ export default function Provider() {
     setActiveTab,
     toggleContact
   } = useProvider(alias);
-  const tabs = ['Profile', 'Projects', 'Videos'];
+  const { t } = useTranslation();
+  const tabs = [t('profile'), t('projects'), t('videos')];
 
   if (loading) return (
     <div className="flex justify-center items-center p-6">
       <FaSpinner className="animate-spin text-2xl text-blue-600" />
+      <span className="ml-2">{t('loading')}</span>
     </div>
   );
-  if (!provider) return <div className="text-center p-6 text-red-600">Provider not found.</div>;
+  if (!provider) return <div className="text-center p-6 text-red-600">{t('provider_not_found')}</div>;
 
   // Dynamic SEO values
   const seoTitle = provider.business_name
-    ? `${provider.business_name} - ${provider.service_category || 'Service Provider'} | Local Experts`
-    : 'Provider Profile - Local Experts';
+    ? `${provider.business_name} - ${provider.service_category || t('provider_profile')} | Local Experts`
+    : t('provider_profile') + ' - Local Experts';
   const seoDescription = provider.description
     ? provider.description.slice(0, 160)
-    : `Explore ${provider.business_name || 'this service provider'}'s profile, reviews, and projects on Local Experts.`;
+    : t('about');
   const seoImage = provider.media && provider.media.length > 0
     ? provider.media[0].url
     : 'https://yourdomain.com/og-image.jpg';
@@ -70,7 +73,7 @@ export default function Provider() {
             />
             <div>
               <h2 className="text-2xl font-bold text-gray-900">{provider.business_name}</h2>
-              <p className="text-gray-600">{provider.service_category || 'Service Provider'}</p>
+              <p className="text-gray-600">{provider.service_category || t('service_provider')}</p>
               <div className="flex items-center mt-1">
                 {Array.from({ length: Math.floor(provider.final_grade || 0) }).map((_, i) => (
                   <FaStar key={`filled-${i}`} className="text-yellow-400 mr-1" />
@@ -79,7 +82,7 @@ export default function Provider() {
                   <FaRegStar key={`empty-${i}`} className="text-yellow-400 mr-1 opacity-50" />
                 ))}
                 <span className="text-sm text-gray-600 ml-2">
-                  {provider.reviews_count || 0} reviews
+                  {provider.reviews_count || 0} {t('reviews')}
                 </span>
               </div>
               
@@ -100,8 +103,8 @@ export default function Provider() {
               </div>
             </div>
             <div className="text-xs text-gray-600">
-              Logged in with:
-              <span className="ml-1 font-medium text-blue-600">Facebook</span>
+              {t('logged_in_with')}:
+              <span className="ml-1 font-medium text-blue-600">{t('facebook')}</span>
             </div>
           </div>
         </div>
@@ -120,9 +123,9 @@ export default function Provider() {
         </div>
 
         {/* Tab Content */}
-        {activeTab === 'Profile' && <ProfileTab provider={provider} />}
-        {activeTab === 'Projects' && <ProjectsTab projects={provider.projects} />}
-        {activeTab === 'Videos' && <VideosTab videos={provider.videos || []} />}
+        {activeTab === t('profile') && <ProfileTab provider={provider} />}
+        {activeTab === t('projects') && <ProjectsTab projects={provider.projects} />}
+        {activeTab === t('videos') && <VideosTab videos={provider.videos || []} />}
 
         {/* Contact Modal */}
         {showContact && (

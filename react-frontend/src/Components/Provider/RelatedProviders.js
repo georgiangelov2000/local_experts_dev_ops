@@ -1,15 +1,17 @@
 import { Link } from "react-router-dom";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { FiEye, FiThumbsUp, FiThumbsDown, FiMapPin, FiArrowRight } from "react-icons/fi";
+import { useTranslation } from 'react-i18next';
 
 export default function RelatedProviders({ providers = [] }) {
+  const { t } = useTranslation();
   if (providers.length === 0) {
     return (
       <div className="p-6 text-center">
         <div className="bg-gray-50 rounded-lg p-8">
           <FiMapPin className="mx-auto text-gray-400 text-3xl mb-3" />
-          <p className="text-gray-500 font-medium">No related providers found</p>
-          <p className="text-sm text-gray-400 mt-1">We'll show you similar service providers here</p>
+          <p className="text-gray-500 font-medium">{t('noRelatedProvidersFound')}</p>
+          <p className="text-sm text-gray-400 mt-1">{t('similarServiceProviders')}</p>
         </div>
       </div>
     );
@@ -95,7 +97,7 @@ export default function RelatedProviders({ providers = [] }) {
                       ))}
                       {provider.locations.length > 2 && (
                         <span className="text-xs text-gray-500">
-                          +{provider.locations.length - 2} more
+                          +{provider.locations.length - 2} {t('location').toLowerCase()}
                         </span>
                       )}
                     </div>
@@ -107,20 +109,20 @@ export default function RelatedProviders({ providers = [] }) {
                   <div className="flex items-center space-x-4 text-xs text-gray-500">
                     <div className="flex items-center">
                       <FiEye className="mr-1" />
-                      <span>{provider.views_count || 0}</span>
+                      <span>{provider.views_count || 0} {t('views')}</span>
                     </div>
                     <div className="flex items-center">
                       <FiThumbsUp className="mr-1 text-green-500" />
-                      <span>{provider.likes_count || 0}</span>
+                      <span>{provider.likes_count || 0} {t('likes')}</span>
                     </div>
                     <div className="flex items-center">
                       <FiThumbsDown className="mr-1 text-red-500" />
-                      <span>{provider.dislikes_count || 0}</span>
+                      <span>{provider.dislikes_count || 0} {t('dislikes')}</span>
                     </div>
                   </div>
                   
                   <div className="text-xs text-gray-400">
-                    {provider.reviews_count || 0} reviews
+                    {provider.reviews_count || 0} {t('reviews')}
                   </div>
                 </div>
 

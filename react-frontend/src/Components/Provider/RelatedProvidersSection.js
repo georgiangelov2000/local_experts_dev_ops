@@ -1,8 +1,10 @@
 import RelatedProviders from './RelatedProviders';
 import RelatedProvidersSkeleton from './RelatedProvidersSkeleton';
 import { FiUsers } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
 export default function RelatedProvidersSection({ providers, count, loading = false }) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -13,11 +15,11 @@ export default function RelatedProvidersSection({ providers, count, loading = fa
           </div>
           <div>
             <h3 className="text-xl font-bold text-gray-900">
-              Related Providers
+              {t('related_providers')}
             </h3>
             {!loading && count > 0 && (
               <p className="text-sm text-gray-500">
-                {count} similar service provider{count !== 1 ? 's' : ''} in your area
+                {t('similar_service_providers', { count })}
               </p>
             )}
           </div>

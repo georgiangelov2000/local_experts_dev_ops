@@ -12,12 +12,14 @@ import SEO from '../Auth/Shared/SEO';
 import { useLocation } from 'react-router-dom';
 import { FiGrid, FiList, FiSearch, FiFilter } from 'react-icons/fi';
 import { FaSpinner } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 
 export default function Service() {
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const [state, dispatch] = useReducer(serviceReducer, initialServiceState);
   const { user, authChecked, isAuthenticated } = useAuth();
+  const { t } = useTranslation();
 
   // Initialize favourites on load
   useEffect(() => {
@@ -177,44 +179,9 @@ export default function Service() {
             <Categories categories={state.categories} />
             
             {/* Providers Section Header */}
-            <div className="mb-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-1">
-                    Service Providers
-                  </h2>
-                  <p className="text-gray-600">
-                    {state.providers.length} provider{state.providers.length !== 1 ? 's' : ''} found
-                    {state.filtered && ' matching your criteria'}
-                  </p>
-                </div>
-                
-                {/* View Mode Toggle */}
-                <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
-                  <button
-                    className={`p-2 rounded-md transition-colors ${
-                      state.viewMode === 'grid' 
-                        ? 'bg-white text-blue-600 shadow-sm' 
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                    onClick={() => dispatch({ type: 'SET_VIEW_MODE', payload: 'grid' })}
-                    title="Grid View"
-                  >
-                    <FiGrid className="w-4 h-4" />
-                  </button>
-                  <button
-                    className={`p-2 rounded-md transition-colors ${
-                      state.viewMode === 'list' 
-                        ? 'bg-white text-blue-600 shadow-sm' 
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                    onClick={() => dispatch({ type: 'SET_VIEW_MODE', payload: 'list' })}
-                    title="List View"
-                  >
-                    <FiList className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">{t('service_providers')}</h2>
+              <span className="text-sm text-gray-500">{t('providers_found', { count: state.providers.length })}</span>
             </div>
 
             {/* Providers Grid */}

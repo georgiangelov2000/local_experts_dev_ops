@@ -2,6 +2,7 @@ import Select from 'react-select';
 import { FiMapPin, FiLayers, FiList, FiSearch, FiX, FiFilter, FiSliders } from 'react-icons/fi';
 import { useCallback } from 'react';
 import debounce from 'lodash.debounce';
+import { useTranslation } from 'react-i18next';
 
 export default function SearchBar({ state, dispatch, setSearchParams }) {
 
@@ -104,6 +105,8 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
     [state.filters.term, state.filters.city_alias, state.filters.category_alias, state.filters.service_category_alias, state.filters.sort]
   );
 
+  const { t } = useTranslation();
+
   return (
     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 mb-6 border border-blue-100">
       {/* Header */}
@@ -112,8 +115,8 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
           <FiSearch className="text-white text-xl" />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Find Service Providers</h2>
-          <p className="text-gray-600">Search and filter to find the perfect professional for your needs</p>
+          <h2 className="text-2xl font-bold text-gray-900">{t('find_service_providers')}</h2>
+          <p className="text-gray-600">{t('search_term')}</p>
         </div>
       </div>
 
@@ -124,7 +127,7 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <FiMapPin className="inline mr-2 text-blue-500" />
-              Location
+              {t('location')}
             </label>
             <Select
               options={cityOptions}
@@ -159,7 +162,7 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <FiLayers className="inline mr-2 text-green-500" />
-              Category
+              {t('category')}
             </label>
             <Select
               options={categoryOptions}
@@ -185,7 +188,7 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <FiList className="inline mr-2 text-purple-500" />
-              Service Type
+              {t('service_type')}
             </label>
             <Select
               options={serviceOptions}
@@ -214,7 +217,7 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <FiSearch className="inline mr-2 text-orange-500" />
-              Search Term
+              {t('search_term')}
             </label>
             <input
               type="text"
@@ -234,7 +237,7 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <FiSliders className="inline mr-2 text-gray-500" />
-              Sort By
+              {t('sort_by')}
             </label>
             <Select
               options={state.sortOptions}
@@ -257,7 +260,7 @@ export default function SearchBar({ state, dispatch, setSearchParams }) {
               className={`flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 ${hasActiveFilters ? 'cursor-pointer' : 'cursor-default'}`}
             >
               <FiSearch className="text-lg" />
-              <span>Search</span>
+              <span>{t('search')}</span>
             </button>
 
             {hasActiveFilters && (

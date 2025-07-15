@@ -3,6 +3,7 @@ import { FiMapPin, FiEye, FiThumbsUp, FiThumbsDown, FiHeart, FiStar, FiAward, Fi
 import { FaStar, FaRegStar, FaStarHalfAlt, FaThumbsUp, FaThumbsDown, FaHeart } from 'react-icons/fa';
 import useProviderActions from "../../../Hooks/useProviderActions";
 import { useAuth } from "../../../Context/AuthContext";
+import { useTranslation } from 'react-i18next';
 
 export default function ListElement({ provider, likes, dislikes, favourites }) {
   const {
@@ -14,6 +15,7 @@ export default function ListElement({ provider, likes, dislikes, favourites }) {
     toggleDislike,
   } = useProviderActions(provider.id);
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const renderStars = (rating) => {
     const fullStars = Math.floor(rating || 0);
@@ -94,7 +96,7 @@ export default function ListElement({ provider, likes, dislikes, favourites }) {
                       </span>
                     </div>
                     <div className="text-xs text-blue-700">
-                      {provider.reviews_count ?? 0} reviews
+                      {provider.reviews_count ?? 0} {t('reviews')}
                     </div>
                   </div>
                 </div>
@@ -129,7 +131,7 @@ export default function ListElement({ provider, likes, dislikes, favourites }) {
                       <FiMapPin className="mr-1 text-gray-400" />
                       <span className="truncate max-w-32">
                         {provider.locations.slice(0, 2).join(', ')}
-                        {provider.locations.length > 2 && ` +${provider.locations.length - 2}`}
+                        {provider.locations.length > 2 && ` +${provider.locations.length - 2} ${t('location').toLowerCase()}`}
                       </span>
                     </div>
                   )}
@@ -137,7 +139,7 @@ export default function ListElement({ provider, likes, dislikes, favourites }) {
                   {/* Views */}
                   <div className="flex items-center">
                     <FiEye className="mr-1 text-gray-400" />
-                    <span>{provider.views_count ?? 0}</span>
+                    <span>{provider.views_count ?? 0} {t('views')}</span>
                   </div>
                   
                   {/* Stars */}
@@ -150,11 +152,11 @@ export default function ListElement({ provider, likes, dislikes, favourites }) {
                 <div className="flex items-center space-x-3 text-sm">
                   <div className="flex items-center text-green-600">
                     <span className="mr-1">👍</span>
-                    <span className="font-medium">{provider.likes_count ?? 0}</span>
+                    <span className="font-medium">{provider.likes_count ?? 0} {t('likes')}</span>
                   </div>
                   <div className="flex items-center text-red-600">
                     <span className="mr-1">👎</span>
-                    <span className="font-medium">{provider.dislikes_count ?? 0}</span>
+                    <span className="font-medium">{provider.dislikes_count ?? 0} {t('dislikes')}</span>
                   </div>
                 </div>
               </div>

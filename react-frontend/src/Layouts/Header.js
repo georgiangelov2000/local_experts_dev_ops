@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiLogIn, FiUserPlus, FiHeart, FiHome, FiUser, FiLogOut, FiMenu, FiX, FiSearch, FiBell, FiSettings } from 'react-icons/fi';
 import { useAuth } from "../Context/AuthContext";
+import { useTranslation } from 'react-i18next';
+import i18n from '../locales/i18n';
 
 export default function Header() {
   const { user, logout, isAuthenticated } = useAuth();
@@ -9,6 +11,11 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [favouritesCount, setFavouritesCount] = useState(0);
+  const { t } = useTranslation();
+  const languageOptions = [
+    { value: 'bg', label: 'BG', flag: '🇧🇬' },
+    { value: 'en', label: 'EN', flag: '🇬🇧' },
+  ];
 
   useEffect(() => {
     if (!user) {
@@ -54,18 +61,35 @@ export default function Header() {
               className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
             >
               <FiHome className="mr-2" />
-              Home
+              {t('home')}
             </Link>
-
             {!user && (
               <Link
                 to="/favourites"
                 className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
               >
                 <FiHeart className="mr-2" />
-                Favourites{favouritesCount > 0 ? ` (${favouritesCount})` : ''}
+                {t('favourites')}{favouritesCount > 0 ? ` (${favouritesCount})` : ''}
               </Link>
             )}
+            {/* Language Switcher */}
+            <div className="relative ml-4">
+              <select
+                value={i18n.language}
+                onChange={e => i18n.changeLanguage(e.target.value)}
+                className="appearance-none pl-8 pr-6 py-1 rounded border border-gray-300 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-200 shadow-sm hover:border-blue-400 transition-all duration-150"
+                style={{ backgroundImage: `url('data:image/svg+xml;utf8,<svg fill=\'gray\' height=\'20\' viewBox=\'0 0 20 20\' width=\'20\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5H7z\'/></svg>')`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.5rem center', backgroundSize: '1.25em' }}
+              >
+                {languageOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.flag} {opt.label}
+                  </option>
+                ))}
+              </select>
+              <span className="absolute left-2 top-1/2 transform -translate-y-1/2 pointer-events-none text-lg">
+                {languageOptions.find(opt => opt.value === i18n.language)?.flag}
+              </span>
+            </div>
           </nav>
 
           {/* User Menu / Auth Buttons */}
@@ -103,7 +127,7 @@ export default function Header() {
                       onClick={() => setUserMenuOpen(false)}
                     >
                       <FiUser className="mr-3" />
-                      Profile
+                      {t('view_profile')}
                     </Link>
                     
                     <Link
@@ -134,14 +158,14 @@ export default function Header() {
                   className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
                 >
                   <FiLogIn className="mr-2" />
-                  Sign In
+                  {t('login')}
                 </Link>
                 <Link
                   to="/register"
                   className="flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   <FiUserPlus className="mr-2" />
-                  Sign Up
+                  {t('register')}
                 </Link>
               </div>
             )}
@@ -167,9 +191,8 @@ export default function Header() {
                 onClick={() => setMenuOpen(false)}
               >
                 <FiHome className="mr-3" />
-                Home
+                {t('home')}
               </Link>
-
               {!user && (
                 <Link
                   to="/favourites"
@@ -177,31 +200,27 @@ export default function Header() {
                   onClick={() => setMenuOpen(false)}
                 >
                   <FiHeart className="mr-3" />
-                  Favourites{favouritesCount > 0 ? ` (${favouritesCount})` : ''}
+                  {t('favourites')}{favouritesCount > 0 ? ` (${favouritesCount})` : ''}
                 </Link>
               )}
-
-              {!user && (
-                <>
-                  <div className="border-t border-gray-100 my-2"></div>
-                  <Link
-                    to="/login"
-                    className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    <FiLogIn className="mr-3" />
-                    Sign In
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    <FiUserPlus className="mr-3" />
-                    Sign Up
-                  </Link>
-                </>
-              )}
+              {/* Language Switcher for mobile */}
+              <div className="mt-4 relative">
+                <select
+                  value={i18n.language}
+                  onChange={e => i18n.changeLanguage(e.target.value)}
+                  className="appearance-none pl-8 pr-6 py-1 rounded border border-gray-300 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-200 shadow-sm hover:border-blue-400 transition-all duration-150 w-full"
+                  style={{ backgroundImage: `url('data:image/svg+xml;utf8,<svg fill=\'gray\' height=\'20\' viewBox=\'0 0 20 20\' width=\'20\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5H7z\'/></svg>')`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.5rem center', backgroundSize: '1.25em' }}
+                >
+                  {languageOptions.map(opt => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.flag} {opt.label}
+                    </option>
+                  ))}
+                </select>
+                <span className="absolute left-2 top-1/2 transform -translate-y-1/2 pointer-events-none text-lg">
+                  {languageOptions.find(opt => opt.value === i18n.language)?.flag}
+                </span>
+              </div>
             </nav>
           </div>
         )}
