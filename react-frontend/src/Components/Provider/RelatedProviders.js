@@ -18,8 +18,8 @@ export default function RelatedProviders({ providers = [] }) {
   }
 
   return (
-    <div className="p-4 sm:p-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="lg:p-0 sm:p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
         {providers.map((provider) => {
           const rating = Math.round(provider.final_grade || 0);
           const hasImage = provider.media?.length > 0;
@@ -27,7 +27,7 @@ export default function RelatedProviders({ providers = [] }) {
           return (
             <div
               key={provider.id}
-              className="group bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-blue-200 transition-all duration-300 overflow-hidden"
+              className="group bg-white lg:rounded-xl lg:shadow-sm lg:border lg:border-gray-100 hover:shadow-lg hover:border-blue-200 transition-all duration-300 overflow-hidden"
             >
               {/* Image Section */}
               <div className="relative h-48 overflow-hidden">

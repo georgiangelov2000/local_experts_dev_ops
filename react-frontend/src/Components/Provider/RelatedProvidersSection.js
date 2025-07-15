@@ -8,7 +8,7 @@ export default function RelatedProvidersSection({ providers, count, loading = fa
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap">
         <div className="flex items-center space-x-3">
           <div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-lg">
             <FiUsers className="text-blue-600 text-lg" />

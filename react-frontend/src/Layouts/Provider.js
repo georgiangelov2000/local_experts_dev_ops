@@ -58,10 +58,10 @@ export default function Provider() {
         url={seoUrl}
         image={seoImage}
       />
-      <div className="bg-white rounded-lg md:p-6">
+      <div className="bg-white rounded-lg md:p-6 sm:p-4">
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-          <div className="flex items-center">
+          <div className="flex items-center flex-wrap">
             <img
               src={
                 provider.media?.length > 0
@@ -157,7 +157,7 @@ export default function Provider() {
       </div>
 
       {/* Related Providers Section */}
-      <div className="mx-auto max-w-7xl bg-white rounded-lg p-6">
+      <div className="mx-auto max-w-7xl bg-white rounded-lg lg:p-6 md:p-6 sm:pt-3">
         <RelatedProvidersSection 
           providers={related} 
           count={relatedCount} 
