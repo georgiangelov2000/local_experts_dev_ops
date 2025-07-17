@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { FiMapPin, FiEye, FiThumbsUp, FiThumbsDown, FiHeart, FiStar, FiAward, FiUsers } from 'react-icons/fi';
+import { FiMapPin, FiEye, FiThumbsUp, FiThumbsDown, FiHeart, FiStar, FiAward, FiUsers, FiClock } from 'react-icons/fi';
 import { FaStar, FaRegStar, FaStarHalfAlt, FaThumbsUp, FaThumbsDown, FaHeart } from 'react-icons/fa';
 import useProviderActions from "../../../Hooks/useProviderActions";
 import { useAuth } from "../../../Context/AuthContext";
@@ -84,6 +84,22 @@ export default function ListElement({ provider, likes, dislikes, favourites }) {
                   <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">
                     {provider.description || "Professional service provider with excellent reputation and quality work."}
                   </p>
+
+                  {/* Working Hours & Last Login */}
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500 mt-1">
+                    <div className="flex items-center">
+                      <FiClock className="mr-1 text-gray-400" />
+                      <span>{t('start_time')}: {provider.start_time || '-'}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <FiClock className="mr-1 text-gray-400" />
+                      <span>{t('stop_time')}: {provider.stop_time || '-'}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <FiClock className="mr-1 text-gray-400" />
+                      <span>{t('last_logged_in')}: {provider.last_logged_in ? new Date(provider.last_logged_in).toLocaleString() : '-'}</span>
+                    </div>
+                  </div>
                 </div>
                 
                 {/* Rating Badge */}

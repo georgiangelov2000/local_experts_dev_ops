@@ -17,9 +17,10 @@ return new class extends Migration
                 $table->unsignedBigInteger('service_provider_id')->index();
                 $table->string('project_name');
                 $table->text('description');
+                $table->string('link')->nullable();
                 $table->tinyInteger('status');
-                $table->timestamp('date_start');
-                $table->timestamp('date_end');
+                $table->timestamp('date_start')->nullable();
+                $table->timestamp('date_end')->nullable();
                 $table->timestamps();
             });
         }

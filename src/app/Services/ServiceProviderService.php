@@ -133,6 +133,9 @@ class ServiceProviderService
                 'dislikes_count' => $provider->dislikes_count,
                 'reviews_count' => $provider->reviews_count,
                 'views_count' => $provider->views,
+                'start_time' => $provider->start_time,
+                'stop_time' => $provider->stop_time,
+                'last_logged_in' => $provider->user->last_logged_in,
                 'description' => \Str::limit($provider->description, 120),
             ];
         })->toArray();

@@ -16,15 +16,14 @@ return new class extends Migration
                 $table->id();
                 $table->integer('user_id')->index();
                 $table->string('business_name');
-                $table->text('description');
                 $table->integer('category_id')->index();
                 $table->integer('service_category_id')->index();
+                $table->string('alias')->unique();
                 $table->dateTime('start_time')->nullable();
                 $table->dateTime('stop_time')->nullable();
                 $table->tinyInteger('is_published')->default(0);
-                $table->string('alias')->unique();
+                $table->tinyInteger('is_active')->default(0);
                 $table->unsignedInteger('views')->default(0);
-                $table->unsignedBigInteger('contact_id')->nullable()->unique();
                 $table->timestamps();
             });
         }

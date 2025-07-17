@@ -14,17 +14,11 @@ return new class extends Migration
         if (!Schema::hasTable('users')) {
             Schema::create('users', function (Blueprint $table) {
                 $table->id();
-                $table->string('name');
                 $table->string('email')->unique();
                 $table->string('password');
-                $table->tinyInteger('is_active')->default(1);
-                $table->timestamp('email_verified_at')->nullable();
-                $table->tinyInteger('role_id')->default(2);
-                $table->string('provider')->nullable();
-                $table->string('provider_id')->nullable();
-                $table->string('social_name')->nullable();
+                $table->tinyInteger('role_id');
                 $table->timestamp('last_logged_in')->nullable();
-                $table->rememberToken();
+                $table->timestamp('email_verified_at')->nullable();
                 $table->timestamps();
             });
         }
@@ -37,16 +31,6 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('sessions')) {
-            Schema::create('sessions', function (Blueprint $table) {
-                $table->string('id')->primary();
-                $table->foreignId('user_id')->nullable()->index();
-                $table->string('ip_address', 45)->nullable();
-                $table->text('user_agent')->nullable();
-                $table->longText('payload');
-                $table->integer('last_activity')->index();
-            });
-        }
     }
 
     /**

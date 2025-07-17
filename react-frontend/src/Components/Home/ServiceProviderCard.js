@@ -103,6 +103,19 @@ export default function ServiceProviderCard({
             {provider.description || t('find_service_providers')}
           </p>
 
+          {/* Working Hours & Last Login */}
+          <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500 mt-1">
+            <div className="flex items-center">
+              <span>{t('start_time')}: {provider.start_time || '-'}</span>
+            </div>
+            <div className="flex items-center">
+              <span>{t('stop_time')}: {provider.stop_time || '-'}</span>
+            </div>
+            <div className="flex items-center">
+              <span>{t('last_logged_in')}: {provider.last_logged_in ? new Date(provider.last_logged_in).toLocaleString() : '-'}</span>
+            </div>
+          </div>
+
           {/* Services Preview */}
           {Array.isArray(provider.services) && provider.services.length > 0 && (
             <div className="space-y-2">

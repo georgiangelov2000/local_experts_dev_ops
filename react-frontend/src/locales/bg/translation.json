@@ -185,5 +185,9 @@
   "registerAsProvider": "Регистрация като доставчик",
   "sign_in_to_your_account": "Влезте в профила си",
   "continue_with_google": "Регистрация с Google",
-  "continue_with_meta": "Регистрация с Facebook"
+  "continue_with_meta": "Регистрация с Facebook",
+  "advert_expiration": "Валидност на обявата",
+  "advert_expiration_placeholder": "Изберете дата на валидност на обявата",
+  "start_time": "Начален час на обявата",
+  "stop_time": "Краен час на обявата"
 } 

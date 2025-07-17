@@ -13,8 +13,8 @@ return new class extends Migration {
         if (!Schema::hasTable('favourites')) {
             Schema::create('favourites', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('user_id')->index();
-                $table->unsignedBigInteger('service_provider_id')->index();
+                $table->unsignedBigInteger('user_id');
+                $table->unsignedBigInteger('service_provider_id');
             });
         }
     }

@@ -16,7 +16,7 @@ return new class extends Migration {
                 $table->unsignedBigInteger('model_id')->index(); // Changed from service_provider_id to model_id for flexibility
                 $table->string('model_type'); // To support polymorphic relations if needed
                 $table->string('website')->nullable();
-                $table->string('phone');
+                $table->string('phone')->nullable();
                 $table->string('address')->nullable();
                 $table->string('facebook')->nullable();
                 $table->string('instagram')->nullable();
