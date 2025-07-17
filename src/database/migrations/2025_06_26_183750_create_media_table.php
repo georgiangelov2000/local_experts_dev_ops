@@ -14,7 +14,7 @@ return new class extends Migration
         if (!Schema::hasTable('media')) {
             Schema::create('media', function (Blueprint $table) {
                 $table->id();
-                $table->integer('model_id')->index();
+                $table->integer('model_id');
                 $table->string('model_type');
                 $table->string('file_path');
                 $table->string('file_name');

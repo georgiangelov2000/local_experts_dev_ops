@@ -13,7 +13,7 @@ return new class extends Migration {
         if (!Schema::hasTable('contacts')) {
             Schema::create('contacts', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('model_id')->index(); // Changed from service_provider_id to model_id for flexibility
+                $table->unsignedBigInteger('model_id'); // Changed from service_provider_id to model_id for flexibility
                 $table->string('model_type'); // To support polymorphic relations if needed
                 $table->string('website')->nullable();
                 $table->string('phone')->nullable();

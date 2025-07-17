@@ -14,11 +14,11 @@ return new class extends Migration
         if (!Schema::hasTable('projects')) {
             Schema::create('projects', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('service_provider_id')->index();
+                $table->unsignedBigInteger('service_provider_id');
                 $table->string('project_name');
                 $table->text('description');
-                $table->string('link')->nullable();
                 $table->tinyInteger('status');
+                $table->string('link')->nullable();
                 $table->timestamp('date_start')->nullable();
                 $table->timestamp('date_end')->nullable();
                 $table->timestamps();

@@ -15,7 +15,7 @@ return new class extends Migration
             Schema::create('service_categories', function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
-                $table->integer('category_id')->index();
+                $table->integer('category_id');
                 $table->text('description')->nullable();
                 $table->string('alias')->unique();
             });

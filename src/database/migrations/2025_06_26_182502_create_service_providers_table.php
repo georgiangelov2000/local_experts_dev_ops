@@ -14,10 +14,10 @@ return new class extends Migration
         if (!Schema::hasTable('service_providers')) {
             Schema::create('service_providers', function (Blueprint $table) {
                 $table->id();
-                $table->integer('user_id')->index();
+                $table->integer('user_id');
                 $table->string('business_name');
-                $table->integer('category_id')->index();
-                $table->integer('service_category_id')->index();
+                $table->integer('category_id');
+                $table->integer('service_category_id');
                 $table->string('alias')->unique();
                 $table->dateTime('start_time')->nullable();
                 $table->dateTime('stop_time')->nullable();

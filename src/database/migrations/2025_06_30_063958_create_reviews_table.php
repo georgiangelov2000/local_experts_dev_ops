@@ -10,8 +10,8 @@ return new class extends Migration {
         if (!Schema::hasTable('reviews')) {
             Schema::create('reviews', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('user_id')->index();
-                $table->unsignedBigInteger('service_provider_id')->index();
+                $table->unsignedBigInteger('user_id');
+                $table->unsignedBigInteger('service_provider_id');
                 $table->integer('rating');
                 $table->text('review_text');
                 $table->timestamps();

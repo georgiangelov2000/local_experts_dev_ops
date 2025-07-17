@@ -84,13 +84,13 @@ export default function useProviderActions(providerId) {
         await apiService.toggleFavourite(providerId);
         setIsFavourite(prev => !prev);
       } else {
-        let favourites = JSON.parse(localStorage.getItem("favourites") || "[]");
+        let favourites = JSON.parse(localStorage.getItem("guest_favourites") || "[]");
         if (favourites.includes(providerId)) {
           favourites = favourites.filter(id => id !== providerId);
         } else {
           favourites.push(providerId);
         }
-        localStorage.setItem("favourites", JSON.stringify(favourites));
+        localStorage.setItem("guest_favourites", JSON.stringify(favourites));
         setIsFavourite(favourites.includes(providerId));
       }
     } catch (err) {
