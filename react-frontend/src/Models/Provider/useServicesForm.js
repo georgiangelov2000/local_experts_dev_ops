@@ -15,7 +15,8 @@ const serviceSchema = yup.object().shape({
 });
 
 const servicesFormSchema = yup.object().shape({
-  services: yup.array().of(serviceSchema).max(3, "Up to 3 services allowed"),
+  services: yup.array().of(serviceSchema)
+  // .max(3, "Up to 3 services allowed"),
 });
 
 export function useServicesForm(tabData = {}) {

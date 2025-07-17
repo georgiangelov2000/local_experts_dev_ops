@@ -47,11 +47,13 @@ class ServiceProviderDTO
             final_grade: $provider->reviews_count > 0 ? round($provider->reviews()->avg('rating'), 2) : null,
             workspaces: self::mapWorkspaces($provider->workspaces),
             certifications: $provider->certifications->map(function($certification) {
+                $media = $certification->media()->where('file_type', 'image')->first();
                 return [
                     'id' => $certification->id,
                     'name'=> $certification->name,
                     'description' => $certification->description,
-                    'image' => $certification->media()->first()
+                    'image_url' => $media ? (config('app.url') . '/storage/' . ltrim($media->file_path, '/')) : null,
+                    'link' => $certification->link,
                 ];
             })->toArray(),
             contact: self::mapContact($provider->contact),

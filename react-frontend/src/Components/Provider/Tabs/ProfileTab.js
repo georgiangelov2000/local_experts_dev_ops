@@ -115,11 +115,11 @@ export default function ProfileTab({ provider }) {
                       
                       {/* Action Links */}
                       <div className="flex items-center space-x-3">
-                        {(cert.image || cert.link) && (
+                        {(cert.image_url || cert.link) && (
                           <div className="flex items-center space-x-2">
-                            {cert.image && (
+                            {cert.image_url && (
                               <a
-                                href={cert.image}
+                                href={cert.image_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-600 text-xs font-medium rounded-lg hover:bg-blue-100 transition-colors duration-200"

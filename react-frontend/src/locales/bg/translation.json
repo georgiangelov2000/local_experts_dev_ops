@@ -189,5 +189,8 @@
   "advert_expiration": "Валидност на обявата",
   "advert_expiration_placeholder": "Изберете дата на валидност на обявата",
   "start_time": "Начален час на обявата",
-  "stop_time": "Краен час на обявата"
+  "stop_time": "Краен час на обявата",
+  "certification_link": "Линк към сертификат",
+  "certification_link_placeholder": "Поставете линк за верификация или информация (по избор)",
+  "optional": "по избор"
 } 

@@ -185,5 +185,8 @@
   "go_back_to_home": "Go back to Home",
   "registerAsUser": "Register as User",
   "registerAsProvider": "Register as Provider",
-  "sign_in_to_your_account": "Sign in to your account"
+  "sign_in_to_your_account": "Sign in to your account",
+  "certification_link": "Certificate Link",
+  "certification_link_placeholder": "Paste a verification or info link (optional)",
+  "optional": "optional"
 } 

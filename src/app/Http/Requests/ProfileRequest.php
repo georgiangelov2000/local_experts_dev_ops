@@ -22,7 +22,7 @@ class ProfileRequest extends FormRequest
     public function rules(): array
     {
         $tab = $this->input('tab');
-        
+
         return match ($tab) {
             'basic' => [
                 'business_name' => 'required|string|max:500',
@@ -33,7 +33,7 @@ class ProfileRequest extends FormRequest
                 'image' => 'nullable|image|max:2048',
             ],
             'projects' => [
-                'projects' => 'required|array|max:3',
+                'projects' => 'required|array',
                 'projects.*.id' => 'nullable|exists:projects,id',
                 'projects.*.project_name' => 'required|string|max:255',
                 'projects.*.description' => 'required|string|max:500',
@@ -44,7 +44,7 @@ class ProfileRequest extends FormRequest
                 'projects.*.video' => 'nullable|mimetypes:video/mp4,video/avi,video/mov|max:10240',
             ],
             'services' => [
-                'services' => 'required|array|max:3',
+                'services' => 'required|array',
                 'services.*.id' => 'nullable|exists:services,id',
                 'services.*.price' => 'required|numeric|min:0',
                 'services.*.description' => 'required|string|max:1000',
@@ -54,7 +54,7 @@ class ProfileRequest extends FormRequest
                 'certifications.*.id' => 'nullable|exists:certifications,id',
                 'certifications.*.name' => 'required|string|max:255',
                 'certifications.*.description' => 'nullable|string|max:500',
-                'certifications.*.image' => 'nullable|image|max:2048',
+                'certifications.*.image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             ],
             'contacts' => [
                 'phone' => 'nullable|string|max:32',

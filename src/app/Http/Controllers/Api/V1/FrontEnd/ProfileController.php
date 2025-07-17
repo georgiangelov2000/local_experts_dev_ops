@@ -55,8 +55,8 @@ class ProfileController extends Controller
                     if (!empty($validated['projects'])) {
                         foreach ($validated['projects'] as $projectData) {
                             $project = isset($projectData['id'])
-                                ? Project::where('id', $projectData['id'])->where('user_id', $user->id)->firstOrFail()
-                                : new Project(['user_id' => $user->id]);
+                                ? Project::where('id', $projectData['id'])->where('service_provider_id', $serviceProvider->id)->firstOrFail()
+                                : new Project(['service_provider_id' => $serviceProvider->id]);
 
                             $project->project_name = $projectData['project_name'];
                             $project->description = $projectData['description'];
@@ -80,33 +80,51 @@ class ProfileController extends Controller
 
                 case 'services':
                     if (!empty($validated['services'])) {
+                        $incomingIds = collect($validated['services'])
+                            ->filter(fn($s) => isset($s['id']))
+                            ->pluck('id')
+                            ->toArray();
+                    
+                        // Delete services not in the incoming array
+                        $serviceProvider->services()
+                            ->whereNotIn('id', $incomingIds)
+                            ->delete();
+                    
                         foreach ($validated['services'] as $serviceData) {
                             $service = isset($serviceData['id'])
-                                ? $serviceProvider->services()->where('id', $serviceData['id'])->firstOrFail()
+                                ? $serviceProvider->services()->where('id', $serviceData['id'])->first()
                                 : $serviceProvider->services()->make();
-
+                    
                             $service->price = $serviceData['price'];
                             $service->description = $serviceData['description'];
                             $service->save();
                         }
                     }
                     return response()->json(['message' => 'Services saved successfully.'], 200);
-
                 case 'certifications':
-                    if (!empty($validated['certifications'])) {
-                        foreach ($validated['certifications'] as $certData) {
-                            $cert = isset($certData['id'])
-                                ? $serviceProvider->certifications()->where('id', $certData['id'])->firstOrFail()
-                                : $serviceProvider->certifications()->make();
+                    $incomingIds = collect($validated['certifications'])
+                        ->filter(fn($c) => isset($c['id']))
+                        ->pluck('id')
+                        ->toArray();
 
-                            $cert->name = $certData['name'];
-                            $cert->description = $certData['description'];
-                            $cert->save();
+                    // Delete certifications not in the incoming array
+                    $serviceProvider->certifications()
+                        ->whereNotIn('id', $incomingIds)
+                        ->delete();
 
-                            if (isset($certData['image'])) {
-                                $path = $certData['image']->store('images', 'public');
-                                $this->saveMediaGeneric($cert, $path, $certData['image']->getClientOriginalName(), 'image');
-                            }
+                    foreach ($validated['certifications'] as $certData) {
+                        $cert = isset($certData['id'])
+                            ? $serviceProvider->certifications()->where('id', $certData['id'])->firstOrFail()
+                            : $serviceProvider->certifications()->make();
+
+                        $cert->name = $certData['name'];
+                        $cert->description = $certData['description'];
+                        $cert->link = $certData['link'] ?? null;
+                        $cert->save();
+
+                        if (isset($certData['image']) && $certData['image']) {
+                            $path = $certData['image']->store('images', 'public');
+                            $this->saveMediaGeneric($cert, $path, $certData['image']->getClientOriginalName(), 'image');
                         }
                     }
                     return response()->json(['message' => 'Certifications saved successfully.'], 200);
@@ -176,6 +194,7 @@ class ProfileController extends Controller
                                     'id' => $certification->id,
                                     'name' => $certification->name,
                                     'description' => $certification->description,
+                                    'image' => $certification->image,
                                 ];
                             }),
                         ];
@@ -256,8 +275,20 @@ class ProfileController extends Controller
                         })->toArray(),
                     ],200);
                 case 'projects':
-                    $projects = $provider->projects()->select('id', 'project_name', 'description', 'date_start', 'date_end', 'status')->get();
-                    return response()->json($projects,200);
+                    $projects = $provider->projects()->get()->map(function($project) {
+                        $media = $project->media()->where('file_type', 'image')->first();
+                        return [
+                            'id' => $project->id,
+                            'project_name' => $project->project_name,
+                            'description' => $project->description,
+                            'date_start' => $project->date_start,
+                            'date_end' => $project->date_end,
+                            'status' => $project->status,
+                            'image_url' => $media ? (config('app.url') . '/storage/' . ltrim($media->file_path, '/')) : null,
+                            'link' => $project->link ?? null,
+                        ];
+                    });
+                    return response()->json($projects, 200);
                 case 'services':
                     $services = $provider ? $provider->services()->select('id', 'description', 'price')->get() : [];
                     return response()->json($services,200);
@@ -265,7 +296,16 @@ class ProfileController extends Controller
                     $reviews = $provider ? $provider->reviews()->select('id', 'rating', 'comment', 'created_at')->get() : [];
                     return response()->json($reviews,200);
                 case 'certifications':
-                    $certifications = $provider ? $provider->certifications()->select('id', 'name', 'description')->get() : [];
+                    $certifications = $provider ? $provider->certifications()->get()->map(function($certification) {
+                        $media = $certification->media()->where('file_type', 'image')->first();
+                        return [
+                            'id' => $certification->id,
+                            'name' => $certification->name,
+                            'description' => $certification->description,
+                            'link' => $certification->link,
+                            'image_file' => $media ? (config('app.url') . '/storage/' . ltrim($media->file_path, '/')) : null,
+                        ];
+                    }) : [];
                     return response()->json($certifications, 200);
                 case 'contacts':
                     $contacts = $provider->contact->first();
@@ -336,10 +376,13 @@ class ProfileController extends Controller
             }),
             'last_logged_in' => $provider->user->last_logged_in ?? null,
             'certifications' => $provider->certifications->map(function ($cert) {
+                $media = $cert->media()->where('file_type', 'image')->first();
                 return [
                     'id' => $cert->id,
                     'name' => $cert->name,
                     'description' => $cert->description,
+                    'link' => $cert->link,
+                    'image_file' => $media ? (config('app.url') . '/storage/' . ltrim($media->file_path, '/')) : null,
                 ];
             }),
             'contacts' => $provider->contact,

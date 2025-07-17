@@ -15,6 +15,7 @@ return new class extends Migration {
                 $table->id();
                 $table->string('name')->nullable();
                 $table->text('description')->nullable();
+                $table->string('link')->nullable();
                 $table->unsignedBigInteger('service_provider_id');
             });
         }

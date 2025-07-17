@@ -16,7 +16,8 @@ class Certification extends Model
     protected $fillable = [
         'name',
         'description',
-        'service_provider_id'
+        'service_provider_id',
+        'link'
     ];
 
     public function serviceProvider(): BelongsTo

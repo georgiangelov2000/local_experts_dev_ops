@@ -33,27 +33,30 @@ export default function Certifications({ data }) {
   const onSubmit = async (formData) => {
     setSubmitStatus(null);
     const fd = new FormData();
-    if (formData.certifications.length > 0) {
-      fd.append('certifications[]', '');
+  
+    if (formData.certifications && formData.certifications.length > 0) {
+      formData.certifications.forEach((cert, idx) => {
+        fd.append(`certifications[${idx}][name]`, cert.name);
+        fd.append(`certifications[${idx}][description]`, cert.description || '');
+        if (cert.image && cert.image[0] instanceof File) {
+          fd.append(`certifications[${idx}][image]`, cert.image[0]);
+        }        
+      });
     }
-    formData.certifications.forEach((cert, idx) => {
-      fd.append(`certifications[${idx}][name]`, cert.name);
-      fd.append(`certifications[${idx}][description]`, cert.description);
-      const fileInput = document.querySelector(`input[name='certifications.${idx}.image']`);
-      if (fileInput?.files?.[0]) {
-        fd.append(`certifications[${idx}][image]`, fileInput.files[0]);
-      }
-    });
+
+    console.log(fd);
+  
     try {
-      const response = await apiService.saveProfileTab('certifications', fd);
+      const response = await apiService.saveProfileTab(fd);
       setSubmitStatus({ type: 'success', message: response.data.message });
     } catch (error) {
       setSubmitStatus({
         type: 'error',
-        message: error.response?.data?.error || t('failed_to_save_certifications')
+        message: error.response?.data?.error || t('failed_to_save_certifications'),
       });
     }
   };
+  
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -92,7 +95,24 @@ export default function Certifications({ data }) {
             )}
           </div>
           <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1">{t('certification_link')} ({t('optional')})</label>
+            <input
+              type="url"
+              {...register(`certifications.${index}.link`)}
+              placeholder={t('certification_link_placeholder')}
+              className="w-full border border-gray-300 rounded p-2 text-sm mb-2"
+            />
+          </div>
+          <div>
             <label className="block text-xs font-medium text-gray-500 mb-1 flex items-center gap-1"><FiImage className="inline" />{t('certification_image')}</label>
+            {/* Show existing image if present in data */}
+            {field.image_file && (
+              <img
+                src={field.image_file}
+                alt={t('certification_image')}
+                className="mb-2 w-32 h-32 object-cover rounded border"
+              />
+            )}
             <input
               type="file"
               accept="image/*"

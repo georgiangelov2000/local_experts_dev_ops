@@ -25,28 +25,30 @@ const projectsFormSchema = yup.object().shape({
 export function useProjectsForm(tabData = {}) {
   // Map tabData to ensure all fields are present for each project
   const mappedProjects = Array.isArray(tabData)
+  
     ? tabData.map(project => ({
         id: project.id,
-        project_name: project.project_name || "",
-        description: project.description || "",
-        date_start: project.date_start || "",
-        date_end: project.date_end || "",
-        status: typeof project.status !== 'undefined' ? project.status : 1,
-        image: null, // always null for initial load
-        video: null, // always null for initial load
+        project_name: project.project_name || '',
+        description: project.description || '',
+        date_start: project.date_start || '',
+        date_end: project.date_end || '',
+        status: project.status || 0,
+        image: null, // always null for initial load (for file input)
+        image_url: project.image_url || '', // <-- map image_url from backend
+        link: project.link || '',
       }))
     : [
         {
-          project_name: "",
-          description: "",
-          date_start: "",
-          date_end: "",
-          status: 1,
+          project_name: '',
+          description: '',
+          date_start: '',
+          date_end: '',
+          status: 0,
           image: null,
-          video: null,
+          image_url: '',
+          link: '',
         },
       ];
-    
   const {
     register,
     handleSubmit,

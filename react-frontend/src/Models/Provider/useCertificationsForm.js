@@ -19,13 +19,17 @@ export function useCertificationsForm(tabData = {}) {
         id: cert.id,
         name: cert.name || '',
         description: cert.description || '',
-        image: null, // always null for initial load
+        image: null, // always null for initial load (for file input)
+        image_file: cert.image_file || cert.image || '',
+        link: cert.link || '', // <-- add link field
       }))
     : [
         {
           name: '',
           description: '',
           image: null,
+          image_file: '',
+          link: '',
         },
       ];
 

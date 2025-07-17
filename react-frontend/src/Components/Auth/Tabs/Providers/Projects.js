@@ -100,9 +100,19 @@ export default function Projects({ data }) {
               />
             </div>
           </div>
+          {/* Image and Video Inputs Side by Side */}
           <div className="flex flex-col sm:flex-row gap-3">
+            {/* Image Column */}
             <div className="flex-1">
-              <label className="block text-xs font-medium text-gray-500 mb-1 flex items-center gap-1"><FiImage className="inline" />{t('project_image')}</label>
+              <label className="block text-xs font-medium text-gray-500 mb-1 flex items-center gap-1">{t('project_image')}</label>
+              {/* Show existing image if present in data */}
+              {proj.image_url && (
+                <img
+                  src={proj.image_url}
+                  alt={t('project_image')}
+                  className="mb-2 w-32 h-32 object-cover rounded border"
+                />
+              )}
               <input
                 type="file"
                 accept="image/*"
@@ -119,6 +129,7 @@ export default function Projects({ data }) {
                 />
               )}
             </div>
+            {/* Video Column */}
             <div className="flex-1">
               <label className="block text-xs font-medium text-gray-500 mb-1 flex items-center gap-1"><FiVideo className="inline" />{t('project_video')}</label>
               <input

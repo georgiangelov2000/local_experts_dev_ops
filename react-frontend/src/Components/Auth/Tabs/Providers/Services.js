@@ -19,13 +19,13 @@ export default function Services({ data }) {
   const [submitStatus, setSubmitStatus] = useState(null);
   
   const onSubmit = async (formData) => {
-    // setSubmitStatus(null);
-    // try {
-    //   const response = await apiService.saveProfileTab('services', formData);
-    //   setSubmitStatus({ type: 'success', message: response.data.message });
-    // } catch (error) {
-    //   setSubmitStatus({ type: 'error', message: error.response?.data?.error || t('failed_to_save_services') });
-    // }
+    setSubmitStatus(null);
+    try {
+      const response = await apiService.saveProfileTab('services', formData);
+      setSubmitStatus({ type: 'success', message: response.data.message });
+    } catch (error) {
+      setSubmitStatus({ type: 'error', message: error.response?.data?.error || t('failed_to_save_services') });
+    }
   };
 
   return (

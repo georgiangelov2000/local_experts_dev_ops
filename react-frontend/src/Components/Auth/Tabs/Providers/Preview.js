@@ -146,6 +146,15 @@ export default function Preview({ data }) {
                     tabIndex={0}
                     aria-label={cert.name}
                   >
+                    {/* Show certificate image if present */}
+                    {cert.image && (
+                      <img
+                        src={cert.image}
+                        alt={t('certification_image')}
+                        className="mb-3 w-full h-28 object-contain rounded border border-gray-100 bg-gray-50"
+                        loading="lazy"
+                      />
+                    )}
                     <div className="flex items-center justify-center mb-3">
                       <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center shadow">
                         <FiAward className="text-gray-600 text-2xl" />
@@ -154,14 +163,6 @@ export default function Preview({ data }) {
                     <h4 className="font-bold text-gray-900 text-lg mb-1 truncate w-full" title={cert.name}>{cert.name}</h4>
                     {cert.description && (
                       <p className="text-gray-600 text-sm mb-2 line-clamp-3">{cert.description}</p>
-                    )}
-                    {cert.image && (
-                      <img
-                        src={cert.image}
-                        alt={t('certification_image')}
-                        className="mt-2 w-full h-28 object-contain rounded border border-gray-100 bg-gray-50"
-                        loading="lazy"
-                      />
                     )}
                     <span className="absolute top-3 right-3 bg-gray-100 text-gray-600 text-xs font-medium px-2 py-1 rounded-full">{t('certified')}</span>
                   </div>

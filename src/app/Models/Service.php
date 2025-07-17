@@ -11,7 +11,10 @@ class Service extends Model
         'price',
         'description',
     ];
-
+    protected $casts = [
+        'price' => 'float'
+    ];
+    
     public function serviceProvider()
     {
         return $this->belongsTo(ServiceProvider::class);
