@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Review extends Model
 {
     protected $fillable = [
-        'consumer_id',
+        'user_id',
         'service_provider_id',
         'rating',
         'review_text',
@@ -20,6 +20,6 @@ class Review extends Model
 
     public function consumer()
     {
-        return $this->belongsTo(User::class, 'consumer_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

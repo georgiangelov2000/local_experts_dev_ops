@@ -58,7 +58,7 @@ class ServiceProviderController extends Controller
         $validated = $request->validate([
             'review_text' => 'required|string',
             'rating' => 'required|integer|min:1|max:5',
-            'consumer_id' => 'nullable|integer|exists:users,id',
+            'user_id' => 'nullable|integer|exists:users,id',
             'service_provider_id' => 'required|integer|exists:service_providers,id',
         ]);
 

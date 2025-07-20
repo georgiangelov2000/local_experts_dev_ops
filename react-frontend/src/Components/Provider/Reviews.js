@@ -18,7 +18,7 @@ export default function Reviews({ reviews = [], serviceProviderId, onReviewAdded
   const submitHandler = async (data) => {
     const payload = {
       ...data,
-      consumer_id: user ? user.id : null,
+      user_id: user ? user.id : null,
       service_provider_id: serviceProviderId,
     };
 

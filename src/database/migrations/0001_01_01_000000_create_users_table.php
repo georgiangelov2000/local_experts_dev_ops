@@ -17,6 +17,7 @@ return new class extends Migration
                 $table->string('email')->unique();
                 $table->string('password');
                 $table->tinyInteger('role_id');
+                $table->tinyInteger('is_active')->default(1);
                 $table->timestamp('last_logged_in')->nullable();
                 $table->timestamp('email_verified_at')->nullable();
                 $table->timestamps();

@@ -5,7 +5,7 @@ import * as yup from "yup";
 const schema = yup.object({
   review_text: yup.string().trim().required("Comment cannot be empty."),
   rating: yup.number().min(1).max(5).required("Rating is required."),
-  consumer_id: yup.number().nullable(), 
+  user_id: yup.number().nullable(), 
   service_provider_id: yup.number().required("Service provider is required."),
 });
 
@@ -22,7 +22,7 @@ export function useReviewForm(user = {}, serviceProviderId = null) {
     defaultValues: {
       review_text: "",
       rating: 5,
-      consumer_id: consumerId,
+      user_id: consumerId,
       service_provider_id: serviceProviderId,
     },
     resolver: yupResolver(schema),

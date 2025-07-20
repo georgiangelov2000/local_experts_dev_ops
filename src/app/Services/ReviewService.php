@@ -26,7 +26,7 @@ class ReviewService
             throw new \Exception('Review not found', 404);
         }
 
-        if ($review->consumer_id !== $userId) {
+        if ($review->user_id !== $userId) {
             throw new \Exception('Unauthorized', 403);
         }
 
@@ -42,7 +42,7 @@ class ReviewService
             throw new \Exception('Review not found', 404);
         }
 
-        if ($review->consumer_id !== $userId) {
+        if ($review->user_id !== $userId) {
             throw new \Exception('Unauthorized', 403);
         }
 
