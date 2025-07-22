@@ -1,17 +1,18 @@
 <?php
+
 namespace App\Http\Controllers\Api\V1\BackEnd;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use Illuminate\Http\Request;
 use App\Models\ServiceCategory;
-use Illuminate\Http\JsonResponse;
 
-class CategoryController extends Controller {
-
-    public function index(): JsonResponse{
-        return response()->json(['data' => Category::all(),200]);
-    }
-
-    public function serviceCategory($categoryId): JsonResponse{
+class ServiceCategoryController extends Controller
+{
+    /**
+     * Display a listing of the service categories.
+     */
+    public function index($categoryId)
+    {
         $serviceCategories = ServiceCategory::where('category_id', $categoryId)->get();
         return response()->json($serviceCategories,200);
     }

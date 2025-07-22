@@ -10,28 +10,14 @@ class ServiceProviderController extends Controller
     public function index(Request $request): JsonResponse
     {
         $query = User::with(['serviceProvider.media', 'media'])->whereIn('role_id', [2, 3]);
-        // Search
-        if ($search = $request->input('search.value')) {
+
+        // ✅ Filters
+        if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('email', 'like', "%{$search}%")
                     ->orWhere('id', 'like', "%{$search}%");
             });
         }
-
-        // Total records before filtering
-        $recordsTotal = User::count();
-        // Filtered records
-        $recordsFiltered = $query->count();
-
-        // Order
-        if ($order = $request->input('order.0.column')) {
-            $columns = ['id', 'email', 'role_id'];
-            $dir = $request->input('order.0.dir', 'asc');
-            $query->orderBy($columns[$order], $dir);
-        } else {
-            $query->orderBy('id', 'desc');
-        }
-
 
         if ($categoryFilter = $request->input('category')) {
             $query->whereHas('serviceProvider.category', function ($q) use ($categoryFilter) {
@@ -52,19 +38,15 @@ class ServiceProviderController extends Controller
         }
 
         if ($verifiedFilter = $request->input('verified')) {
-            if ($verifiedFilter == 'yes') {
-                $query->whereNotNull('email_verified_at');
-            } elseif ($verifiedFilter == 'no') {
-                $query->whereNull('email_verified_at');
-            }
+            $verifiedFilter === 'yes'
+                ? $query->whereNotNull('email_verified_at')
+                : $query->whereNull('email_verified_at');
         }
 
         if ($lastLoggedInFilter = $request->input('last_logged_in')) {
-            if ($lastLoggedInFilter == 'yes') {
-                $query->whereNotNull('last_logged_in');
-            } elseif ($lastLoggedInFilter == 'no') {
-                $query->whereNull('last_logged_in');
-            }
+            $lastLoggedInFilter === 'yes'
+                ? $query->whereNotNull('last_logged_in')
+                : $query->whereNull('last_logged_in');
         }
 
         if ($ratingFilter = $request->input('rating')) {
@@ -75,22 +57,26 @@ class ServiceProviderController extends Controller
             });
         }
 
-        // Pagination
-        $start = $request->input('start', 0);
-        $length = $request->input('length', 10);
-        $users = $query->skip($start)->take($length)->get();
+        // ✅ Sorting
+        $query->orderBy('id', 'desc');
 
-        // Format for DataTables
-        $data = $users->map(function ($user) {
+        // ✅ Pagination (Laravel-style)
+        $perPage = $request->input('per_page', 10);
+        $users = $query->paginate($perPage);
+
+        // ✅ Format response
+        $data = $users->getCollection()->map(function ($user) {
             $isServiceProvider = $user->role_id == User::SERVICE_PROVIDER;
             $mediaUrl = null;
+
             if ($isServiceProvider && $user->serviceProvider && $user->serviceProvider->media->count() > 0) {
                 $mediaModel = $user->serviceProvider->media->first();
-                $mediaUrl = url('/storage/' . ltrim($mediaModel->file_path . '/' . '/'));
+                $mediaUrl = url('/storage/' . ltrim($mediaModel->file_path, '/'));
             } elseif ($user->media && $user->media->count() > 0) {
                 $mediaModel = $user->media->first();
-                $mediaUrl = url('/storage/' . ltrim($mediaModel->file_path . '/' . '/'));
+                $mediaUrl = url('/storage/' . ltrim($mediaModel->file_path, '/'));
             }
+
             return [
                 'id' => $user->id,
                 'email' => $user->email,
@@ -117,11 +103,13 @@ class ServiceProviderController extends Controller
             ];
         });
 
+        // ✅ Return paginated response with meta
         return response()->json([
             'data' => $data,
-            'recordsTotal' => $recordsTotal,
-            'recordsFiltered' => $recordsFiltered,
-            'draw' => intval($request->input('draw')), // DataTables draw counter
+            'current_page' => $users->currentPage(),
+            'last_page' => $users->lastPage(),
+            'per_page' => $users->perPage(),
+            'total' => $users->total(),
         ]);
     }
 

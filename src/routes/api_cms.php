@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\BackEnd\AuthController;
 use App\Http\Controllers\Api\V1\BackEnd\CategoryController;
+use App\Http\Controllers\Api\V1\BackEnd\ServiceCategoryController;
 use App\Http\Controllers\Api\V1\BackEnd\ServiceProviderController;
 use App\Http\Controllers\Api\V1\BackEnd\WorkSpaceController;
 
@@ -20,5 +21,6 @@ Route::prefix('v1')->group(function () {
 
         Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
         Route::get('workspaces', [WorkSpaceController::class, 'index'])->name('workspaces.index');
+        Route::get('categories/{category}/service-categories', [CategoryController::class, 'serviceCategory'])->name('service.categories.index');
     });
 });
