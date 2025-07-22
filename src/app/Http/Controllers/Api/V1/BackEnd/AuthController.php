@@ -5,13 +5,14 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Http\Requests\Backend\LoginRequest;
 use App\Http\Requests\Backend\RegisterRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
-{
-    public function register(RegisterRequest $request)
+{   
+    public function register(RegisterRequest $request): JsonResponse  
     {
         try {
             $credentials = $request->validated();
@@ -42,7 +43,7 @@ class AuthController extends Controller
     }
 
     // Login user and return JWT token
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
         try {
             $credentials = $request->validated();
@@ -76,7 +77,7 @@ class AuthController extends Controller
     }
 
     // Logout user (invalidate token)
-    public function logout()
+    public function logout(): JsonResponse
     {
         try {
             JWTAuth::invalidate(JWTAuth::getToken());
@@ -95,7 +96,7 @@ class AuthController extends Controller
     }
 
     // Get authenticated user
-    public function me()
+    public function me(): JsonResponse
     {
         return response()->json(auth()->user(),200);
     }

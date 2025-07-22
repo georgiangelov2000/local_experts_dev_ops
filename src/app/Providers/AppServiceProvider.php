@@ -38,8 +38,7 @@ class AppServiceProvider extends ServiceProvider
         
         // Register API routes
         Route::prefix('api')
-            ->middleware('api')
-            
+            ->middleware('api')           
             ->group(base_path('routes/api.php'));
             
         // Register CMS API routes

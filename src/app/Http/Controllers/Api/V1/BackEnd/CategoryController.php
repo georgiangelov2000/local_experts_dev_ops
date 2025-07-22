@@ -1,12 +1,12 @@
 <?php
-
+namespace App\Http\Controllers\Api\V1\BackEnd;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller {
-    // Logic for handling categories will go here
-    // For example, methods for listing, creating, updating, and deleting categories
-    /**
-     * Display a listing of the categories.
-     *
-     * */
+
+    public function index(): JsonResponse{
+        return response()->json(['data' => Category::all()]);
+    }
 }

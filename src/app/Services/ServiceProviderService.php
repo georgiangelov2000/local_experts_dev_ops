@@ -121,6 +121,7 @@ class ServiceProviderService
                 return $workspace->city?->name;
             })->filter()->values();
 
+
             return [
                 'id' => $provider->id,
                 'business_name' => $provider->business_name,
@@ -135,7 +136,7 @@ class ServiceProviderService
                 'views_count' => $provider->views,
                 'start_time' => $provider->start_time,
                 'stop_time' => $provider->stop_time,
-                'last_logged_in' => $provider->user->last_logged_in,
+                'last_logged_in' => $provider->user?->last_logged_in,
                 'description' => \Str::limit($provider->description, 120),
             ];
         })->toArray();

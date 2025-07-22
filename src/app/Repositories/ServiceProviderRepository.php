@@ -112,7 +112,6 @@ class ServiceProviderRepository
             'stop_time',
             'description',
             'alias',
-            'contact_id',
             'views'
         ])->with([
             'user:id',
