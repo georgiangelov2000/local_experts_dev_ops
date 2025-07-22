@@ -36,14 +36,23 @@ class AppServiceProvider extends ServiceProvider
             \URL::forceScheme('https');
         }
         
-        Route::prefix('api')->middleware('api')->group(base_path('routes/api.php'));
+        // Register API routes
+        Route::prefix('api')
+            ->middleware('api')
+            
+            ->group(base_path('routes/api.php'));
+            
+        // Register CMS API routes
+        Route::prefix('api/cms')
+            ->middleware('api')
+            ->group(base_path('routes/api_cms.php'));
         
         ResetPassword::toMailUsing(function ($notifiable, $token) {
-        $url = url(config('app.url') . "/reset-password?token=$token&email=" . urlencode($notifiable->email));
+            $url = url(config('app.url') . "/reset-password?token=$token&email=" . urlencode($notifiable->email));
 
-        return (new MailMessage)
-                ->subject('Reset your password')
-                ->view('emails.password_reset', ['url' => $url]);
+            return (new MailMessage)
+                    ->subject('Reset your password')
+                    ->view('emails.password_reset', ['url' => $url]);
         });
     }
 }
