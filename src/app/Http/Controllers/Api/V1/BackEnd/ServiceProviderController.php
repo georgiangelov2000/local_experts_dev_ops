@@ -103,7 +103,7 @@ class ServiceProviderController extends Controller
             ];
         });
 
-        // ✅ Return paginated response with meta
+        // Return paginated response with meta
         return response()->json([
             'data' => $data,
             'current_page' => $users->currentPage(),
