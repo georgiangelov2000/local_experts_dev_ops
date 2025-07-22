@@ -150,15 +150,27 @@ class ServiceProviderController extends Controller
         return response()->json(['message' => 'Service provider updated successfully', 'id' => $id]);
     }
 
-    /**
-     * Remove the specified service provider from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function destroy($id)
     {
-        // Logic to delete a specific service provider
-        return response()->json(['message' => 'Service provider deleted successfully', 'id' => $id]);
+        $provider = User::whereIn('role_id', [User::SERVICE_PROVIDER, User::USER])
+        ->find($id);
+    
+        if (!$provider) {
+            return response()->json(['message' => 'Service provider not found'], 404);
+        }
+
+        // Delete related service provider record (if exists)
+        if ($provider->serviceProvider) {
+            $provider->serviceProvider->delete();
+        }
+
+        // Delete user
+        $provider->delete();
+
+        return response()->json([
+            'message' => 'Service provider deleted successfully',
+            'id' => $id
+        ]);
     }
+
 }

@@ -17,6 +17,7 @@ Route::prefix('v1')->group(function () {
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
         Route::get('me', [AuthController::class, 'me'])->name('me');
         Route::get('providers', [ServiceProviderController::class, 'index'])->name('providers.index');
+        Route::delete('providers/{provider}', [ServiceProviderController::class, 'destroy'])->name('providers.destroy');
 
 
         Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
