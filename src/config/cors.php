@@ -5,8 +5,8 @@ return [
     'allowed_methods' => ['*'],
     'allowed_origins' => [
         'http://172.18.0.2:3000', // React dev Front end
+        'http://172.19.0.3:3000',
         'http://172.20.0.2:3000', // React dev Back end
-        'https://your-production-frontend.com', // Replace with your production domain
     ],
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
