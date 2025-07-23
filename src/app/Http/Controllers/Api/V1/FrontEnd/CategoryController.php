@@ -33,7 +33,8 @@ class CategoryController extends Controller
 
     public function serviceCategories($categoryId)
     {
-        $serviceCategories = ServiceCategory::where('category_id', $categoryId)
+        $serviceCategories = ServiceCategory::select('name','category_id')
+        ->where('category_id', $categoryId)
             ->select('id', 'name', 'description')
             ->get();
 

@@ -31,7 +31,15 @@ class ServiceProviderService
     {
         $filters = $this->extractFilters($request);
         $sorting = $this->extractSorting($request);
-        $perPage = $request->get('per_page', 20);
+
+        // Get requested per_page parameter or default to 20
+        $perPage = (int) $request->get('per_page', 20);
+
+        // Define the maximum allowed per_page value to prevent abuse
+        $maxPerPage = 50;
+
+        // Sanitize perPage to be at least 1 and at most $maxPerPage
+        $perPage = max(1, min($maxPerPage, $perPage));
         $page = max(1, (int) $request->get('page', 1));
 
         $providers = $this->providerRepository->getPaginatedProviders($filters, $sorting, $perPage, $page);
@@ -61,12 +69,19 @@ class ServiceProviderService
             throw new \Exception('Service provider not found', 404);
         }
 
-        $reviews = $this->reviewRepository->getPaginatedReviewsForProvider($provider->id, 10, $page);
+        // Define max per page for reviews to prevent abuse/DDoS
+        $maxReviewsPerPage = 20;
+        $requestedPerPage = 10; // Default or could be dynamic if you want
+        
+        // Enforce per page limit
+        $perPage = max(1, min($maxReviewsPerPage, $requestedPerPage));
+
+        $reviews = $this->reviewRepository->getPaginatedReviewsForProvider($provider->id, $perPage, $page);
         $relatedProviders = $this->providerRepository->getRelatedProviders($provider, 5);
         $relatedProvidersCount = $this->providerRepository->getRelatedProvidersCount($provider);
-        
-        // Increment views
-        $this->providerRepository->incrementViews($provider);
+                
+        // // Increment views
+        // $this->providerRepository->incrementViews($provider);
 
         return [
             'service_provider' => ServiceProviderDTO::fromModel($provider)->toArray(),
@@ -127,7 +142,9 @@ class ServiceProviderService
                 'business_name' => $provider->business_name,
                 'alias' => $provider->alias,
                 'service_category' => $provider->serviceCategory->name,
-                'media' => $provider->media->first() ?? [],
+                'media' => $provider->media->first()
+                ? (config('app.url') . '/storage/' . ltrim($provider->media->first()->file_path, '/'))
+                : null,
                 'final_grade' => $provider->rating(),
                 'locations' => $locations,
                 'likes_count' => $provider->likes_count,

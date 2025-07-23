@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Api\V1\FrontEnd;
 use App\Http\Controllers\Controller;
 use App\Models\Favourite;
 use App\Models\ServiceProvider;
-use App\Models\Like;
-use App\Models\Dislike;
+
 use App\Services\ServiceProviderService;
 use App\Services\ReviewService;
 use Illuminate\Http\Request;
-
+use App\Http\Requests\Api\V1\FrontEnd\CreateReviewRequest;
+use App\Http\Requests\Api\V1\FrontEnd\UpdateReviewRequest;
+use App\Http\Requests\Api\V1\FrontEnd\FavouriteRequest;
 
 class ServiceProviderController extends Controller
 {
@@ -36,11 +37,6 @@ class ServiceProviderController extends Controller
     {
         try {
             $data = $this->providerService->getProviderDetails($alias, $page);
-            // Add liked/disliked provider IDs for authenticated users
-            if (auth()->check()) {
-                $data['likes_ids'] = auth()->user()->likes()->pluck('service_provider_id')->toArray();
-                $data['dislikes_ids'] = auth()->user()->dislikes()->pluck('service_provider_id')->toArray();
-            }
             return response()->json($data, 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -50,18 +46,10 @@ class ServiceProviderController extends Controller
     }
 
 
-    /**
-     * Create a review for a service provider
-     */
-    public function createReview(Request $request)
+    public function createReview(CreateReviewRequest $request)
     {
-        $validated = $request->validate([
-            'review_text' => 'required|string',
-            'rating' => 'required|integer|min:1|max:5',
-            'user_id' => 'nullable|integer|exists:users,id',
-            'service_provider_id' => 'required|integer|exists:service_providers,id',
-        ]);
-
+        $validated = $request->validated();
+    
         try {
             $review = $this->reviewService->createReview($validated);
             return response()->json($review->toArray(), 201);
@@ -69,17 +57,12 @@ class ServiceProviderController extends Controller
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
-
-    /**
-     * Update a review
-     */
-    public function updateReview(Request $request, $id)
+    
+    
+    public function updateReview(UpdateReviewRequest $request, $id)
     {
-        $validated = $request->validate([
-            'review_text' => 'sometimes|required|string',
-            'rating' => 'sometimes|required|integer|min:1|max:5',
-        ]);
-
+        $validated = $request->validated();
+    
         try {
             $review = $this->reviewService->updateReview($id, $validated, auth()->id());
             return response()->json(['message' => 'Review updated successfully.', 'review' => $review->toArray()], 200);
@@ -98,17 +81,15 @@ class ServiceProviderController extends Controller
         }
     }
 
-    public function createFavourites(Request $request)
+    public function createFavourites(FavouriteRequest $request)
     {
-        $request->validate([
-            'service_provider_id' => 'required|exists:service_providers,id',
-        ]);
-
+        $validated = $request->validated();
+    
         $favourite = Favourite::firstOrCreate([
             'user_id' => $request->user()->id,
-            'service_provider_id' => $request->service_provider_id,
+            'service_provider_id' => $validated['service_provider_id'],
         ]);
-
+    
         return response()->json([
             'message' => 'Added to favourites.',
             'favourite' => $favourite
