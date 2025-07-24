@@ -8,6 +8,8 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Models\ServiceProvider;
 use App\Models\User;
+use App\Notifications\NewUserRegistered;
+use Illuminate\Support\Facades\Notification;
 use Password;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
@@ -20,11 +22,11 @@ class AuthController extends Controller
     {
         $validated = $request->validated();
         $existingUser = User::where("email", $validated["email"])->first();
-        if($existingUser) {
+        if ($existingUser) {
             return response()->json(['message' => 'Email already registered.'], 409);
         }
 
-        if($validated['type'] == User::SERVICE_PROVIDER) {
+        if ($validated['type'] == User::SERVICE_PROVIDER) {
             $user = new User();
             $user->email = $validated['email'];
             $user->password = Hash::make($validated['password']);
@@ -36,7 +38,7 @@ class AuthController extends Controller
             $serviceProvider->service_category_id = $validated['service_category_id'];
             $serviceProvider->user_id = $user->id;
             $serviceProvider->save();
-        } elseif($validated['type'] == User::USER) {
+        } elseif ($validated['type'] == User::USER) {
             $user = new User();
             $user->email = $validated['email'];
             $user->password = Hash::make($validated['password']);
@@ -46,7 +48,12 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid registration type.'], 400);
         }
 
+        // Send email verification
         $user->sendEmailVerificationNotification();
+
+        // Send notification to admin email
+        $adminEmail = config('mail.username');
+        Notification::route('mail', $adminEmail)->notify(new NewUserRegistered($user));
 
         return response()->json([
             'message' => 'User registered successfully. Please verify your email.',
@@ -174,7 +181,7 @@ class AuthController extends Controller
 
     public function handleProviderCallback($provider)
     {
-     
+
         try {
             $socialUser = Socialite::driver($provider)->user();
         } catch (\Exception $e) {
