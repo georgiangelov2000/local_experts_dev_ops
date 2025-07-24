@@ -61,8 +61,8 @@ class ProfileController extends Controller
                             $project->project_name = $projectData['project_name'];
                             $project->description = $projectData['description'];
                             $project->status = $projectData['status'];
-                            $project->date_start = Carbon::parse($projectData['date_start'])->toDateTimeString();
-                            $project->date_end = Carbon::parse($projectData['date_end'])->toDateTimeString();
+                            $project->date_start = Carbon::parse($projectData['date_start'])->toDateString();
+                            $project->date_end = Carbon::parse($projectData['date_end'])->toDateString();                            
                             $project->save();
 
                             if (isset($projectData['image'])) {

@@ -110,10 +110,9 @@ class ServiceProvider extends Model
         }
         return $finalGrade;
     }
-
-    public function contact(): BelongsTo
+    public function contact(): MorphMany
     {
-        return $this->belongsTo(Contact::class);
+        return $this->morphMany(Contact::class, 'model');
     }
 
     public function mapProvider() {

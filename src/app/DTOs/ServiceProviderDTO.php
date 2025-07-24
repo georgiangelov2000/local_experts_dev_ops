@@ -56,7 +56,7 @@ class ServiceProviderDTO
                     'link' => $certification->link,
                 ];
             })->toArray(),
-            contact: self::mapContact($provider->contact),
+            contact: self::mapContact($provider->contact->first()),
             likes_count: $provider->likes_count,
             dislikes_count: $provider->dislikes_count,
             reviews_count: $provider->reviews_count,
@@ -134,7 +134,6 @@ class ServiceProviderDTO
         if (!$contact) {
             return [];
         }
-
         return [
             'website' => $contact->website,
             'phone' => $contact->phone,
