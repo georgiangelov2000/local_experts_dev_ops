@@ -19,8 +19,8 @@ return new class extends Migration
                 $table->text('description');
                 $table->tinyInteger('status');
                 $table->string('link')->nullable();
-                $table->timestamp('date_start')->nullable();
-                $table->timestamp('date_end')->nullable();
+                $table->date('date_start')->nullable();
+                $table->date('date_end')->nullable();
                 $table->timestamps();
             });
         }
