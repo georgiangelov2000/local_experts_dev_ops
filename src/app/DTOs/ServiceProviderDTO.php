@@ -101,14 +101,21 @@ class ServiceProviderDTO
     private static function mapProjects($projects): array
     {
         return $projects->map(function ($projectItem) {
+            $mediaUrls = $projectItem->media->map(function ($media) {
+                return config('app.url') . '/storage/' . ltrim($media->file_path, '/');
+            })->toArray();
+    
             return [
                 'project_name' => $projectItem->project_name,
-                'description' => $projectItem->description,
-                'date_start' => $projectItem->date_start,
-                'date_end' => $projectItem->date_end,
+                'description'  => $projectItem->description,
+                'date_start'   => $projectItem->date_start,
+                'date_end'     => $projectItem->date_end,
+                'image_url'    => $mediaUrls[0] ?? null,  // First media URL for thumbnail
+                'media'        => $mediaUrls,             // All media URLs
             ];
         })->toArray();
     }
+    
 
     private static function mapServices($services): array
     {

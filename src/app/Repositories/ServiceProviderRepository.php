@@ -114,7 +114,7 @@ class ServiceProviderRepository
             'alias',
             'views'
         ])->with([
-            'user:id',
+            'user:id,last_logged_in',
             'serviceCategory',
             'media',
             'workspaces.city:id,name',

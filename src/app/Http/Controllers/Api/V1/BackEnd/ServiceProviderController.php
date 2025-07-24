@@ -10,8 +10,8 @@ class ServiceProviderController extends Controller
     public function index(Request $request): JsonResponse
     {
         $query = User::with(['serviceProvider.media', 'media'])->whereIn('role_id', [2, 3]);
-
-        // ✅ Filters
+        
+        // Filters
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('email', 'like', "%{$search}%")
@@ -57,14 +57,14 @@ class ServiceProviderController extends Controller
             });
         }
 
-        // ✅ Sorting
+        // Sorting
         $query->orderBy('id', 'desc');
 
-        // ✅ Pagination (Laravel-style)
+        // Pagination (Laravel-style)
         $perPage = $request->input('per_page', 10);
         $users = $query->paginate($perPage);
 
-        // ✅ Format response
+        // Format response
         $data = $users->getCollection()->map(function ($user) {
             $isServiceProvider = $user->role_id == User::SERVICE_PROVIDER;
             $mediaUrl = null;
